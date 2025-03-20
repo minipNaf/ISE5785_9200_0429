@@ -1,0 +1,36 @@
+package geometries;
+import primitives.*;
+
+/**
+ * Represents a sphere in 3D space. A sphere is defined by its center point
+ * and radius. It extends the RadialGeometry class, which provides
+ * functionality for radial shapes in 3D geometry.
+ */
+public class Sphere extends RadialGeometry{
+    /**
+     * Represents the center point of the sphere in 3D space.
+     * It is a fixed point in the Cartesian coordinate system, specified by its x, y, and z coordinates.
+     * The center is used to define the sphere's position and to calculate distances or normals in geometric computations.
+     * This field is immutable once the sphere is constructed.
+     */
+    private final Point center;
+
+
+    /**
+     * Constructs a Sphere object with the specified radius and center point.
+     * A sphere is a three-dimensional shape where all points on its surface
+     * are equidistant from its center.
+     *
+     * @param radius the radius of the sphere, must be positive
+     * @param center the center of the sphere, represented as a Point in 3D space
+     */
+    public Sphere(double radius, Point center) {
+        super(radius);
+        this.center = center;
+    }
+
+    @Override
+    public Vector getNormal(Point p){
+        return null;
+    }
+}
