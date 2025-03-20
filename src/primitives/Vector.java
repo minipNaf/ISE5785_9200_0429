@@ -4,7 +4,7 @@ import static primitives.Util.isZero;
 
 public class Vector extends Point {
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { //the most awesome function of all!!!!!!!!!!!!!!!!!!!!!!!
         if (this == obj) return true;
         return obj instanceof Vector other && super.equals(other);
     }
