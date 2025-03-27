@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VectorTest {
     Vector vec = new Vector(1,2,3);
+    Vector other = new Vector(4,5,6);
     @Test
     void testScale() {
         assertEquals(new Vector(3.8*1,3.8*2,3.8*3),vec.scale(3.8),
@@ -44,7 +45,7 @@ class VectorTest {
 
     @Test
     void testCrossProduct() {
-        assertEquals(new Vector(-3/sqrt(54),6/sqrt(54),-3/sqrt(54)),vec.crossProduct(new Vector(4,5,6)),
+        assertEquals(new Vector(-3/sqrt(54),6/sqrt(54),-3/sqrt(54)),vec.crossProduct(other),
                 "ERROR: crossProduct() does not work correctly ");
         assertThrows(IllegalArgumentException.class,()->vec.crossProduct(new Vector(2,4,6)),
                 "ERROR: the other vector is not parallel to the original one");
@@ -52,9 +53,15 @@ class VectorTest {
 
     @Test
     void testDotProduct() {
-        assertEquals(32,vec.dotProduct(new Vector(4,5,6)),0.00001,
+        assertEquals(32,vec.dotProduct(other),0.00001,
                 "ERROR: dotProduct() does not work correctly ");
         assertThrows(IllegalAccessException.class,()->vec.dotProduct(new Vector(0,-3,2)),
                 "ERROR: dotProduct() for orthogonal vectors is not zero");
+    }
+    void testSubtract() {
+        assertEquals(new Point(-3,-3,-3),vec.subtract(other),
+                "ERROR: subtract() does not work correctly");
+        assertThrows(IllegalAccessException.class,()->vec.subtract(vec),
+                "ERROR: (point - itself) does not throw an exception");
     }
 }
