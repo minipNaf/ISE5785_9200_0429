@@ -57,7 +57,7 @@ public final class Main {
          out.println("ERROR: (point - itself) throws wrong exception");
       }
 
-      // Add vector to point
+      // Add vector to pointVector vec = new Vector(1,2,3);
       if (!(P1.add(V1).equals(P2)))
          out.println("ERROR: (point + vector) = other point does not work correctly");
       if (!(P1.add(V1_OPPOSITE).equals(Point.ZERO)))
