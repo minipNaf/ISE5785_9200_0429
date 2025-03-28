@@ -113,7 +113,7 @@ public class Vector extends Point {
         Vector normal = new Vector(xyz.d2() * u.xyz.d3() - xyz.d3() * u.xyz.d2(), xyz.d3() * u.xyz.d1() - xyz.d1() * u.xyz.d3(), xyz.d1() * u.xyz.d2() - xyz.d2() * u.xyz.d1());
         if (isZero(normal.xyz.d1()) && isZero(normal.xyz.d2()) && isZero(normal.xyz.d3()))
             throw new ArithmeticException();
-        return normal;
+        return normal.normalize();
     }
 
     /**

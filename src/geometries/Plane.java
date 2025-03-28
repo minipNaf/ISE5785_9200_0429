@@ -6,7 +6,7 @@ import primitives.*;
  * A plane is defined by a point on the plane and a normal vector.
  * The normal vector is orthogonal to the plane and has a length of 1.
  */
-public class Plane implements Geometry{
+public class Plane extends Geometry{
     private final Point point; // A point on the plane
     private final Vector normal; // The normal vector to the plane (orthogonal with size 1)
 

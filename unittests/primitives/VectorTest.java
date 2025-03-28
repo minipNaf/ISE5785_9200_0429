@@ -20,7 +20,7 @@ class VectorTest {
     void testAdd() {
         assertEquals(new Vector(4,4,4), vec.add(new Vector(3,2 ,1)),
                 "ERROR: add() does not work");
-        assertThrows(IllegalArgumentException.class, ()->vec.add(new Vector(-3,-2,-1)),
+        assertThrows(IllegalArgumentException.class, ()->vec.add(new Vector(-1,-2,-3)),
                 "ERROR: Vector + -itself does not throw an exception");
     }
 
@@ -32,7 +32,7 @@ class VectorTest {
 
     @Test
     void testLength() {
-        assertEquals(sqrt(14),vec.lengthSquared(),0.00001,
+        assertEquals(sqrt(14),vec.length(),0.00001,
                 "ERROR: lengthSquared() does not work correctly");
     }
 
@@ -54,7 +54,7 @@ class VectorTest {
     void testDotProduct() {
         assertEquals(32,vec.dotProduct(new Vector(4,5,6)),0.00001,
                 "ERROR: dotProduct() does not work correctly ");
-        assertThrows(IllegalAccessException.class,()->vec.dotProduct(new Vector(0,-3,2)),
+        assertEquals(0,vec.dotProduct(new Vector(0,-3,2)),0.00001,
                 "ERROR: dotProduct() for orthogonal vectors is not zero");
     }
 }
