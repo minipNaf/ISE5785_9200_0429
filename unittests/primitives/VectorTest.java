@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import static java.lang.Math.sqrt;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class VectorTest {
@@ -15,14 +14,15 @@ class VectorTest {
     @Test
     void testConstructorCoordinates() {
         assertDoesNotThrow(()->new Vector(1,2,3), "ERROR: Failed constructing a correct vector");
-        assertThrows(()-> new Vector(0,0,0), "ERROR: can't construct a zero vector");
+        assertThrows(IllegalArgumentException.class, ()-> new Vector(0,0,0), "ERROR: can't construct a zero vector");
     }
 
     @Test
     void testConstructorDouble3() {
         assertDoesNotThrow(()->new Vector(new Double3(1,2,3)), "ERROR: Failed constructing a correct vector");
-        assertThrows(()-> new Vector(new Double3(0,0,0)), "ERROR: can't construct a zero vector");
+        assertThrows(IllegalArgumentException.class, ()-> new Vector(new Double3(0,0,0)), "ERROR: can't construct a zero vector");
     }
+
     @Test
     void testScale() {
         assertEquals(new Vector(3.8*1,3.8*2,3.8*3),vec.scale(3.8),
@@ -72,6 +72,7 @@ class VectorTest {
         assertEquals(0,vec.dotProduct(new Vector(0,-3,2)),0.00001,
                 "ERROR: dotProduct() for orthogonal vectors is not zero");
     }
+
     void testSubtract() {
         assertEquals(new Point(-3,-3,-3),vec.subtract(other),
                 "ERROR: subtract() does not work correctly");
