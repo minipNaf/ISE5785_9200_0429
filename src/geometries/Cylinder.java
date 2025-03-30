@@ -32,6 +32,19 @@ public class Cylinder extends Tube{
 
     @Override
     public Vector getNormal(Point p){
-        return null;
+        /*
+        boolean onRound = p.subtract(axis.getHead()).dotProduct(axis.getDirection().
+                scale(p.subtract(axis.getHead()).dotProduct(axis.getDirection()))) == radius;
+        if(p.distance(axis.getHead()) == height/2 && onRound) {
+            throw new IllegalArgumentException("Point cannot be on the ledge of cylinder");
+        }
+        if(onRound){
+            return axis.getDirection().scale(p.subtract(axis.getHead()).dotProduct(axis.getDirection()) > 0?1:-1);
+        }
+        else{
+            return super.getNormal(p);
+        }
+        */
+        retutn Null;
     }
 }

@@ -11,11 +11,20 @@ public class Ray {
      * This vector ensures consistent representation of the ray's orientation.
      */
     private final Vector direction;
+
+    public Vector getDirection() {
+        return direction;
+    }
+
     /**
      * Represents the starting point of the ray in 3D space.
      * This is the position from which the ray originates.
      */
     private final Point head;
+
+    public Point getHead() {
+        return head;
+    }
 
     /**
      * Constructs a new Ray with a specified direction vector and starting point (head).
