@@ -5,10 +5,24 @@ import org.junit.jupiter.api.Test;
 import static java.lang.Math.sqrt;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class VectorTest {
     Vector vec = new Vector(1,2,3);
     Vector other = new Vector(4,5,6);
+
+    @Test
+    void testConstructorCoordinates() {
+        assertDoesNotThrow(()->new Vector(1,2,3), "ERROR: Failed constructing a correct vector");
+        assertThrows(()-> new Vector(0,0,0), "ERROR: can't construct a zero vector");
+    }
+
+    @Test
+    void testConstructorDouble3() {
+        assertDoesNotThrow(()->new Vector(new Double3(1,2,3)), "ERROR: Failed constructing a correct vector");
+        assertThrows(()-> new Vector(new Double3(0,0,0)), "ERROR: can't construct a zero vector");
+    }
     @Test
     void testScale() {
         assertEquals(new Vector(3.8*1,3.8*2,3.8*3),vec.scale(3.8),

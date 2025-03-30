@@ -28,9 +28,9 @@ class PointTest {
 
     @Test
     void testDistance() {
-        assertEquals(sqrt(8),point.distanceSquared(otherPoint),0.00001,
+        assertEquals(sqrt(8),point.distance(otherPoint),0.00001,
                 "ERROR: distanceSquared() does not work");
-        assertEquals(0, point.distanceSquared(point), 0.00001,
+        assertEquals(0, point.distance(point), 0.00001,
                 "ERROR: point distance to itself is not zero");
     }
 }
