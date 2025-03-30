@@ -1,6 +1,5 @@
 package geometries;
 import primitives.*;
-
 /**
  * Represents a tube in 3D space, defined as an infinite cylinder
  * with a given radius and an axis represented as a ray.
@@ -30,6 +29,9 @@ public class Tube extends RadialGeometry{
 
     @Override
     public Vector getNormal(Point p){
-        return p.subtract(axis.getHead()).normalize();
-    }
+        Double t = (p.subtract(axis.getHead())).dotProduct(axis.getDirection());
+        if(t == 0) {
+            return p.subtract(axis.getHead());
+        }
+        return p.subtract(axis.getHead()).subtract(axis.getDirection().scale(t));    }
 }
