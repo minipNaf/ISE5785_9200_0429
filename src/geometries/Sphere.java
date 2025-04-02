@@ -28,7 +28,12 @@ public class Sphere extends RadialGeometry{
         super(radius);
         this.center = center;
     }
-
+    /**
+     * Returns the normal of a certain point on the sphere.
+     * This method calculates the normal vector at a given point on the sphere's surface.
+     * by subtracting the center point from the given point and normalizing the result.
+     * @return the normal from that point
+     */
     @Override
     public Vector getNormal(Point p){
         return p.subtract(center).normalize();

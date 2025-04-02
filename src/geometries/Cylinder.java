@@ -1,5 +1,8 @@
-package geometries;
+Cylinder
+        package geometries;
 import primitives.*;
+import static java.lang.System.out;
+import static primitives.Util.isZero;
 
 /**
  * Represents a finite cylinder in 3D space.
@@ -30,21 +33,34 @@ public class Cylinder extends Tube{
         this.height = height;
     }
 
+    /**
+     * Returns the normal vector at a given point on the cylinder's surface.
+     * The normal vector is orthogonal to the surface at the specified point.
+     *
+     * @return the normal vector at the specified point
+     */
     @Override
     public Vector getNormal(Point p){
-        /*
-        boolean onRound = p.subtract(axis.getHead()).dotProduct(axis.getDirection().
-                scale(p.subtract(axis.getHead()).dotProduct(axis.getDirection()))) == radius;
-        if(p.distance(axis.getHead()) == height/2 && onRound) {
-            throw new IllegalArgumentException("Point cannot be on the ledge of cylinder");
+        // Calculate the centers of the cylinder's bases
+        Point center1 = axis.getHead();
+        Point center2 = axis.getHead().add(axis.getDirection().scale(height));
+        /** Check if the point is on the top or bottom base of the cylinder
+         * If the point is on the top base(not the one where the axis starts), return the direction of the axis
+         * If the point is on the bottom base(the one where the axis starts), return the opposite direction of the axis
+         * the check is done by calculating the dot product of the vector from the center to the point
+         * if its zero, it means the point is on the base, because the vector is perpendicular to the axis
+         * btw, the two centers of the bases are boundary cases, so we need to check them before the regular check
+         * otherwise, the substaction will be vector(0,0,0) and there will be an exeption
+        */
+        if(p.equals(center1) || isZero(p.subtract(center1).dotProduct(axis.getDirection()))) {
+            return axis.getDirection().scale(-1);
         }
-        if(onRound){
-            return axis.getDirection().scale(p.subtract(axis.getHead()).dotProduct(axis.getDirection()) > 0?1:-1);
+        else if(p.equals(center2) || isZero(p.subtract(center2).dotProduct(axis.getDirection()))){
+            return axis.getDirection().scale(1);
         }
+        //if it is not on the bases, we do the regular calculation of tube
         else{
             return super.getNormal(p);
         }
-        */
-        return null;
     }
 }
