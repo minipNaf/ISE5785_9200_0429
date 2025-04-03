@@ -46,4 +46,21 @@ class PointTest {
         assertEquals(0, point.distance(point), 0.00001,
                 "ERROR: point distance to itself is not zero");
     }
+
+    /**
+     * test the substract operation
+     * test for: {@link primitives.Point#substract(Point)} ()}
+     */
+    @Test
+    void testSubtract() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: check case for substarcting a vector from a point
+        assertEquals(new Vector(-3,-3,-3),point.subtract(vec),
+                "ERROR: subtract() does not work correctly");
+
+        // ============= Boundary Values Tests ==================
+        //test 01: check case for substracting a vector from itself
+        assertThrows(IllegalArgumentException.class,()->point.subtract(point),
+                "ERROR: (point - vector with the same xyz) does not throw an exception");
+    }
 }

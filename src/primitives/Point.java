@@ -1,5 +1,4 @@
 package primitives;
-
 /**
  * Represents a point in a 3D Cartesian coordinate system.
  * A Point object is immutable and defined by three coordinates (x, y, z).

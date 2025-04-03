@@ -57,12 +57,15 @@ class VectorTest {
     @Test
     void testScale() {
         // ============ Equivalence Partitions Tests ==============
-        //test 01: check case of scaling by regular scalar
+        //test 01: check case of scaling by positive scalar
         assertEquals(new Vector(3.8*1,3.8*2,3.8*3),vec.scale(3.8),
-                "ERROR: factor*vector does not work correctly");
+                "ERROR: scaling by positive scalar doesn't work correctly");
+        //test 02: check case of scaling by negitive scalar
+        assertEquals(new Vector(-3.8*1,-3.8*2,-3.8*3),vec.scale(-3.8),
+                "ERROR: scaling by negitive scalar doesn't work correctly");
 
         // =============== Boundary Values Tests ==================
-        //test 01: check case of scaling by a scalar of zaro
+        //test 01: check case of scaling by a scalar of zero
         assertThrows(IllegalArgumentException.class, ()->vec.scale(0),
                 "ERROR: can't scale by factor of zero");
     }
@@ -130,10 +133,16 @@ class VectorTest {
         //test 01: check case for cross product between regular vectors
         assertEquals(new Vector(-3/sqrt(54),6/sqrt(54),-3/sqrt(54)),vec.crossProduct(other),
                 "ERROR: crossProduct() does not work correctly ");
+        //test 02: check case for cross product between regular vectors - opposite product
+        assertEquals(new Vector(3/sqrt(54),-6/sqrt(54),+3/sqrt(54)),other.crossProduct(vec),
+                "ERROR: crossProduct() does not work correctly ");
 
         // ============= Boundary Values Tests ==================
         //test 01: check case for cross product between vector that share a same direction
         assertThrows(IllegalArgumentException.class,()->vec.crossProduct(new Vector(2,4,6)),
+                "ERROR: the other vector is not parallel to the original one");
+        //test 02: check case for cross product between vector that share an opposite direction
+        assertThrows(IllegalArgumentException.class,()->vec.crossProduct(new Vector(-1,-2,-3)),
                 "ERROR: the other vector is not parallel to the original one");
     }
 
@@ -144,21 +153,33 @@ class VectorTest {
     @Test
     void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
-        //test 01: check case for dot product between regular vectors
-        assertEquals(32,vec.dotProduct(other),0.00001,
+        //test 01: check case for dot product between vectors accute(חדה) angle
+        assertEquals(0.68,new Vector(0,-1,0).dotProduct(new Vector(056,-0.68,0)),0.00001,
+                "ERROR: dotProduct() does not work correctly ");
+        //test 02: check case for dot product between vectors not accute(קהה) angle
+        assertEquals(-0.68,new Vector(0,1,0).dotProduct(new Vector(056,-0.68,0)),0.00001,
                 "ERROR: dotProduct() does not work correctly ");
 
         // ============= Boundary Values Tests ==================
-        //test 01: check case for dot product between orthogonal vectors
-        assertEquals(0,vec.dotProduct(new Vector(0,-3,2)),0.00001,
-                "ERROR: dotProduct() for orthogonal vectors is not zero");
+        //test 01: check case for dot product between orthogonal vectors - 90 degrees
+        assertEquals(0,new Vector(0,-1,0).dotProduct(new Vector(1,0,0)),0.00001,
+                "ERROR: dotProduct() for orthogonal 90 degrees vectors is not zero");
+        //test 01: check case for dot product between vectors 180 degrees
+        assertEquals(-1,new Vector(0,-1,0).dotProduct(new Vector(0,1,0)),0.00001,
+                "ERROR: dotProduct() for vectors 180 degress is incorrect");
+        //test 01: check case for dot product between vectors 270 degrees
+        assertEquals(0,new Vector(0,-1,0).dotProduct(new Vector(-1,0,0)),0.00001,
+                "ERROR: dotProduct() for vectors 270 degress is not zero");
+        //test 01: check case for dot product between vector and itself
+        assertEquals(1,new Vector(0,-1,0).dotProduct(new Vector(0,-1,0)),0.00001,
+                "ERROR: dotProduct() for vector with itself is incorrect");
     }
 
     /**
      * test the substract operation
      * test for: {@link primitives.Vecto#substract(Vector)} ()}
      */
-    @Test
+
     void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
         //test 01: check case for substarcting two vectors
