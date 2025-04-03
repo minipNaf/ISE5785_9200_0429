@@ -12,6 +12,10 @@ public class Ray {
      */
     private final Vector direction;
 
+    /**
+     * the direction of the ray
+     * @return direction vector of the ray
+     */
     public Vector getDirection() {
         return direction;
     }
@@ -22,6 +26,10 @@ public class Ray {
      */
     private final Point head;
 
+    /**
+     * return the head of the ray
+     * @return the head of the ray
+     */
     public Point getHead() {
         return head;
     }

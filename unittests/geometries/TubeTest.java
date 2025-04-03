@@ -40,11 +40,12 @@ class TubeTest {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
-        // Test for a regular point on the tube's surface
+        // Test 01: for a regular point on the tube's surface
         assertEquals(new Vector(-0.25, -2.99, 0).normalize(),tube.getNormal(new Point(-0.25,-2.99,2.8)),
                 "normal for tube doesn't work correctly");
+
         // =============== Boundary Values Tests ==================
-        // Test for a point around the tube's axis's head
+        // Test 01: for a point around the tube's axis's head
         assertEquals(new Vector(-0.75,-2.91,0).normalize(),tube.getNormal(new Point(-0.75, -2.91, 2)),
                 "normal for points that are the most adjacent to the tube's axis's head doesn't work correctly");
     }

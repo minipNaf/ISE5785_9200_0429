@@ -27,6 +27,7 @@ class TriangleTest {
     @Test
     void testConstructor(){
         // ============ Equivalence Partitions Tests ==============
+        //test 01: check case of constructing a regular triangle
         assertDoesNotThrow(()->new Triangle(new Point(7,-2,2),
                 new Point(5,7,1),
                 new Point(1.5,8,8)),
@@ -44,7 +45,8 @@ class TriangleTest {
     @Test
     void testGetNormal(){
         // ============ Equivalence Partitions Tests ==============
-        assertEquals(new Vector(1,0,1), triangle.getNormal(new Point(0,0,1)),
+        //test 01: check case of getting the normal vector at a point on the triangle's surface
+        assertEquals(new Vector(-1,0,0), triangle.getNormal(new Point(0,0,1)),
                 "ERROR: didn't get correct normal of triangle");
     }
 }

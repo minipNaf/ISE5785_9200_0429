@@ -40,7 +40,7 @@ public class Tube extends RadialGeometry{
     public Vector getNormal(Point p){
         Double t = (p.subtract(axis.getHead())).dotProduct(axis.getDirection());
         if(t == 0) {
-            return p.subtract(axis.getHead());
+            return p.subtract(axis.getHead()).normalize();
         }
-        return p.subtract(axis.getHead()).subtract(axis.getDirection().scale(t));    }
+        return p.subtract(axis.getHead()).subtract(axis.getDirection().scale(t)).normalize();    }
 }
