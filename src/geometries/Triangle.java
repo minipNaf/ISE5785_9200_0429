@@ -1,5 +1,8 @@
 package geometries;
 import primitives.*;
+
+import java.util.List;
+
 /**
  * Represents a triangle as a specialized polygon with exactly three vertices.
  * A triangle is defined in a 3D Cartesian coordinate system by three points
@@ -16,5 +19,9 @@ public class Triangle extends Polygon {
      */
     public Triangle(Point p1, Point p2, Point p3) {
         super(p1, p2, p3); // Call the superclass constructor
+    }
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

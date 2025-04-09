@@ -1,12 +1,14 @@
 package geometries;
 import primitives.*;
 
+import java.util.List;
+
 /**
  * Represents a plane in a 3D Cartesian coordinate system.
  * A plane is defined by a point on the plane and a normal vector.
  * The normal vector is orthogonal to the plane and has a length of 1.
  */
-public class Plane extends Geometry{
+public class Plane implements Geometry {
     private final Point point; // A point on the plane
     private final Vector normal; // The normal vector to the plane (orthogonal with size 1)
 
@@ -47,5 +49,10 @@ public class Plane extends Geometry{
     @Override// Get normal vector through a specific point (always returns the plane's normal vector)
     public Vector getNormal(Point point) {
         return normal;
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

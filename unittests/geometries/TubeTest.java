@@ -49,4 +49,42 @@ class TubeTest {
         assertEquals(new Vector(-0.75,-2.91,0).normalize(),tube.getNormal(new Point(-0.75, -2.91, 2)),
                 "normal for points that are the most adjacent to the tube's axis's head doesn't work correctly");
     }
+    /**
+     * Test method for {@link Tube#findIntersections(Ray)}.
+     * This test checks the intersection points between a ray and the tube.
+     * The expected intersection points are calculated based on the ray's direction and the tube's axis.
+     */
+    @Test
+    void testFindIntersections() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: Ray's line is outside the tube (0 points)
+
+        //test 02: Ray starts inside the tube (1 point)
+
+        //test 03: Ray starts outside the tube and goes through it (2 points)
+
+        //test 04: Ray's line is inside the tube and ray starts outside the tube and goes the other way (0 points)
+
+        // =========== Boundary Values Tests =====================
+        // **** Group 1: Ray's line crosses the tube (but not the center)
+
+        //test 01: Ray starts at the periphery of the tube and goes outside (0 point)
+        //test 02: Ray starts at the periphery of the tube and goes inside (1 point)
+        // **** Group 2: Ray's line goes through the tube's axis
+
+        //test 01: Ray starts at the tube's axis and goes outside (1 point)
+        //test 02: Ray starts at the periphery of the tube and goes through its axis (1 point)
+        //test 03: Ray starts at the periphery of the tube and goes outside (0 point)
+        //test 04: Ray starts inside the tube and goes through its axis outside (1 point)
+        //test 05: Ray starts outside the tube and goes through its axis inside (2 points)
+        //test 06: Ray starts outside the tube and goes the opposite direction (0 point)
+
+        // **** Group 3: Ray's line is tangent to the sphere (all tests 0 points)
+        //test 01: Ray starts before the axis and goes to the tangent point
+        //test 02: Ray starts at the tangent point and continues
+        //test 03: Ray starts after the tangent point
+        // **** Group 4: The vector between the ray's head and the tube's axis's head is orthogonal to the ray's direction
+        //test 01: Ray starts outside the tube(0 points)
+        //test 02: Ray starts inside the tube(1 point)
+    }
 }

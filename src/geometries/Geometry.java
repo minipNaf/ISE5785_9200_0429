@@ -9,7 +9,7 @@ import primitives.*;
  * to calculate the normal vector at a given point on their surface. The normal vector
  * is expected to be a unit vector perpendicular to the surface at the specified point.
  */
-public abstract class Geometry {
+public interface Geometry extends Intersectable {
     /**
      * Calculates the normal vector to the geometry at a given point.
      * The normal vector is a unit vector that is perpendicular to the surface

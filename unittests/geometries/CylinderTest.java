@@ -60,4 +60,9 @@ class CylinderTest {
                 "ERROR: wrong normal for base edge");
 
     }
+
+    @Test
+    void testFindIntersections() {
+
+    }
 }

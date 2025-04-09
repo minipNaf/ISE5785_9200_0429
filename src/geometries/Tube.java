@@ -1,5 +1,8 @@
 package geometries;
 import primitives.*;
+
+import java.util.List;
+
 /**
  * Represents a tube in 3D space, defined as an infinite cylinder
  * with a given radius and an axis represented as a ray.
@@ -43,4 +46,9 @@ public class Tube extends RadialGeometry{
             return p.subtract(axis.getHead()).normalize();
         }
         return p.subtract(axis.getHead()).subtract(axis.getDirection().scale(t)).normalize();    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 }
