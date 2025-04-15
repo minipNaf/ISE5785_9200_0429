@@ -1,9 +1,8 @@
 package geometries;
 
 import org.junit.jupiter.api.Test;
-import primitives.Point;
-import primitives.Vector;
-
+import primitives.*;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for geometries.Plane class
@@ -18,11 +17,11 @@ class PlaneTest {
     Plane p = new Plane(p1, p2, p3);
     Vector vecOnPlane1 = p1.subtract(p2);
     Vector VecOnPlane2 = p3.subtract(p2);
-
+    Ray r1 = new Ray( new Vector(-2.83,-1,0), new Point(0,1,0));
     Point p4 = new Point(-1, 0,0);
     Point p5 = new Point(1,0,0);
     Point p6 = new Point(4,0,0);
-
+    Vector vec1 = new Vector(0,1,0);
     /**
      * Test method for {@link geometries.Plane#Plane(Point, Point, Point)}
      * tests the constructor of the Plane class
@@ -69,5 +68,42 @@ class PlaneTest {
         //test 01: check to see if the normal vector correct
         assertEquals(new Vector(0,1,0), p.getNormal(new Point(-3,0,5)),
                 "ERROR: didn't get correct vector of plane");
+    }
+
+    @Test
+    void testFindIntersections() {
+        //// ============ Equivalence Partitions Tests ==============
+        //test 01: ray starts out of plain and intersects the plane(1 point)
+        assertEquals(List.of(p1), p.findIntersections(r1),
+                "ERROR: didn't get correct intersection point");
+        //test 02: ray starts out of plain and doesn't intersect the plane(0 point)
+        assertNull(p.findIntersections(new Ray(vec1, new Point(0,1,0))),
+                "ERROR: there must be 0 points(null)");
+        //// ============ Boundary Values Tests =====================
+        //Ray parallel to the plane
+        //test 01: Ray outside the plane (0 points)
+        assertNull(p.findIntersections(new Ray(new Vector(-3,0,0), new Point(0,1,0))),
+                "ERROR: there must be 0 points(null)");
+        //test 02: Ray on the plane (0 points)
+        assertNull(p.findIntersections(new Ray(new Vector(-1,0,3), new Point(1,0,0))),
+                "ERROR: there must be 0 points(null)");
+
+        //Ray is orthogonal to the plane
+        //test 03: Ray starts after the plane(0 points)
+        assertNull(p.findIntersections(new Ray(vec1, new Point(-3,1,0))),
+                "ERROR: there must be 0 points(null)");
+        //test 04: Ray starts in the plane(0 point)
+        assertNull(p.findIntersections(new Ray(vec1, p1)),
+                "ERROR: there must be 0 points(null)");
+        //test 05: Ray starts before the plane(1 point)
+        assertEquals(List.of(p1), p.findIntersections(new Ray(vec1, new Point(-2.83,-3,0))),
+                "ERROR: didn't get correct intersection point");
+        //Ray neither parallel nor orthogonal to the plane
+        //test 06: Ray begins at the plane(0 points)
+        assertNull(p.findIntersections(new Ray(new Vector(2.83,3,0), p2)),
+                "ERROR: there must be 0 points(null)");
+        //test 07: Ray begins at the plane at the reference point(0 points)
+        assertNull(p.findIntersections(new Ray(new Vector(2.83,3,0), p1)),
+                "ERROR: there must be 0 points(null)");
     }
 }

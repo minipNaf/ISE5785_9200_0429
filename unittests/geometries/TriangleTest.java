@@ -1,8 +1,10 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Vector;
+import primitives.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for geometries.Triangle class.
@@ -14,6 +16,7 @@ class TriangleTest {
     /**
      * test case for triangle's tests.
      */
+    Point p1 = new Point(3,0,0);
     Triangle triangle = new Triangle(
             new Point(0,-2,0),
             new Point(0,0,3),
@@ -48,5 +51,30 @@ class TriangleTest {
         //test 01: check case of getting the normal vector at a point on the triangle's surface
         assertEquals(new Vector(-1,0,0), triangle.getNormal(new Point(0,0,1)),
                 "ERROR: didn't get correct normal of triangle");
+    }
+
+    @Test
+    void testFindIntersections() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: check case of ray intersecting the triangle
+        assertEquals(List.of(new Point(0,0,2)),
+                triangle.findIntersections(new Ray(new Vector(-3,0,2), p1)),
+                "ERROR: wrong intersection point");
+        //test 02: check case of itersection the plain of the triangle against edge(0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,1,2), p1)),
+                "ERROR: there must be 0 points(null)");
+        //test 03: check case of intersection the plain of the triangle against vertex (0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,2.86,-0.57), p1)),
+                "ERROR: there must be 0 points(null)");
+        // ============ Boundary Values Tests =====================
+        //test 01: check case of intersecting a triangle's edge(0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,1,0), p1)),
+                "ERROR: there must be 0 points(null)");
+        //test 02: check case of intersecting a triangle's vertex(0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,2,0), p1)),
+                "ERROR: there must be 0 points(null)");
+        //test 03: check case of intersecting the continuation of a triangle's edge(0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,4,-3), p1)),
+                "ERROR: there must be 0 points(null)");
     }
 }

@@ -41,8 +41,28 @@ public class Sphere extends RadialGeometry{
         return p.subtract(center).normalize();
     }
 
+    /**
+     * Finds the intersections between a given ray and the sphere.
+     * This method calculates the intersection points between a ray and the sphere.
+     * It returns a list of intersection points, or null if there are no intersections.
+     *
+     * @param ray the ray to check for intersections
+     * @return a list of intersection points, or null if there are no intersections
+     */
     @Override
     public List<Point> findIntersections(Ray ray) {
+        Vector u = center.subtract(ray.getHead());
+        double tm = u.dotProduct(ray.getDirection());
+        double d = Math.sqrt(u.lengthSquared() - tm * tm);
+        if(d >= radius) return null; // no intersection
+        double th = Math.sqrt(radius * radius - d * d);
+        if(tm - th > 0) {
+            return List.of(ray.getPoint(tm - th));
+        }
+        Point P0 = ray.getPoint(tm - th);
+        Point P1 = ray.getPoint(tm + th);
+
         return null;
+
     }
 }

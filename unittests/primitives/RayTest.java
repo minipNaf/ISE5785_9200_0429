@@ -15,7 +15,7 @@ class RayTest {
      * Test case for the Ray class.
      * This test case creates a Ray object and verifies its constructor, getDirection, and getHead methods.
      */
-    Vector vec = new Vector(1,2,3);
+    Vector vec = new Vector(0,3,4);
     Point p = new Point(1,2,3);
     Ray ray = new Ray(vec, p);
 
@@ -58,4 +58,16 @@ class RayTest {
         assertEquals(p, ray.getHead(), "ERROR: getHead() doesn't work");
     }
 
+    @Test
+    void testGetPoint() {
+        // ============ Equivalence Partitions Tests ==============
+        // Test 01: check case of getting the point at t=0
+        assertEquals(p, ray.getPoint(0), "ERROR: getPoint() for head doesn't work doesn't work");
+        // Test 02: check case of getting the point at t=1
+        assertEquals(new Point(1, 2.6,3.8), ray.getPoint(1),
+                "ERROR: wrong point");
+        // Test 03: check case of getting the point at t=-1
+        assertThrows(IllegalArgumentException.class, ()->ray.getPoint(-1),
+                "ERROR: point is now on the ray");
+    }
 }

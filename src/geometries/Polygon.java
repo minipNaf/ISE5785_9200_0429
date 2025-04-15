@@ -10,7 +10,7 @@ import primitives.*;
  * system
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
    /** List of polygon's vertices */
    protected final List<Point> vertices;
    /** Associated plane in which the polygon lays */
@@ -82,6 +82,16 @@ public class Polygon implements Geometry {
 
    @Override
    public List<Point> findIntersections(Ray ray) {
-      return null;
+      Vector n1 = vertices.get(0).subtract(ray.getHead())
+              .crossProduct(vertices.get(1).subtract(ray.getHead()));
+      double si = ray.getDirection().dotProduct(n1);
+      for(int i = 0; i < vertices.size(); i++) {
+         Vector normal = vertices.get(i).subtract(ray.getHead())
+                 .crossProduct(vertices.get((i + 1) % vertices.size()).subtract(ray.getHead()));
+         if(!Util.compareSign(ray.getDirection().dotProduct(normal),si)) {
+            return null;
+         }
+      }
    }
+   //...
 }

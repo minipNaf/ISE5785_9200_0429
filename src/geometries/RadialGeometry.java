@@ -10,7 +10,7 @@ package geometries;
  *
  * This class is abstract and cannot be instantiated directly.
  */
-abstract public class RadialGeometry implements Geometry {
+abstract public class RadialGeometry extends Geometry {
     /**
      * The radius of the radial geometry.
      *
