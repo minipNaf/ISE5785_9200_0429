@@ -64,8 +64,8 @@ class SphereTest {
                 "ERROR 1 2: incorrect intersection point");
         //test 03: Ray starts outside the sphere and goes through it (2 points)
 
-        assertEquals(List.of(new Point(1,Math.sqrt(0.5),Math.sqrt(0.5)),
-                        new Point(1,-Math.sqrt(0.5),Math.sqrt(0.5))), //end of list
+        assertEquals(List.of(new Point(1,-Math.sqrt(0.5),Math.sqrt(0.5)),
+                        new Point(1,Math.sqrt(0.5),Math.sqrt(0.5))), //end of list
                 sphere.findIntersections(new Ray(new Vector(0,1,0),
                         new Point(1,-8,Math.sqrt(0.5)))),
                 "ERROR 1 3: incorrect intersection points");

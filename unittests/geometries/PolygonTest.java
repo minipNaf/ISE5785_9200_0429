@@ -31,7 +31,7 @@ class PolygonTest {
                 "ERROR: there must be 0 points(null)");
         // ============ Boundary Values Tests =====================
         //test 01: check case of intersecting a pentagon's edge(0 points)
-        assertNull(pentagon.findIntersections(new Ray(new Vector(-5,1.04,1.43), p1)),
+        assertNull(pentagon.findIntersections(new Ray(new Vector(-5,1,-1), p1)),
                 "ERROR: there must be 0 points(null)");
         //test 02: check case of intersecting a pentagon's vertex(0 points)
         assertNull(pentagon.findIntersections(new Ray(new Vector(-5,2,0), p1)),

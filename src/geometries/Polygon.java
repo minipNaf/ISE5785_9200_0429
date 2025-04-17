@@ -4,7 +4,6 @@ import static java.lang.Double.*;
 import java.util.List;
 import static primitives.Util.*;
 import primitives.*;
-
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
@@ -85,13 +84,13 @@ public class Polygon extends Geometry {
       Vector n1 = vertices.get(0).subtract(ray.getHead())
               .crossProduct(vertices.get(1).subtract(ray.getHead()));
       double si = ray.getDirection().dotProduct(n1);
-      for(int i = 0; i < vertices.size(); i++) {
+      for(int i = 1; i < vertices.size(); i++) {
          Vector normal = vertices.get(i).subtract(ray.getHead())
                  .crossProduct(vertices.get((i + 1) % vertices.size()).subtract(ray.getHead()));
-         if(!Util.compareSign(ray.getDirection().dotProduct(normal),si)) {
+         if(alignZero(ray.getDirection().dotProduct(normal)*si) <= 0) {
             return null;
          }
       }
+      return plane.findIntersections(ray);
    }
-   //...
 }

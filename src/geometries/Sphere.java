@@ -51,18 +51,33 @@ public class Sphere extends RadialGeometry{
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        Vector u = center.subtract(ray.getHead());
-        double tm = u.dotProduct(ray.getDirection());
-        double d = Math.sqrt(u.lengthSquared() - tm * tm);
+        double tm,d;
+        if(ray.getHead().equals(center)) {
+            tm = 0;
+            d = 0;
+        }
+        else{
+            Vector u = center.subtract(ray.getHead());
+            tm = u.dotProduct(ray.getDirection());
+            d = Math.sqrt(u.lengthSquared() - tm * tm);
+        }
         if(d >= radius) return null; // no intersection
         double th = Math.sqrt(radius * radius - d * d);
-        if(tm - th > 0) {
+
+        /*The compareSign method has a bug - it doesn't take into account the fixed accuracy in Util,
+        so I had to use the alignZero method to cover the case of zero
+
+         */
+        if(!Util.compareSign(Util.alignZero(tm - th),1)) {
+            if(!Util.compareSign(Util.alignZero(tm + th),1)) return null; // no intersection
+            return List.of(ray.getPoint(tm + th));
+        }
+        if(!Util.compareSign(Util.alignZero(tm + th),1)) {
+            if(!Util.compareSign(Util.alignZero(tm - th),1)) return null; // no intersection
             return List.of(ray.getPoint(tm - th));
         }
-        Point P0 = ray.getPoint(tm - th);
-        Point P1 = ray.getPoint(tm + th);
+        return List.of(ray.getPoint(tm - th), ray.getPoint(tm + th));
 
-        return null;
 
     }
 }
