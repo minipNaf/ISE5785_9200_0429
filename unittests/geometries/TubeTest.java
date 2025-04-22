@@ -115,7 +115,7 @@ class TubeTest {
         assertEquals(List.of(new Point(xy,xy,-0.5),new Point(-xy,-xy,2-3.5/(4+xy)/(4-xy))),
                 tube.findIntersections(new Ray(new Vector(-1,-1,1.5/(4-xy)), p2)),
                 "ERROR: the intersection point is not correct");
-        // =========== Equivalence Partitions Tests ==============
+        // =========== Boundary value tests =============================
         // Group 1: ray's line on the surface of the tube(0 points)
         // Test 01: ray starts before the tangent point
         // Test 02: ray starts after the tangent point
