@@ -48,7 +48,6 @@ public class Ray {
 
     public Point getPoint(double t) {
         if (Util.isZero(t)) return head;
-        if (t < 0) throw new IllegalArgumentException("t cannot be negative");
         return head.add(direction.scale(t));
     }
     @Override

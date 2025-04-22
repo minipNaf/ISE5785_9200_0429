@@ -1,4 +1,5 @@
 package geometries;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
@@ -19,6 +20,11 @@ class TubeTest {
      * This test case creates a Tube object and verifies its constructor and getNormal method.
      */
     Tube tube = new Tube(3, new Ray(new Vector(0,0,1), new Point(0,0, 2)));
+    Point p1 = new Point(4,4,5);
+    Point p2 = new Point(4,4,1);
+    Point p3 = new Point(0,1,3);
+    Point p4 = new Point(0,1,-3);
+    double xy = Math.sqrt(2)/2*3;
     /**
      * Test case for the constructor of the Tube class.
      * This test case verifies that the constructor does not throw an exception
@@ -57,34 +63,69 @@ class TubeTest {
     @Test
     void testFindIntersections() {
         // ============ Equivalence Partitions Tests ==============
-        //test 01: Ray's line is outside the tube (0 points)
+        // Group 1: Ray starts above the center of the tube's axis
 
-        //test 02: Ray starts inside the tube (1 point)
+        // Test 01: Ray starts inside the tube and goes above(1 point)
 
-        //test 03: Ray starts outside the tube and goes through it (2 points)
+        assertEquals(List.of(new Point(0,3,5)),
+                tube.findIntersections(new Ray(new Vector(0,1,1), p3)),
+                "ERROR: the intersection point is not correct");
 
-        //test 04: Ray's line is inside the tube and ray starts outside the tube and goes the other way (0 points)
+        // Test 02: Ray starts inside the tube and goes below(1 points)
+        assertEquals(List.of(new Point(0,3,1)),
+                tube.findIntersections(new Ray(new Vector(0, 1,-1), p3)));
+        // Test 03: Ray starts outside the tube and goes inside(2 points)
+        assertEquals(List.of(new Point(xy,xy,5-0.1*(4-xy)),new Point(-xy,-xy,5-0.1*(4+xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,-0.1), p1)),
+                "ERROR: the intersection point is not correct");
 
-        // =========== Boundary Values Tests =====================
-        // **** Group 1: Ray's line crosses the tube (but not the center)
+        // Test 04: Ray starts outside the tube and goes the other way(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,0,-5), p1)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 05: Ray intersection points are before the tube's axis(2 points)
+        assertEquals(List.of(new Point(xy,xy,5-20*(4-xy)),new Point(-xy,-xy,5-20*(4+xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,-20), p1)),
+                "ERROR: the intersection point is not correct");
+        // Test 06: One intersection point is before the tube's axis and the other is after(2 points)
+        assertEquals(List.of(new Point(xy,xy,3.5),new Point(-xy,-xy,5-1.5*(4+xy)/(4-xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,-1.5/(4-xy)), p1)),
+                "ERROR: the intersection point is not correct");
+        // Group 2: Ray starts below the center of the tube's axis
+        // Test 07: Ray starts inside the tube and goes below(1 point)
 
-        //test 01: Ray starts at the periphery of the tube and goes outside (0 point)
-        //test 02: Ray starts at the periphery of the tube and goes inside (1 point)
-        // **** Group 2: Ray's line goes through the tube's axis
+        assertEquals(List.of(new Point(0,3,1)),
+                tube.findIntersections(new Ray(new Vector(0,1,-1), p4)),
+                "ERROR: the intersection point is not correct");
+        // Test 08: Ray starts inside the tube and goes above(1 points)
+        assertEquals(List.of(new Point(0,3,5)),
+                tube.findIntersections(new Ray(new Vector(0, 1,1), p4)));
+        // Test 09: Ray starts outside the tube and goes inside(2 points)
 
-        //test 01: Ray starts at the tube's axis and goes outside (1 point)
-        //test 02: Ray starts at the periphery of the tube and goes through its axis (1 point)
-        //test 03: Ray starts at the periphery of the tube and goes outside (0 point)
-        //test 04: Ray starts inside the tube and goes through its axis outside (1 point)
-        //test 05: Ray starts outside the tube and goes through its axis inside (2 points)
-        //test 06: Ray starts outside the tube and goes the opposite direction (0 point)
+        assertEquals(List.of(new Point(xy,xy,-3+0.1*(4-xy)),new Point(-xy,-xy,-3+0.1*(4+xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,0.1), p2)),
+                "ERROR: the intersection point is not correct");
+        // Test 10: Ray starts outside the tube and goes the other way(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,0,-5), p2)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 11: Ray intersection points are after the tube's axis(2 points)
+        assertEquals(List.of(new Point(xy,xy,-3+20*(4-xy)),new Point(-xy,-xy,-3+20*(4+xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,20), p2)),
+                "ERROR: the intersection point is not correct");
+        // Test 12: One intersection point is before the tube's axis and the other is after(2 points)
+        assertEquals(List.of(new Point(xy,xy,-0.5),new Point(-xy,-xy,2-3.5/(4+xy)/(4-xy))),
+                tube.findIntersections(new Ray(new Vector(-1,-1,1.5/(4-xy)), p2)),
+                "ERROR: the intersection point is not correct");
+        // =========== Equivalence Partitions Tests ==============
+        // Group 1: ray's line on the surface of the tube(0 points)
+        // Test 01: ray starts before the tangent point
+        // Test 02: ray starts after the tangent point
+        // Test 03: ray starts at the tangent point
+        // Group 2: ray's line is at the periphery around the tube's axis's head(0 points)
+        // Test 04: ray starts before the tangent point
+        // Test 05: ray starts after the tangent point
+        // Test 06: ray starts at the tangent point
+        // Group 3: ray's line is part of the tube's surface(0 points)
 
-        // **** Group 3: Ray's line is tangent to the sphere (all tests 0 points)
-        //test 01: Ray starts before the axis and goes to the tangent point
-        //test 02: Ray starts at the tangent point and continues
-        //test 03: Ray starts after the tangent point
-        // **** Group 4: The vector between the ray's head and the tube's axis's head is orthogonal to the ray's direction
-        //test 01: Ray starts outside the tube(0 points)
-        //test 02: Ray starts inside the tube(1 point)
+
     }
 }

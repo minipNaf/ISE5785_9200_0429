@@ -1,6 +1,9 @@
 package geometries;
 import primitives.*;
+import static java.lang.System.out;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -49,6 +52,21 @@ public class Tube extends RadialGeometry{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        return null;
+        Vector direction = ray.getDirection();
+        Point head = ray.getHead();
+        Vector axisDirection = axis.getDirection();
+        Vector vProg = direction.subtract(axisDirection.scale(direction.dotProduct(axisDirection)));
+        Point center = axis.getPoint(ray.getHead().subtract(axis.getHead()).dotProduct(axisDirection));
+        Sphere sphere = new Sphere(radius, center);
+        List<Point> temp = sphere.findIntersections(new Ray(vProg,head));
+        if(temp == null) return null;
+        List<Point> intersections = new LinkedList<>(temp);
+        for (int i = 0;i<intersections.size();i++) {
+            intersections.set(i,ray.getPoint(intersections.get(i).subtract(head).length()/
+                    vProg.length())); //Tales's law
+
+
+        }
+        return intersections;
     }
 }
