@@ -79,6 +79,7 @@ class PlaneTest {
         //test 02: ray starts out of plain and doesn't intersect the plane(0 point)
         assertNull(p.findIntersections(new Ray(vec1, new Point(0,1,0))),
                 "ERROR: there must be 0 points(null)");
+
         //// ============ Boundary Values Tests =====================
         //Ray parallel to the plane
         //test 01: Ray outside the plane (0 points)

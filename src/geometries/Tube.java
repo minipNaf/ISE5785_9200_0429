@@ -1,8 +1,7 @@
 package geometries;
 import primitives.*;
-import static java.lang.System.out;
 
-import java.util.ArrayList;
+import static java.lang.System.out;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,8 +54,24 @@ public class Tube extends RadialGeometry{
         Vector direction = ray.getDirection();
         Point head = ray.getHead();
         Vector axisDirection = axis.getDirection();
-        Vector vProg = direction.subtract(axisDirection.scale(direction.dotProduct(axisDirection)));
-        Point center = axis.getPoint(ray.getHead().subtract(axis.getHead()).dotProduct(axisDirection));
+        Vector vProg;
+        Point center;
+        if(axisDirection.equals(direction) || axisDirection.equals(direction.scale(-1))) {
+            return null;
+        }
+
+        if (Util.isZero(axisDirection.dotProduct(direction))) {
+            vProg = direction;
+        }
+        else {
+            vProg = direction.subtract(axisDirection.scale(direction.dotProduct(axisDirection)));
+        }
+        if (ray.getHead().equals(axis.getHead())) {
+            center = axis.getHead();
+        }
+        else {
+            center = axis.getPoint(ray.getHead().subtract(axis.getHead()).dotProduct(axisDirection));
+        }
         Sphere sphere = new Sphere(radius, center);
         List<Point> temp = sphere.findIntersections(new Ray(vProg,head));
         if(temp == null) return null;

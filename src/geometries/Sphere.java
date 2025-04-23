@@ -1,6 +1,5 @@
 package geometries;
 import primitives.*;
-
 import java.util.List;
 
 /**
@@ -59,7 +58,7 @@ public class Sphere extends RadialGeometry{
         else{
             Vector u = center.subtract(ray.getHead());
             tm = u.dotProduct(ray.getDirection());
-            d = Math.sqrt(u.lengthSquared() - tm * tm);
+            d = Math.sqrt(Util.alignZero(u.lengthSquared() - tm * tm));
         }
         if(d >= radius) return null; // no intersection
         double th = Math.sqrt(radius * radius - d * d);

@@ -44,11 +44,17 @@ public class Vector extends Point {
      * @throws IllegalArgumentException if the provided Double3 equals Double3.ZERO.
      */
     public Vector(Double3 xyz) {
+
         super(xyz);
         //out.println(toString());
-        if(xyz.equals(Double3.ZERO)) {
+        if (xyz == null)
+            throw new IllegalArgumentException("invalid: xyz cannot be null");
+
+        if(xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException("invalid: vector zero");
-        }
+
+
+
     }
 
     /**

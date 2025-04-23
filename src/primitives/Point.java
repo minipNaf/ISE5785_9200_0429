@@ -88,4 +88,11 @@ public class Point {
     public double distance(Point p1) {
         return Math.sqrt(distanceSquared(p1));
     }
+
+    /**
+     * Returns the xyz coordinates of the point.
+     *
+     * @return the xyz coordinates of the point
+     */
+    public Double3 getXYZ() {return xyz;}
 }

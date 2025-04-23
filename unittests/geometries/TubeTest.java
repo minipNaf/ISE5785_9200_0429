@@ -21,9 +21,11 @@ class TubeTest {
      */
     Tube tube = new Tube(3, new Ray(new Vector(0,0,1), new Point(0,0, 2)));
     Point p1 = new Point(4,4,5);
-    Point p2 = new Point(4,4,1);
+    Point p2 = new Point(4,4,-1);
     Point p3 = new Point(0,1,3);
-    Point p4 = new Point(0,1,-3);
+    Point p4 = new Point(0,1,1);
+    Vector v = new Vector(0,-1,-1);
+    Vector ortho = new Vector(0,1,0);
     double xy = Math.sqrt(2)/2*3;
     /**
      * Test case for the constructor of the Tube class.
@@ -93,39 +95,134 @@ class TubeTest {
         // Group 2: Ray starts below the center of the tube's axis
         // Test 07: Ray starts inside the tube and goes below(1 point)
 
-        assertEquals(List.of(new Point(0,3,1)),
+        assertEquals(List.of(new Point(0,3,-1)),
                 tube.findIntersections(new Ray(new Vector(0,1,-1), p4)),
                 "ERROR: the intersection point is not correct");
         // Test 08: Ray starts inside the tube and goes above(1 points)
-        assertEquals(List.of(new Point(0,3,5)),
+        assertEquals(List.of(new Point(0,3,3)),
                 tube.findIntersections(new Ray(new Vector(0, 1,1), p4)));
         // Test 09: Ray starts outside the tube and goes inside(2 points)
 
-        assertEquals(List.of(new Point(xy,xy,-3+0.1*(4-xy)),new Point(-xy,-xy,-3+0.1*(4+xy))),
+        assertEquals(List.of(new Point(xy,xy,-1+0.1*(4-xy)),new Point(-xy,-xy,-1+0.1*(4+xy))),
                 tube.findIntersections(new Ray(new Vector(-1,-1,0.1), p2)),
                 "ERROR: the intersection point is not correct");
         // Test 10: Ray starts outside the tube and goes the other way(0 points)
         assertNull(tube.findIntersections(new Ray(new Vector(1,0,-5), p2)),
                 "ERROR: the are supposed to be no intersection points");
         // Test 11: Ray intersection points are after the tube's axis(2 points)
-        assertEquals(List.of(new Point(xy,xy,-3+20*(4-xy)),new Point(-xy,-xy,-3+20*(4+xy))),
+        assertEquals(List.of(new Point(xy,xy,-1+20*(4-xy)),new Point(-xy,-xy,-1+20*(4+xy))),
                 tube.findIntersections(new Ray(new Vector(-1,-1,20), p2)),
                 "ERROR: the intersection point is not correct");
         // Test 12: One intersection point is before the tube's axis and the other is after(2 points)
-        assertEquals(List.of(new Point(xy,xy,-0.5),new Point(-xy,-xy,2-3.5/(4+xy)/(4-xy))),
+        assertEquals(List.of(new Point(xy,xy,0.5),new Point(-xy,-xy,-1+1.5*(4+xy)/(4-xy))),
                 tube.findIntersections(new Ray(new Vector(-1,-1,1.5/(4-xy)), p2)),
                 "ERROR: the intersection point is not correct");
+
         // =========== Boundary value tests =============================
         // Group 1: ray's line on the surface of the tube(0 points)
         // Test 01: ray starts before the tangent point
+        assertNull(tube.findIntersections(new Ray(v,new Point(3,1,4))),
+                "ERROR: the are supposed to be no intersection points");
         // Test 02: ray starts after the tangent point
+        assertNull(tube.findIntersections(new Ray(v,new Point(3,-2,1))),
+                "ERROR: the are supposed to be no intersection points");
         // Test 03: ray starts at the tangent point
-        // Group 2: ray's line is at the periphery around the tube's axis's head(0 points)
-        // Test 04: ray starts before the tangent point
-        // Test 05: ray starts after the tangent point
-        // Test 06: ray starts at the tangent point
-        // Group 3: ray's line is part of the tube's surface(0 points)
-
-
+        assertNull(tube.findIntersections(new Ray(v,new Point(3,0,3))),
+                "ERROR: the are supposed to be no intersection points");
+        // Group 2: ray's line is at the periphery around the tube's axis's head
+        // Test 04: ray starts before the intersection point and inside the tube(1 point)
+        assertEquals(List.of(new Point(xy,xy,2)),
+                tube.findIntersections(new Ray(ortho, new Point(xy,0,2))),
+                "ERROR: the intersection point is not correct");
+        // Test 05: ray starts before the intersection point and outside the tube(2 points)
+        assertEquals(List.of(new Point(xy,-xy,2),new Point(xy,xy,2)),
+                tube.findIntersections(new Ray(ortho, new Point(xy,-8,2))),
+                "ERROR: the intersection point is not correct");
+        // Test 05: ray starts after the intersection point(0 points)
+        assertNull(tube.findIntersections(new Ray(ortho, new Point(xy,8,3))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 06: ray starts at the intersection point(0 points)
+        assertNull(tube.findIntersections(new Ray(ortho, new Point(xy,xy,3))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 07: ray's line is part of the tube's surface(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(0,0,1), new Point(xy,xy,2))),
+                "ERROR: the are supposed to be no intersection points");
+        // Group 3: ray is parallel to the tube's axis(0 points)
+        // Test 08: ray is outside the tube
+        assertNull(tube.findIntersections(new Ray(new Vector(0,0,1), p1)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 09: ray is inside the tube
+        assertNull(tube.findIntersections(new Ray(new Vector(0,0,1), p3)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 10: ray is at the tube's periphery
+        assertNull(tube.findIntersections(new Ray(new Vector(0,0,1), new Point(xy,xy,2))),
+                "ERROR: the are supposed to be no intersection points");
+        // Group 4: ray's vector is orthogonal to the tube's axis
+        // Test 11: ray is outside the tube(0 points)
+        assertNull(tube.findIntersections(new Ray(ortho, p1)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 12: ray is inside the tube(2 points)
+        assertEquals(List.of(new Point(xy,-xy,5),new Point(xy,xy,5)),
+                tube.findIntersections(new Ray(ortho, new Point(xy,-8,5))),
+                "ERROR: the intersection point is not correct");
+        // Test 13: ray is at the tube's periphery(0 points)
+        assertNull(tube.findIntersections(new Ray(ortho, new Point(xy,xy,5))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 14: ray starts at the tube's axis(1 points)
+        assertEquals(List.of(new Point(xy,xy,5)),
+                tube.findIntersections(new Ray(new Vector(1,1,0), new Point(0,0,5))),
+                "ERROR: the intersection point is not correct");
+        // Test 15: ray starts at the head of the tube's axis(1 points)
+        assertEquals(List.of(new Point(xy,xy,2)),
+                tube.findIntersections(new Ray(new Vector(1,1,0), new Point(0,0,2))),
+                "ERROR: the intersection point is not correct");
+        // Test 16: ray starts at the same level as the tube's axis's center and inside the tube(1 points)
+        assertEquals(List.of(new Point(xy,xy,2)),
+                tube.findIntersections(new Ray(new Vector(1,1,0), new Point(xy/2,xy/2,2))),
+                "ERROR: the intersection point is not correct");
+        // Test 17: ray starts at the same level as the tube's axis's center and outside the tube(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,1,0), new Point(3,3,2))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 18: ray starts at the same level as the tube's axis's center and at the tube's periphery(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,1,0), new Point(xy,xy,2))),
+                "ERROR: the are supposed to be no intersection points");
+        // Group 5: ray's line intersects the tube's axis
+        // Test 19: ray starts after the tube(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,1,1), p1)),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 20: ray starts inside the tube(1 points)
+        assertEquals(List.of(new Point(xy,-xy,5)),
+                tube.findIntersections(new Ray(new Vector(1,-1,0), new Point(1,-1,5))),
+                "ERROR: the intersection point is not correct");
+        // Test 21: ray starts before the tube(2 points)
+        assertEquals(List.of(new Point(-xy,xy,5),new Point(xy,-xy,5)),
+                tube.findIntersections(new Ray(new Vector(1,-1,0), new Point(-5,5,5))),
+                "ERROR: the intersection point is not correct");
+        // Test 22: ray starts at the tube's axis(1 points)
+        assertEquals(List.of(new Point(xy,xy,5)),
+                tube.findIntersections(new Ray(new Vector(1,1,0), new Point(0,0,5))),
+                "ERROR: the intersection point is not correct");
+        // Test 23: ray starts at the tube's surface and goes outside(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,-1,0), new Point(xy,-xy,5))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 24: ray starts at the tube's surface and goes inside(1 points)
+        assertEquals(List.of(new Point(xy,-xy,5)),
+                tube.findIntersections(new Ray(new Vector(1,-1,0), new Point(-xy,xy,5))),
+                "ERROR: the intersection point is not correct");
+        // Group 6: special cases
+        // Test 25: rays starts at the tube's surface and goes outside(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,-8,12), new Point(3,-3,20))),
+                "ERROR: the are supposed to be no intersection points");
+        // Test 26: rays starts at the tube's surface and goes inside(1 points)
+        assertEquals(List.of(new Point(xy,-xy,5)),
+                tube.findIntersections(new Ray(new Vector(0,-2*xy,-3), new Point(xy,xy,8))),
+                "ERROR: the intersection point is not correct");
+        // Test 27: rays starts at the level of the tube's axis's head' inside the tube(1 points)
+        assertEquals(List.of(new Point(xy,-xy,5)),
+                tube.findIntersections(new Ray(new Vector(xy,-xy-1,3), new Point(0,1,2))),
+                "ERROR: the intersection point is not correct");
+        // Test 28: rays starts at the level of the tube's axis's head' outside the tube(0 points)
+        assertNull(tube.findIntersections(new Ray(new Vector(1,1,1), new Point(14,14,2))),
+                "ERROR: the are supposed to be no intersection points");
     }
 }

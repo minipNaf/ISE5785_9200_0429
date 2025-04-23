@@ -74,6 +74,8 @@ class SphereTest {
 
         assertNull(sphere.findIntersections(new Ray(new Vector(0,0,1), new Point(1,0,2))),
                 "ERROR 1 4: there must be 0 points(null)");
+
+
         // =========== Boundary Values Tests =====================
         // **** Group 1: Ray's line crosses the sphere (but not the center)
 

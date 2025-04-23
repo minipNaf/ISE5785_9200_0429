@@ -46,10 +46,19 @@ public class Ray {
         this.head = head;
     }
 
+
+
+    /**
+     * calculates the point on the ray at a given distance t from the head.
+     *
+     * @param t - the distance from the head along the ray
+     * @return the point on the ray at distance t from the head
+     */
     public Point getPoint(double t) {
         if (Util.isZero(t)) return head;
         return head.add(direction.scale(t));
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
