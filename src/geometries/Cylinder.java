@@ -87,10 +87,13 @@ public class Cylinder extends Tube{
         Vector v;
         Point p;
         int size = intersections.size();
-        for(int i = 0; i < size; i++) {
+        //couldnt just use iterators for that, because removing from the list while going through it disrupts the iterator
+        for(int i = 0; i < size; i++) { 
 
             // if t < 0, the point is below base1, if t > height, the point is above base2
         // t represents the difference in height between base1 and the first intersection point
+            //s represents the distance from the cylinders axis to the intersection point
+            //if s is greater than radius, it means the point is not on the cylinder
             p = intersections.get(i);
             if(p.equals(axis.getHead())) {
                 t = 0;
@@ -101,6 +104,7 @@ public class Cylinder extends Tube{
                 t = axis.getDirection().dotProduct(v);
                 s = Math.sqrt(alignZero(v.lengthSquared() - t * t));
             }
+            
             if (alignZero(t) < 0 || alignZero(t - height) > 0 || alignZero(s - radius) > 0) {
                 intersections.remove(p);
                 i--;
@@ -118,51 +122,5 @@ public class Cylinder extends Tube{
             intersections.set(1, temp1);
         }
         return intersections;
-//        if(tubeIntersections == null) {
-//            return null;
-//        }
-//        if(tubeIntersections.size() == 1) {//ray starts inside the tube that contains the cylinder
-//            Point p = tubeIntersections.getFirst();
-//            // Check if the point is on the cylinder's surface
-//            double t = axis.getDirection().dotProduct(p.subtract(axis.getHead()));
-//            if (Util.alignZero(t) < 0 || alignZero(t - height) > 0) { //intesection point is outside the cylinder
-//                double u = rayHead.subtract(axis.getHead()).dotProduct(axis.getDirection());
-//                if(Util.alignZero(u) < 0 || alignZero(u - height) > 0) //ray starts outside the cylinder
-//                    return null;
-//
-//                if(Util.alignZero(ray.getDirection().dotProduct(axis.getDirection()))>0) {
-//                    return base2.findIntersections(ray); // The point is on the top base
-//                }
-//                else {
-//                    return base1.findIntersections(ray); // The point is on the bottom base
-//                }
-//
-//            }
-//            return List.of(p); // The point is on the cylinder's surface
-//        }
-//        // if t1 < 0, the point is below base1, if t1 > height, the point is above base2
-//        // t1 represents the difference in height between base1 and the first intersection point
-//        double t1 = axis.getDirection().dotProduct(tubeIntersections.getFirst().subtract(axis.getHead()));
-//        // if t2 < 0, the point is below base1, if t2 > height, the point is above base2
-//        // t2 represents the difference in height between base1 and the second intersection point
-//        double t2 = axis.getDirection().dotProduct(tubeIntersections.getLast().subtract(axis.getHead()));
-//        // check if both points are below base1 or above base2
-//        if(Util.alignZero(t1) < 0 && Util.alignZero(t2) < 0 ||
-//                Util.alignZero(t1 - height) > 0 && Util.alignZero(t2 - height) > 0) {
-//            return null;
-//        }
-//        // check if one point is below base1 and the other is above base2
-//        // if it is that way, the ray intersects the cylinder in both bases
-//        if(Util.alignZero(t1) < 0 && Util.alignZero(t2 - height) > 0) {
-//            return List.of(base1.findIntersections(ray).getFirst(), base2.findIntersections(ray).getFirst());
-//        }
-//        // check if one point is below base1 and the other is above base2
-//        // if it is that way, the ray intersects the cylinder in both bases
-//        if(Util.alignZero(t2) < 0 && Util.alignZero(t1 - height) > 0) {
-//            return List.of(base2.findIntersections(ray).getFirst(), base1.findIntersections(ray).getFirst());
-//        }
-//
-//        return null;
-
     }
 }
