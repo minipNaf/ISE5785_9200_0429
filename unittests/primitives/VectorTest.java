@@ -177,7 +177,7 @@ class VectorTest {
 
     /**
      * test the subtract operation
-     * test for: {@link primitives.Vecto#substract(Vector)} ()}
+     * test for: {@link primitives.Vector#substract(Vector)} ()}
      */
 
     void testSubtract() {
