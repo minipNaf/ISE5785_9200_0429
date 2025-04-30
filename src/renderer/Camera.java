@@ -20,24 +20,44 @@ public class Camera implements Cloneable{
     private double viewPlaneDistance = 0.0;
     private double viewPlaneWidth = 0.0;
     private double viewPlaneHeight = 0.0;
-    // View plane center point to save CPU time – it’s always the same
-    private Point viewPlanePC;
 
+    /**
+     * Default empty constructor for the Camera class.
+     */
     private Camera(){}
 
+    /**
+     * Static method to create a new Builder instance.
+     * @return a new Builder object for constructing a Camera object.
+     */
     public static Builder getBuilder() {
         return new Builder();
     }
 
+    /**
+     * Builder class for constructing a Camera object.
+     * This class provides methods to set the camera's properties
+     * such as location, view plane distance, size, and direction.
+     */
+    @SuppressWarnings("missing-default constructor")
     public static class Builder{
         private final Camera camera = new Camera();
 
+        /**
+         * Set the location of the camera.
+         * @param location - the location of the camera in 3D space
+         * @return this Builder object
+         */
         public Builder setLocation(Point location) {
             camera.p0 = location;
             return this;
         }
 
-
+        /**
+         * Set the distance from the camera to the view plane.
+         * @param distance - the distance from the camera to the view plane
+         * @return this Builder object
+         */
         public Builder setVpDistance(double distance) {
             if (distance <= 0) {
                 throw new IllegalArgumentException("Distance must be positive");
@@ -47,6 +67,13 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        /**
+         * Set the size of the view plane.
+         * This method sets the width and height of the view plane.
+         * @param width - the width of the view plane
+         * @param height - the height of the view plane
+         * @return this Builder object
+         */
         public Builder setVpSize(int width, int height) {
             if (width <= 0 || height <= 0) {
                 throw new IllegalArgumentException("Width and viewPlaneHeight must be positive");
@@ -57,6 +84,12 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        /** set the Vto and Vup vectors
+         *
+         * @param to - the direction vector
+         * @param up - the up vector
+         * @return this Builder object
+        */
         public Builder setDirection(Vector to, Vector up) {
             if (!Util.isZero(to.dotProduct(up))) {
                 throw new IllegalArgumentException("vTo and vUp must be orthogonal");
@@ -66,41 +99,60 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        /**
+         * Set the direction of the camera using a target point and an up vector.
+         * This method calculates the vTo, vRight, and vUp vectors based on the target point and up vector.
+         * @param target1 - the target point in 3D space (where the camera is looking at)
+         * @param up - the up vector
+         * @return this Builder object
+         */
         public Builder setDirection(Point target1, Vector up) {
             if (target1.equals(camera.p0))
                 throw new IllegalArgumentException("target point cannot be the same as camera location");
 
             camera.vTo = target1.subtract(camera.p0).normalize();
-//            if (!Util.isZero(camera.vTo.dotProduct(up))) {
-//                throw new IllegalArgumentException("vTo and vUp must be orthogonal");
-//            }
-            //camera.vUp = up.normalize();
             camera.vRight = camera.vTo.crossProduct(up).normalize();
             camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize();
+
             return this;
         }
 
+        /**
+         * Set the direction of the camera using a target point.
+         * This method calculates the vTo, vRight, and vUp vectors based on the target point.
+         * @param target1 - the target point in 3D space (where the camera is looking at)
+         * @return this Builder object
+         */
         public Builder setDirection(Point target1) {
             if (target1.equals(camera.p0))
                 throw new IllegalArgumentException("target point cannot be the same as camera location");
 
             camera.vTo = target1.subtract(camera.p0).normalize();
-            camera.vUp = Vector.AXIS_Y;
-
-//            if (!Util.isZero(camera.vTo.dotProduct(camera.vUp))) {
-//                throw new IllegalArgumentException("vTo and vUp must be orthogonal");
-//            }
-
+            camera.vUp = Vector.AXIS_Y; // Default up vector: used to find the right vector
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
-            camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize();
+            camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize(); // Recalculate vUp based on vTo and vRight
             return this;
         }
 
+        /**
+         * Set the resolution of the camera.
+         * This method sets the number of pixels in the x and y directions.
+         * @param nX - number of pixels in the x direction
+         * @param nY - number of pixels in the y direction
+         * @return this Builder object (will be done in the future)
+         */
         public Builder setResolution(int nX, int nY){ return null;}
 
+        /**
+         * Build the Camera object.
+         * This method checks for missing values and validates the camera properties.
+         * @return a new Camera object
+         * @throws MissingResourceException if any required values are missing
+         */
         public Camera build() {
             final String className = "Camera";
             final String description = "missing values: ";
+
             if (camera.p0 == null) throw new MissingResourceException(description, className, "p0");
             if (camera.vUp == null) throw new MissingResourceException(description, className, "vUp");
             if (camera.vTo == null) throw new MissingResourceException(description, className, "vTo");
@@ -110,7 +162,6 @@ public class Camera implements Cloneable{
             if (!Util.isZero(camera.vTo.dotProduct(camera.vUp))) throw new IllegalArgumentException("vTo and vUp must be orthogonal");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
-            camera.viewPlanePC = camera.p0.add(camera.vTo.scale(camera.viewPlaneDistance));
 
             return camera.clone(); // Cloneable – get a full shadow copy
         }
@@ -126,19 +177,26 @@ public class Camera implements Cloneable{
     }
 
 
-//    public Camera(Point p0, Vector vTo, Vector vUp) {
-//        this.p0 = p0;
-//        this.vTo = vTo.normalize();
-//        this.vUp = vUp.normalize();
-//        this.vRight = this.vTo.crossProduct(this.vUp).normalize();
-//    }
-
+    /**
+     * Constructs a ray from the camera to a specific pixel on the view plane.
+     * This method calculates the coordinates of the pixel and creates a ray
+     * that points from the camera to that pixel.
+     * each pixel is represented as [i,j].
+     * @param nX - number of pixels in the x direction
+     * @param nY - number of pixels in the y direction
+     * @param j - pixel index in the x direction
+     * @param i - pixel index in the y direction
+     * @return a Ray object representing the ray from the camera to the specified pixel
+     */
     public Ray constructRay(int nX, int nY, int j, int i) {
         double Xj = (j - (nX-1) / 2d) * (viewPlaneWidth / nX);
         double Yi = -(i - (nY-1) / 2d) * (viewPlaneHeight / nY);
 
+        // calculate the point in the center of the view plane
         Point pCenter = p0.add(vTo.scale(viewPlaneDistance));
         Point pIJ = pCenter;
+
+        // we are calculating the ray through the pixel in three stages so we won't have a problem of zero vector.
         if (Xj != 0) pIJ = pIJ.add(vRight.scale(Xj));
         if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
         return new Ray(pIJ.subtract(p0).normalize(), p0);

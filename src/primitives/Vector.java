@@ -1,5 +1,4 @@
 package primitives;
-import static java.lang.System.out;
 import static primitives.Util.isZero;
 
 /**
@@ -10,8 +9,17 @@ import static primitives.Util.isZero;
  * All vector objects are immutable.
  */
 public class Vector extends Point {
+    /**
+     * Axis_X - unit vector along the x-axis (1,0,0)
+     */
     public static final Vector AXIS_X = new Vector(1,0,0);
+    /**
+     * Axis_Y - unit vector along the y-axis (0,1,0)
+     */
     public static final Vector AXIS_Y = new Vector(0,1,0);
+    /**
+     * Axis_Z - unit vector along the z-axis (0,0,1)
+     */
     public static final Vector AXIS_Z = new Vector(0,0,1);
 
     @Override

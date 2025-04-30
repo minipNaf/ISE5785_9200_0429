@@ -55,7 +55,7 @@ public class Triangle extends Polygon {
         }
 
         // calculate the intersection point
-        Point intersectionPoint = ray.getHead().add(ray.getDirection().scale(t));
+        Point intersectionPoint = ray.getPoint(t);
 
         // Calculate vector from vertex1 to intersection point
         Vector v2 = intersectionPoint.subtract(vertices.get(0));
@@ -71,8 +71,8 @@ public class Triangle extends Polygon {
          *
          * By applying Cramer's rule, we can solve these equations to obtain the values of v, u, and w.
          */
-        double d00 = edge2.dotProduct(edge2);
-        double d01 = edge2.dotProduct(edge1);
+        double d00 = edge1.dotProduct(edge1);
+        double d01 = edge1.dotProduct(edge2);
         double d02 = edge1.dotProduct(v2);
         double d11 = edge2.dotProduct(edge2);
         double d12 = edge2.dotProduct(v2);
