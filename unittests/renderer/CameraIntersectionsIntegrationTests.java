@@ -28,7 +28,7 @@ public class CameraIntersectionsIntegrationTests {
             .setLocation(new Point(0, 0, 1))
             .setVpDistance(10)
             .setVpSize(9, 9)
-            .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
+            .setDirection(new Vector(0, 1, 0), new Vector(0, 0, 1))
             .build();
 
     @Test
