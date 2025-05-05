@@ -39,7 +39,7 @@ public class Camera implements Cloneable{
      * This class provides methods to set the camera's properties
      * such as location, view plane distance, size, and direction.
      */
-    @SuppressWarnings("missing-default constructor")
+    @SuppressWarnings("default-constructor")
     public static class Builder{
         private final Camera camera = new Camera();
 
