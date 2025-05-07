@@ -1,4 +1,4 @@
-package primitives.scene;
+package scene;
 
 import geometries.Geometries;
 import lighting.AmbientLight;

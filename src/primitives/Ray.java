@@ -73,6 +73,18 @@ public class Ray {
     public String toString() { return "head:" + head + "\ndirection:" + direction; }
 
     public Point findClosestPoint(List<Point> points) {
-        return null;
+        if (points == null) return null;
+        Point closestPoint = points.get(0);
+        double minDistance = head.distanceSquared(closestPoint);
+
+        for (int i = 1; i < points.size(); i++) {
+            Point currentPoint = points.get(i);
+            double currentDistance = head.distanceSquared(currentPoint);
+            if (currentDistance < minDistance) {
+                minDistance = currentDistance;
+                closestPoint = currentPoint;
+            }
+        }
+        return closestPoint;
     }
 }

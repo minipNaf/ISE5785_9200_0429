@@ -1,5 +1,7 @@
 package renderer;
+import lighting.AmbientLight;
 import primitives.*;
+import scene.Scene;
 
 import java.util.MissingResourceException;
 
@@ -20,7 +22,10 @@ public class Camera implements Cloneable{
     private double viewPlaneDistance = 0.0;
     private double viewPlaneWidth = 0.0;
     private double viewPlaneHeight = 0.0;
-
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracerBase;
+    private int nX = 1;
+    private int nY = 1;
     /**
      * Default empty constructor for the Camera class.
      */
@@ -141,7 +146,14 @@ public class Camera implements Cloneable{
          * @param nY - number of pixels in the y direction
          * @return this Builder object (will be done in the future)
          */
-        public Builder setResolution(int nX, int nY){ return null;}
+        public Builder setResolution(int nX, int nY){
+            if(nX <= 0 || nY <= 0) {
+                throw new IllegalArgumentException("Width and viewPlaneHeight must be positive");
+            }
+            camera.nX = nX;
+            camera.nY = nY;
+            return this;
+        }
 
         /**
          * Build the Camera object.
@@ -149,6 +161,15 @@ public class Camera implements Cloneable{
          * @return a new Camera object
          * @throws MissingResourceException if any required values are missing
          */
+        public Builder setRayTracer(Scene scene, RayTracerType rayTracerType) {
+            if(rayTracerType == RayTracerType.SIMPLE) {
+                camera.rayTracerBase = new SimpleRayTracer(scene);
+            }
+            else{
+                camera.rayTracerBase = null;
+            }
+            return this;
+        }
         public Camera build() {
             final String className = "Camera";
             final String description = "missing values: ";
@@ -160,8 +181,13 @@ public class Camera implements Cloneable{
             if (Util.alignZero(camera.viewPlaneHeight) <= 0) throw new IllegalArgumentException("Height must be positive");
             if (Util.alignZero(camera.viewPlaneDistance) <= 0) throw new IllegalArgumentException("Distance must be positive");
             if (!Util.isZero(camera.vTo.dotProduct(camera.vUp))) throw new IllegalArgumentException("vTo and vUp must be orthogonal");
+            if(camera.nX <= 0 || camera.nY <= 0) throw new IllegalArgumentException("Width and viewPlaneHeight must be positive");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
+            camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
+            if(camera.rayTracerBase == null) {
+                camera.rayTracerBase = new SimpleRayTracer(null);
+            }
 
             return camera.clone(); // Cloneable – get a full shadow copy
         }
@@ -200,6 +226,34 @@ public class Camera implements Cloneable{
         if (Xj != 0) pIJ = pIJ.add(vRight.scale(Xj));
         if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
         return new Ray(pIJ.subtract(p0).normalize(), p0);
+    }
+
+    public Camera renderImage() {
+        for (int i = 0; i < nY; i++) {
+            for (int j = 0; j < nX; j++) {
+                castRay(j, i);
+            }
+        }
+        return this;
+    }
+    public Camera printGrid(int interval, Color color) {
+        for (int i = 0; i < nY; i++) {
+            for (int j = 0; j < nX; j++) {
+                if (i % interval == 0 || j % interval == 0) {
+                    imageWriter.writePixel(j, i, color);
+                }
+            }
+        }
+        return this;
+    }
+    public Camera writeToImage(String ImageName) {
+        imageWriter.writeToImage(ImageName);
+        return this;
+    }
+    private void castRay(int j, int i){
+        Ray ray = constructRay(nX, nY, j, i);
+        Color color = rayTracerBase.traceRay(ray);
+        imageWriter.writePixel(j, i, color);
     }
 
 }
