@@ -2,6 +2,10 @@ package primitives;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -71,5 +75,41 @@ class RayTest {
         // ============ Boundary Values Tests ==============
         // Test 01: check case of getting the point at t=0
         assertEquals(p, ray.getPoint(0), "ERROR: getPoint() for head doesn't work doesn't work");
+    }
+
+    /**
+     * Test case for the findClosestPoint method of the Ray class.
+     * This test case verifies that the findClosestPoint method returns the correct closest point
+     * from a list of points.
+     * this test for: {@link primitives.Ray#findClosestPoint(List<Point>)}
+     */
+    @Test
+    void testFindClosestPoint() {
+        List<Point> pointsOnRay = new LinkedList<>(
+                List.of(ray.getPoint(2),
+                        ray.getPoint(1),
+                        p,
+                        ray.getPoint(3),
+                        ray.getPoint(4))
+
+        );
+//        LinkedList<> middle = pointsOnRay
+//        LinkedList<> last = Collections.swap(pointsOnRay, 0, 4);
+        // ============ Equivalence Partitions Tests ==============
+        // Test 01: The closest point is in the middle of the list
+        assertEquals(p, ray.findClosestPoint(pointsOnRay),
+                "ERROR: wrong closest point - middle of the list");
+        // =========== boundary Values Tests ==============
+        // Test 01: The list is empty
+        assertNull(ray.findClosestPoint(null),
+                "ERROR: wrong closest point - empty list");
+        Collections.swap(pointsOnRay, 0, 2);
+        // Test 02: The closest point is the first point in the list
+        assertEquals(p, ray.findClosestPoint(pointsOnRay),
+                "ERROR: wrong closest point - first point in the list");
+        Collections.swap(pointsOnRay, 0, 4);
+        // Test 03: The closest point is the last point in the list
+        assertEquals(p, ray.findClosestPoint(pointsOnRay),
+                "ERROR: wrong closest point - last point in the list");
     }
 }

@@ -1,5 +1,7 @@
 package primitives;
-import primitives.Util;
+
+import java.util.List;
+
 /**
  * Represents a ray in a 3D space, defined by a starting point (head) and a direction vector.
  * The direction vector is normalized to ensure consistent direction representation.
@@ -69,4 +71,8 @@ public class Ray {
 
     @Override
     public String toString() { return "head:" + head + "\ndirection:" + direction; }
+
+    public Point findClosestPoint(List<Point> points) {
+        return null;
+    }
 }
