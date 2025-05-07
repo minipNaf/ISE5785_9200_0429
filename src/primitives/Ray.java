@@ -72,6 +72,14 @@ public class Ray {
     @Override
     public String toString() { return "head:" + head + "\ndirection:" + direction; }
 
+    /**
+     * Finds the closest point from a list of points to the ray's head.
+     * The method iterates through the list of points and calculates the squared distance
+     * from the ray's head to each point, keeping track of the closest point found so far.
+     *
+     * @param points - a list of points on ray to search for the closest point
+     * @return the closest point to the ray's head, or null if the list is null
+     */
     public Point findClosestPoint(List<Point> points) {
         if (points == null) return null;
         Point closestPoint = points.get(0);

@@ -99,6 +99,7 @@ class RayTest {
         // Test 01: The closest point is in the middle of the list
         assertEquals(p, ray.findClosestPoint(pointsOnRay),
                 "ERROR: wrong closest point - middle of the list");
+
         // =========== boundary Values Tests ==============
         // Test 01: The list is empty
         assertNull(ray.findClosestPoint(null),

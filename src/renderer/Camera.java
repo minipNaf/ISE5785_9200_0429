@@ -1,5 +1,5 @@
 package renderer;
-import lighting.AmbientLight;
+
 import primitives.*;
 import scene.Scene;
 
@@ -22,6 +22,8 @@ public class Camera implements Cloneable{
     private double viewPlaneDistance = 0.0;
     private double viewPlaneWidth = 0.0;
     private double viewPlaneHeight = 0.0;
+
+
     private ImageWriter imageWriter;
     private RayTracerBase rayTracerBase;
     private int nX = 1;
@@ -46,6 +48,13 @@ public class Camera implements Cloneable{
      */
     @SuppressWarnings("default-constructor")
     public static class Builder{
+
+        /**
+         * Default constructor for the Builder class.
+         * This constructor initializes the camera object.
+         */
+        Builder () {}// Default constructor
+
         private final Camera camera = new Camera();
 
         /**
@@ -158,6 +167,8 @@ public class Camera implements Cloneable{
         /**
          * Build the Camera object.
          * This method checks for missing values and validates the camera properties.
+         * @param scene - the scene to be rendered
+         * @param rayTracerType - the type of ray tracer to be used
          * @return a new Camera object
          * @throws MissingResourceException if any required values are missing
          */
@@ -170,6 +181,13 @@ public class Camera implements Cloneable{
             }
             return this;
         }
+
+        /**
+         * Build the Camera object.
+         * This method checks for missing values and validates the camera properties.
+         * @return a new Camera object
+         * @throws MissingResourceException if any required values are missing
+         */
         public Camera build() {
             final String className = "Camera";
             final String description = "missing values: ";
@@ -184,7 +202,9 @@ public class Camera implements Cloneable{
             if(camera.nX <= 0 || camera.nY <= 0) throw new IllegalArgumentException("Width and viewPlaneHeight must be positive");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
+
             camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
+            //if not set, use simple ray tracer and an empty scene
             if(camera.rayTracerBase == null) {
                 camera.rayTracerBase = new SimpleRayTracer(null);
             }
@@ -227,7 +247,10 @@ public class Camera implements Cloneable{
         if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
         return new Ray(pIJ.subtract(p0).normalize(), p0);
     }
-
+    /**
+     *the function casts rays through every pixel on the view plane
+     * @return this camera object
+     */
     public Camera renderImage() {
         for (int i = 0; i < nY; i++) {
             for (int j = 0; j < nX; j++) {
@@ -236,9 +259,17 @@ public class Camera implements Cloneable{
         }
         return this;
     }
+    /**
+     * Prints a grid on the image.
+     * The grid is drawn at specified intervals and uses the specified color.
+     * @param interval - the interval at which to draw the grid lines
+     * @param color - the color of the grid lines
+     * @return this Camera object
+     */
     public Camera printGrid(int interval, Color color) {
         for (int i = 0; i < nY; i++) {
             for (int j = 0; j < nX; j++) {
+                // Check if the pixel is on the grid line
                 if (i % interval == 0 || j % interval == 0) {
                     imageWriter.writePixel(j, i, color);
                 }
@@ -246,10 +277,23 @@ public class Camera implements Cloneable{
         }
         return this;
     }
+    /**
+     * Writes the image to a file with the specified name.
+     * The image is saved in the specified format (e.g., PNG).
+     * @param ImageName - the name of the image file
+     * @return this Camera object
+     */
     public Camera writeToImage(String ImageName) {
         imageWriter.writeToImage(ImageName);
         return this;
     }
+
+    /**
+     * Casts a ray through a specific pixel on the view plane and writes the color to the image.
+     * This method constructs a ray for the specified pixel and uses the ray tracer to get the color.
+     * @param j - pixel index in the x direction
+     * @param i - pixel index in the y direction
+     */
     private void castRay(int j, int i){
         Ray ray = constructRay(nX, nY, j, i);
         Color color = rayTracerBase.traceRay(ray);

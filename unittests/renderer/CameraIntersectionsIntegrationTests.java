@@ -13,7 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Yehuda Feldman
  */
 public class CameraIntersectionsIntegrationTests {
-
+    /**default constructor to satisfy the compiler*/
+    CameraIntersectionsIntegrationTests(){}
     // function to count number of intersections between camera and geometry.
     // The function iterates through the pixels in the view plane and constructs a ray for each pixel.
     // It then checks if the ray intersects with the geometry and counts the number of intersection points.

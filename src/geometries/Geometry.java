@@ -10,6 +10,9 @@ import primitives.*;
  * is expected to be a unit vector perpendicular to the surface at the specified point.
  */
 public abstract class Geometry implements Intersectable {
+    /**default constructor to satisfy the compiler*/
+    Geometry() {}// Default constructor
+
     /**
      * Calculates the normal vector to the geometry at a given point.
      * The normal vector is a unit vector that is perpendicular to the surface

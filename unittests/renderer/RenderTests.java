@@ -90,6 +90,8 @@ public class RenderTests {
       // ...
       // NB: unit tests is not the correct place to put XML parsing code
 
+
+
       camera //
          .setRayTracer(scene, RayTracerType.SIMPLE) //
          .setResolution(1000, 1000) //
