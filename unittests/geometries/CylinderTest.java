@@ -92,10 +92,10 @@ class CylinderTest {
         assertEquals(List.of(new Point(1,0,2)),
                 cylinder.findIntersections(new Ray(new Vector(1,-1,-1), new Point(0,1,3))),
                 "ERROR: wrong intersection points");
+
         // =========== Boundary Values Tests =====================
-        //test 01: ray intersects the perpendicular line of the cylinder(1 point)
-        assertEquals(List.of(new Point(0,3,4)),
-                cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,2,3))),
+        //test 01: ray intersects the perpendicular line of the cylinder(0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,2,3))),
                 "ERROR: wrong intersection points");
         //test 02: ray intersects the cylinder at the center of the base(1 point)
         assertEquals(List.of(new Point(0,0,4)),
@@ -105,9 +105,43 @@ class CylinderTest {
         assertEquals(List.of(new Point(0,0,2), new Point(0,0,4)),
                 cylinder.findIntersections(new Ray(new Vector(0,0,1), new Point(0,0,-1))),
                 "ERROR: wrong intersection points");
-        //test 04: ray starts directly at the base(0 point)
+
+        // rays that start on top base
+        //test 04: ray starts directly at the top base and goes out (not center) (0 point)
         assertNull(cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,1,4))),
                 "ERROR: there must be 0 points(null)");
+        //test 05: ray starts at the center of top base and goes out(0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,0,4))),
+                "ERROR: there must be 0 points(null)");
+        //test 06: ray starts at top base and goes out through the top base surface(0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,1,0), new Point(0,1,4))),
+                "ERROR: there must be 0 points(null)");
+        //test 07: ray starts at top base and goes out through round surface(1 point)
+        assertEquals(List.of(new Point(0,3,3)),
+                cylinder.findIntersections(new Ray(new Vector(0,1,-1), new Point(0,2,4))),
+                "ERROR: wrong intersection points");
+        //test 08: ray starts at the middle of top base and goes out through th bottom base(1 point)
+        assertEquals(List.of(new Point(0,0,2)),
+                cylinder.findIntersections(new Ray(new Vector(0,0,-1), new Point(0,0,4))),
+                "ERROR: wrong intersection points");
 
+        // rays that start on bottom base
+        //test 09: ray starts directly at the bottom base and goes out (not center) (0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,-1,-1), new Point(0,1,2))),
+                "ERROR: there must be 0 points(null)");
+        //test 10: ray starts at the center of bottom base and goes out(0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,-1,-1), new Point(0,0,2))),
+                "ERROR: there must be 0 points(null)");
+        //test 11: ray starts at bottom base and goes out through the bottom base surface(0 point)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,1,0), new Point(0,1,2))),
+                "ERROR: there must be 0 points(null)");
+        //test 12: ray starts at bottom base and goes out through round surface(1 point)
+        assertEquals(List.of(new Point(0,3,3)),
+                cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,2,2))),
+                "ERROR: wrong intersection points");
+        //test 13: ray starts at the middle of bottom base and goes out through top base(1 point)
+        assertEquals(List.of(new Point(0,0,4)),
+                cylinder.findIntersections(new Ray(new Vector(0,0,1), new Point(0,0,2))),
+                "ERROR: wrong intersection points");
     }
 }

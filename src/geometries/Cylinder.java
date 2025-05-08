@@ -5,7 +5,7 @@ import primitives.*;
 import java.util.ArrayList;
 
 import java.util.List;
-import static java.lang.System.out;
+
 
 import static primitives.Util.*;
 
@@ -55,7 +55,7 @@ public class Cylinder extends Tube{
          * the check is done by calculating the dot product of the vector from the center to the point
          * if its zero, it means the point is on the base, because the vector is perpendicular to the axis
          * btw, the two centers of the bases are boundary cases, so we need to check them before the regular check
-         * otherwise, the substaction will be vector(0,0,0) and there will be an exeption
+         * otherwise, the subtraction will be vector(0,0,0) and there will be an exception
         */
         if(p.equals(center1) || isZero(p.subtract(center1).dotProduct(axis.getDirection()))) {
             return axis.getDirection().scale(-1);
@@ -87,7 +87,7 @@ public class Cylinder extends Tube{
         Vector v;
         Point p;
         int size = intersections.size();
-        //couldnt just use iterators for that, because removing from the list while going through it disrupts the iterator
+        //couldn't just use iterators for that, because removing from the list while going through it disrupts the iterator
         for(int i = 0; i < size; i++) { 
 
             // if t < 0, the point is below base1, if t > height, the point is above base2
@@ -104,8 +104,10 @@ public class Cylinder extends Tube{
                 t = axis.getDirection().dotProduct(v);
                 s = Math.sqrt(alignZero(v.lengthSquared() - t * t));
             }
-            
-            if (alignZero(t) < 0 || alignZero(t - height) > 0 || alignZero(s - radius) > 0) {
+
+            if ((alignZero(t) < 0 || alignZero(t - height) > 0 || alignZero(s - radius) > 0)
+                || (alignZero(t - height) == 0 && alignZero(s - radius) == 0)
+                || alignZero(t) == 0 && alignZero(s - radius) == 0){
                 intersections.remove(p);
                 i--;
                 size--;
