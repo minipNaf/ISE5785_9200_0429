@@ -93,8 +93,7 @@ class RayTest {
                         ray.getPoint(4))
 
         );
-//        LinkedList<> middle = pointsOnRay
-//        LinkedList<> last = Collections.swap(pointsOnRay, 0, 4);
+
         // ============ Equivalence Partitions Tests ==============
         // Test 01: The closest point is in the middle of the list
         assertEquals(p, ray.findClosestPoint(pointsOnRay),
@@ -104,11 +103,15 @@ class RayTest {
         // Test 01: The list is empty
         assertNull(ray.findClosestPoint(null),
                 "ERROR: wrong closest point - empty list");
-        Collections.swap(pointsOnRay, 0, 2);
+
+        Collections.swap(pointsOnRay, 0, 2); // now closest point is first
+
         // Test 02: The closest point is the first point in the list
         assertEquals(p, ray.findClosestPoint(pointsOnRay),
                 "ERROR: wrong closest point - first point in the list");
-        Collections.swap(pointsOnRay, 0, 4);
+
+        Collections.swap(pointsOnRay, 0, 4); // now closest point is last
+
         // Test 03: The closest point is the last point in the list
         assertEquals(p, ray.findClosestPoint(pointsOnRay),
                 "ERROR: wrong closest point - last point in the list");

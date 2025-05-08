@@ -25,7 +25,7 @@ public class Camera implements Cloneable{
 
 
     private ImageWriter imageWriter;
-    private RayTracerBase rayTracerBase;
+    private RayTracerBase rayTracer;
     private int nX = 1;
     private int nY = 1;
     /**
@@ -174,10 +174,10 @@ public class Camera implements Cloneable{
          */
         public Builder setRayTracer(Scene scene, RayTracerType rayTracerType) {
             if(rayTracerType == RayTracerType.SIMPLE) {
-                camera.rayTracerBase = new SimpleRayTracer(scene);
+                camera.rayTracer = new SimpleRayTracer(scene);
             }
             else{
-                camera.rayTracerBase = null;
+                camera.rayTracer = null;
             }
             return this;
         }
@@ -205,8 +205,8 @@ public class Camera implements Cloneable{
 
             camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
             //if not set, use simple ray tracer and an empty scene
-            if(camera.rayTracerBase == null) {
-                camera.rayTracerBase = new SimpleRayTracer(null);
+            if(camera.rayTracer == null) {
+                camera.rayTracer = new SimpleRayTracer(null);
             }
 
             return camera.clone(); // Cloneable – get a full shadow copy
@@ -296,7 +296,7 @@ public class Camera implements Cloneable{
      */
     private void castRay(int j, int i){
         Ray ray = constructRay(nX, nY, j, i);
-        Color color = rayTracerBase.traceRay(ray);
+        Color color = rayTracer.traceRay(ray);
         imageWriter.writePixel(j, i, color);
     }
 

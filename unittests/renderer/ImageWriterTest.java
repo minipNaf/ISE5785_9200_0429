@@ -29,8 +29,8 @@ public class ImageWriterTest {
     public void testImageWriter() {
         assertDoesNotThrow(()-> {
             ImageWriter imageWriter = new ImageWriter(IMAGE_WIDTH, IMAGE_HEIGHT);
-            Color yellow = new Color(255, 255, 0);
-            Color red = new Color(255, 0, 0);
+            final Color yellow = new Color(255, 255, 0);
+            final Color red = new Color(255, 0, 0);
 
             // Fill the image with a grid pattern
             for (int i = 0; i < IMAGE_WIDTH; i++) {

@@ -32,11 +32,12 @@ public class SimpleRayTracer extends RayTracerBase{
     @Override
     public Color traceRay(Ray ray) {
         List<Point> intersections = scene.geometries.findIntersections(ray);
-        if (intersections == null) {
+        if (intersections == null)
             return scene.background;
-        }
+
         return calcColor(ray.findClosestPoint(intersections));
     }
+
     /**
      * Calculates the color at a given point in the scene.
      * This method currently returns the ambient light intensity of the scene.
