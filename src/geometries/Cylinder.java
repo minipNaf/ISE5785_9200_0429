@@ -71,17 +71,17 @@ public class Cylinder extends Tube{
 
 
     @Override
-    public List<Point> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         Point rayHead = ray.getHead();
         Plane base1 = new Plane(axis.getHead(), axis.getDirection());
         Plane base2 = new Plane(axis.getHead().add(axis.getDirection().scale(height)), axis.getDirection());
-        List<Point> intersections = new ArrayList<>();
-        List<Point> temp; //to check if a list is null beforehand
-        temp = super.findIntersections(ray);
+        List<Intersection> intersections = new ArrayList<>();
+        List<Intersection> temp; //to check if a list is null beforehand
+        temp = super.calculateIntersectionsHelper(ray);
         if(temp != null) intersections.addAll(temp);
-        temp = base1.findIntersections(ray);
+        temp = base1.calculateIntersectionsHelper(ray);
         if(temp != null) intersections.addAll(temp);
-        temp = base2.findIntersections(ray);
+        temp = base2.calculateIntersectionsHelper(ray);
         if(temp != null) intersections.addAll(temp);
         double t, s;
         Vector v;
@@ -94,13 +94,13 @@ public class Cylinder extends Tube{
         // t represents the difference in height between base1 and the first intersection point
             //s represents the distance from the cylinders axis to the intersection point
             //if s is greater than radius, it means the point is not on the cylinder
-            p = intersections.get(i);
-            if(p.equals(axis.getHead())) {
+            Intersection intersection = intersections.get(i);
+            if(intersection.point.equals(axis.getHead())) {
                 t = 0;
                 s = 0;
             }
             else{
-                v = p.subtract(axis.getHead());
+                v = intersection.point.subtract(axis.getHead());
                 t = axis.getDirection().dotProduct(v);
                 s = Math.sqrt(alignZero(v.lengthSquared() - t * t));
             }
@@ -108,7 +108,7 @@ public class Cylinder extends Tube{
             if ((alignZero(t) < 0 || alignZero(t - height) > 0 || alignZero(s - radius) > 0)
                 || (alignZero(t - height) == 0 && alignZero(s - radius) == 0)
                 || alignZero(t) == 0 && alignZero(s - radius) == 0){
-                intersections.remove(p);
+                intersections.remove(intersection);
                 i--;
                 size--;
             }
@@ -118,8 +118,8 @@ public class Cylinder extends Tube{
             return null;
         }
         if(intersections.getFirst().equals(intersections.getLast())) return List.of(intersections.getFirst());
-        if(intersections.getFirst().distanceSquared(rayHead) > intersections.getLast().distanceSquared(rayHead)) {
-            Point temp1 = intersections.getFirst();
+        if(intersections.getFirst().point.distanceSquared(rayHead) > intersections.getLast().point.distanceSquared(rayHead)) {
+            Intersection temp1 = intersections.getFirst();
             intersections.set(0, intersections.getLast());
             intersections.set(1, temp1);
         }

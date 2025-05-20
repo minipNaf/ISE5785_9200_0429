@@ -1,5 +1,5 @@
 package primitives;
-
+import geometries.Intersectable.Intersection;
 import java.util.List;
 
 /**
@@ -77,18 +77,18 @@ public class Ray {
      * The method iterates through the list of points and calculates the squared distance
      * from the ray's head to each point, keeping track of the closest point found so far.
      *
-     * @param points - a list of points on ray to search for the closest point
+     * @param intersections - a list of points on ray to search for the closest point
      * @return the closest point to the ray's head, or null if the list is null
      */
-    public Point findClosestPoint(List<Point> points) {
-        if (points == null) return null;
+    public Intersection findClosestIntersection(List<Intersection> intersections) {
+        if (intersections == null) return null;
 
-        Point closestPoint = points.get(0);
-        double minDistance = head.distanceSquared(closestPoint);
+        Intersection closestPoint = intersections.get(0);
+        double minDistance = head.distanceSquared(closestPoint.point);
 
-        for (int i = 1; i < points.size(); i++) {
-            Point currentPoint = points.get(i);
-            double currentDistance = head.distanceSquared(currentPoint);
+        for (int i = 1; i < intersections.size(); i++) {
+            Intersection currentPoint = intersections.get(i);
+            double currentDistance = head.distanceSquared(currentPoint.point);
             // Update the closest point and minDistance if the current distance is smaller
             if (currentDistance < minDistance) {
                 minDistance = currentDistance;
@@ -98,4 +98,10 @@ public class Ray {
         // Return the closest point found
         return closestPoint;
     }
+
+    public Point findClosestPoint(List<Point> points) {
+        return points == null ? null
+                : findClosestIntersection(points.stream().map(p -> new Intersection(null, p)).toList()).point;
+    }
+
 }

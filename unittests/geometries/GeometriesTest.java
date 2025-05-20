@@ -33,23 +33,23 @@ class GeometriesTest {
     void testFindIntersections() {
         // ============ Equivalence Partitions Tests ==============
         // Test 01: some geometries are intersected by the ray
-        assertEquals(3, geometries.findIntersections(new Ray(new Vector(-0.5,-1,-3),
+        assertEquals(3, geometries.calculateIntersectionsHelper(new Ray(new Vector(-0.5,-1,-3),
                 new Point(0.9, 1.8, 2.4))).size(),
                 "The number of intersection points is not correct");
 
         // =========== Boundary Values Tests =====================
         // Test 01: no geometries
-        assertNull(new Geometries().findIntersections(new Ray(new Vector(1,1,1),new Point(1,1,1))),
+        assertNull(new Geometries().calculateIntersectionsHelper(new Ray(new Vector(1,1,1),new Point(1,1,1))),
                 "No intersections should be found");
         // Test 02: no intersections
-        assertNull(geometries.findIntersections(new Ray(new Vector(1,1,1),new Point(1,1,1))),
+        assertNull(geometries.calculateIntersectionsHelper(new Ray(new Vector(1,1,1),new Point(1,1,1))),
                 "No intersections should be found");
         // Test 03: only one geometry are intersected by the ray
-        assertEquals(1, geometries.findIntersections(new Ray(new Vector(-5.59,0.32,-13.91),
+        assertEquals(1, geometries.calculateIntersectionsHelper(new Ray(new Vector(-5.59,0.32,-13.91),
                 new Point(6, 0, 0))).size(),
                 "The number of intersection points is not correct");
         // Test 04: all geometries are intersected by the ray
-        assertEquals(4, geometries.findIntersections(new Ray(new Vector(0,0,-1),
+        assertEquals(4, geometries.calculateIntersectionsHelper(new Ray(new Vector(0,0,-1),
                 new Point(0.2, 0.2, 5))).size(),
                 "The number of intersection points is not correct");
     }

@@ -45,14 +45,14 @@ public class Geometries {
      * @param ray The ray to check for intersections.
      * @return A list of intersection points.
      */
-    public List<Intersectable> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersectable.Intersection> calculateIntersectionsHelper(Ray ray) {
         // Implementation for finding intersections
         List<Intersectable.Intersection> intersections = null;
         boolean flag = false;
-        List<Point> temp;
+        List<Intersectable.Intersection> temp;
 
         for (Intersectable geometry : geometries) {
-            temp = geometry.findIntersections(ray);
+            temp = geometry.calculateIntersections(ray);
             if (temp != null) {
                 if (!flag) {  // we don't want to create a new list if there aren't any intersections
                     intersections = new LinkedList<>();

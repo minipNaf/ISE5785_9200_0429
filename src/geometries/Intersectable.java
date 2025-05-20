@@ -48,10 +48,10 @@ public abstract class Intersectable {
 
 
     public final List<Intersection> calculateIntersections(Ray ray) {
-        List<Intersection> intersections = calculateIntersectionsHelper(ray);
-        if (intersections == null || intersections.isEmpty()) {
-            return null;
-        }
-        return intersections;
+        return calculateIntersectionsHelper(ray);
+//        if (intersections == null || intersections.isEmpty()) {
+//            return null;
+//        }
+//        return intersections;
     }
 }

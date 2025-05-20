@@ -81,6 +81,11 @@ public class Polygon extends Geometry {
 
    @Override
    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+      List<Point> intersections = plane.findIntersections(ray);
+      if (intersections == null) {
+         return null; // The ray is parallel to the plane
+      }
+
       Vector n1 = vertices.get(0).subtract(ray.getHead())
               .crossProduct(vertices.get(1).subtract(ray.getHead()));
       double si = ray.getDirection().dotProduct(n1);
@@ -91,6 +96,7 @@ public class Polygon extends Geometry {
             return null;
          }
       }
-      return plane.findIntersections(ray);
+      Point point = intersections.getFirst();
+      return  List.of(new Intersection(this, point));
    }
 }
