@@ -45,9 +45,9 @@ public class Geometries {
      * @param ray The ray to check for intersections.
      * @return A list of intersection points.
      */
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersectable> calculateIntersectionsHelper(Ray ray) {
         // Implementation for finding intersections
-        List<Point> intersections = null;
+        List<Intersectable.Intersection> intersections = null;
         boolean flag = false;
         List<Point> temp;
 

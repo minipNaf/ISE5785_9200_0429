@@ -71,7 +71,7 @@ public class Cylinder extends Tube{
 
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<Point> calculateIntersectionsHelper(Ray ray) {
         Point rayHead = ray.getHead();
         Plane base1 = new Plane(axis.getHead(), axis.getDirection());
         Plane base2 = new Plane(axis.getHead().add(axis.getDirection().scale(height)), axis.getDirection());

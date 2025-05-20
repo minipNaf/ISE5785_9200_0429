@@ -35,7 +35,7 @@ public class Triangle extends Polygon {
      * @return the intersection point if it exists, otherwise null
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         // compute vectors for two edges sharing vertex p1
         Vector edge1 = vertices.get(1).subtract(vertices.get(0));
         Vector edge2 = vertices.get(2).subtract(vertices.get(0));
@@ -85,7 +85,7 @@ public class Triangle extends Polygon {
         // Check if the point is inside the triangle
         if (Util.alignZero(u) > 0 && Util.alignZero(v) > 0 && Util.alignZero(w) > 0 &&
             Util.alignZero(u) < 1 && Util.alignZero(v) < 1 && Util.alignZero(w) < 1)
-            return List.of(intersectionPoint); // Return the intersection point
+            return List.of(new Intersection(this, intersectionPoint)); // Return the intersection point
 
         return null; // The intersection point is outside the triangle
 

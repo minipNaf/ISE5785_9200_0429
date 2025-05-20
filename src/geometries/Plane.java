@@ -51,7 +51,7 @@ public class Plane extends Geometry {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         double denominator = normal.dotProduct(ray.getDirection());
         if(point.equals(ray.getHead())) {
             return null; // The ray starts on the plane
@@ -65,6 +65,6 @@ public class Plane extends Geometry {
             return null; // The ray points away from it
         }
 
-        return List.of(ray.getPoint(t));
+        return List.of(new Intersection(this, ray.getPoint(t)));
     }
 }

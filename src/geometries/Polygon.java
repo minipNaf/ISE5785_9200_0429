@@ -80,7 +80,7 @@ public class Polygon extends Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(point); }
 
    @Override
-   public List<Point> findIntersections(Ray ray) {
+   public List<Intersection> calculateIntersectionsHelper(Ray ray) {
       Vector n1 = vertices.get(0).subtract(ray.getHead())
               .crossProduct(vertices.get(1).subtract(ray.getHead()));
       double si = ray.getDirection().dotProduct(n1);

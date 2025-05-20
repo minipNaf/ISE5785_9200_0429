@@ -9,10 +9,12 @@ import primitives.*;
  * to calculate the normal vector at a given point on their surface. The normal vector
  * is expected to be a unit vector perpendicular to the surface at the specified point.
  */
-public abstract class Geometry implements Intersectable {
+public abstract class Geometry extends Intersectable {
     /**default constructor to satisfy the compiler*/
     Geometry() {}// Default constructor
 
+    protected Color emission = Color.BLACK; // Default emission color
+    
     /**
      * Calculates the normal vector to the geometry at a given point.
      * The normal vector is a unit vector that is perpendicular to the surface
@@ -23,4 +25,13 @@ public abstract class Geometry implements Intersectable {
      * @return the normal vector at the given point
      */
     public abstract Vector getNormal(Point p);
+
+    public Geometry setEmission(Color color) {
+        emission = color;
+        return this;
+    }
+
+    public Color getEmission() {
+        return emission;
+    }
 }
