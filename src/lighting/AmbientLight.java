@@ -6,11 +6,9 @@ import primitives.Color;
  * illuminating all objects equally without casting shadows.
  * This class encapsulates the intensity of the ambient light in a scene.
  */
-public class AmbientLight {
+public class AmbientLight extends Light{
 
 
-    /**The intensity of the ambient light*/
-    private final Color intensity;
     /**A constant representing no ambient light*/
     public static final AmbientLight None = new AmbientLight(Color.BLACK);
 
@@ -20,16 +18,9 @@ public class AmbientLight {
      * @param intensity the intensity of the ambient light
      */
     public AmbientLight(Color intensity) {
-        this.intensity = intensity;
+        super(intensity);
     }
 
-    /**
-     * Returns the intensity of the ambient light.
-     *
-     * @return the intensity of the ambient light
-     */
-    public Color getIntensity() {
-        return intensity;
-    }
+
 
 }

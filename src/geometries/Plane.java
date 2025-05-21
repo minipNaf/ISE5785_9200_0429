@@ -65,6 +65,6 @@ public class Plane extends Geometry {
             return null; // The ray points away from it
         }
 
-        return List.of(new Intersection(this, ray.getPoint(t)));
+        return List.of(new Intersection(this, ray.getPoint(t), getMaterial()));
     }
 }

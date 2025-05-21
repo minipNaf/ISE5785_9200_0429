@@ -78,7 +78,7 @@ public class Tube extends RadialGeometry{
         List<Intersection> intersections = new LinkedList<>(temp);
         for (int i = 0;i<intersections.size();i++) {
             intersections.set(i,new Intersection(this, ray.getPoint(intersections.get(i).point.subtract(head).length()/
-                    vProg.length()))); //Tales's law
+                    vProg.length()), this.getMaterial())); //Tales's law
 
 
         }

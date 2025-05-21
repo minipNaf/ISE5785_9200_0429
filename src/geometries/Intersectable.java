@@ -1,4 +1,5 @@
 package geometries;
+import lighting.LightSource;
 import primitives.*;
 import java.util.List;
 /**
@@ -21,15 +22,26 @@ public abstract class Intersectable {
         public final Geometry geometry;
         public final Point point;
 
+        public final Material material;
+        public Vector normal;
+        public Vector v;
+        public double vNormal;
+        public LightSource light;
+        public Vector l;
+        public double lNormal;
+
+
         /**
          * Constructor for the Intersection class.
          *
          * @param geometry the geometry where the intersection occurs
          * @param point    the intersection point
+         * @param material the material of the geometry
          */
-        public Intersection(Geometry geometry, Point point) {
+        public Intersection(Geometry geometry, Point point, Material material) {
             this.geometry = geometry;
             this.point = point;
+            this.material = material;
         }
 
         @Override
@@ -41,6 +53,7 @@ public abstract class Intersectable {
         public boolean equals(Object obj) {
             return obj instanceof Intersection other && geometry==other.geometry && this.point.equals(other.point);
         }
+
 
     }
 

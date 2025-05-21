@@ -69,14 +69,14 @@ public class Sphere extends RadialGeometry{
          */
         if(!Util.compareSign(Util.alignZero(tm - th),1)) {
             if(!Util.compareSign(Util.alignZero(tm + th),1)) return null; // no intersection
-            return List.of(new Intersection(this, ray.getPoint(tm + th)));
+            return List.of(new Intersection(this, ray.getPoint(tm + th), getMaterial()));
         }
         if(!Util.compareSign(Util.alignZero(tm + th),1)) {
             if(!Util.compareSign(Util.alignZero(tm - th),1)) return null; // no intersection
-            return List.of(new Intersection(this, ray.getPoint(tm - th)));
+            return List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()));
         }
-        return List.of(new Intersection(this, ray.getPoint(tm - th)),
-                new Intersection(this, ray.getPoint(tm + th)));
+        return List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()),
+                new Intersection(this, ray.getPoint(tm + th), getMaterial()));
 
 
     }

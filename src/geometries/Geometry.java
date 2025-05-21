@@ -14,7 +14,8 @@ public abstract class Geometry extends Intersectable {
     Geometry() {}// Default constructor
 
     protected Color emission = Color.BLACK; // Default emission color
-    
+
+    private Material material = new Material(); // Default material
     /**
      * Calculates the normal vector to the geometry at a given point.
      * The normal vector is a unit vector that is perpendicular to the surface
@@ -33,5 +34,14 @@ public abstract class Geometry extends Intersectable {
 
     public Color getEmission() {
         return emission;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public Geometry setMaterial(Material material) {
+        this.material = material;
+        return this;
     }
 }

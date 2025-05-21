@@ -97,6 +97,6 @@ public class Polygon extends Geometry {
          }
       }
       Point point = intersections.getFirst();
-      return  List.of(new Intersection(this, point));
+      return  List.of(new Intersection(this, point, getMaterial()));
    }
 }
