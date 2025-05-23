@@ -54,6 +54,14 @@ public class SimpleRayTracer extends RayTracerBase{
                 add(calcColorLocalEffects(intersection));
     }
 
+    /**
+     * Preprocesses the intersection by calculating the normal vector and the view vector.
+     * This method also checks if the intersection is valid (not zero).
+     *
+     * @param intersection the intersection to preprocess
+     * @param v the view vector
+     * @return true if the intersection is valid, false otherwise
+     */
     private boolean preprocessIntersection(Intersection intersection, Vector v) {
         intersection.v = v;
         intersection.normal = intersection.geometry.getNormal(intersection.point);
@@ -62,34 +70,66 @@ public class SimpleRayTracer extends RayTracerBase{
         return intersection.vNormal != 0;
     }
 
+    /**
+     * Sets the light source for the intersection and calculates the light vector.
+     * This method also checks if the light source is valid (not zero).
+     *
+     * @param intersection the intersection to set the light source for
+     * @param light the light source to set
+     * @return true if the light source is valid, false otherwise
+     */
     private boolean setLightSource(Intersection intersection, LightSource light) {
         intersection.light = light;
         intersection.l = light.getL(intersection.point);
         intersection.lNormal = Util.alignZero(intersection.l.dotProduct(intersection.normal));
+
         return intersection.vNormal * intersection.vNormal <= 0;
     }
 
+    /**
+     * Calculates the color at the intersection point based on local effects.
+     * This method considers the emission color of the geometry and the intensity
+     * of the light sources in the scene.
+     *
+     * @param gp the intersection point
+     * @return the calculated color at the intersection point
+     */
     private Color calcColorLocalEffects(Intersection gp)
     {
-        Color color = gp.geometry.getEmission();
+        Color color = gp.geometry.getEmission(); // emission color of geometry
+
         for (LightSource lightSource : scene.lights) {
             if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0) { // sign(nl) == sign(nv)
-                Color iL = lightSource.getIntensity(gp.point);
+                Color iL = lightSource.getIntensity(gp.point); // intensity of color at point
+                // adding diffusive and specular effects
                 color = color.add(iL.scale(calcDiffusive(gp).add(calcSpecular(gp))));
             }
         }
         return color;
     }
 
+    /**
+     * The function calculates specular effects at the intersection point.
+     * @param intersection - the intersection point
+     * @return the specular color at the intersection point
+     */
     private Double3 calcSpecular(Intersection intersection){
+        // r = l - (n * lNormal * 2)
         Vector r = intersection.l.subtract(intersection.normal.scale(2 * intersection.lNormal));
         double rv = Util.alignZero(r.dotProduct(intersection.v));
+        // check if the angle between the view vector and the reflection vector is acute
         if (rv < 0d) {
             return intersection.material.ks.scale(Math.pow(-rv, intersection.material.nsh));
         }
+        // if the angle is obtuse, return zero
         return Double3.ZERO;
     }
 
+    /**
+     * The function calculates diffusive effects at the intersection point.
+     * @param intersection - the intersection point
+     * @return the diffusive color at the intersection point
+     */
     private Double3 calcDiffusive(Intersection intersection){
 
         return intersection.material.kd.scale(Math.abs(intersection.lNormal));

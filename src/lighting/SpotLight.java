@@ -2,8 +2,21 @@ package lighting;
 
 import primitives.*;
 
+/**
+ * Represents a spotlight in a 3D scene.
+ * A spotlight emits light in a specific direction and has a narrow beam.
+ * The intensity of the light decreases with the angle between the light direction and the point being illuminated.
+ */
 public class SpotLight extends PointLight{
+    /**
+     * The direction of the light beam.
+     */
     private final Vector direction;
+    /**
+     * The narrowness of the beam.
+     * A higher value results in a narrower beam.
+     */
+    private double narrowBeam = 1d;
 
     /**
      * Constructs a SpotLight object with the specified color, position, and direction.
@@ -20,8 +33,9 @@ public class SpotLight extends PointLight{
     @Override
     public Color getIntensity(Point point) {
         return super.getIntensity(point)
-                .scale(Math.max(0, direction.dotProduct(point.subtract(position).normalize())));
+                .scale(Math.max(0,Math.pow(direction.dotProduct(point.subtract(position).normalize()), narrowBeam)));
     }
+
     @Override
     public SpotLight setkC(double kC) {
         return (SpotLight)super.setkC(kC);
@@ -37,10 +51,15 @@ public class SpotLight extends PointLight{
         return (SpotLight)super.setkQ(kQ);
     }
 
-//    @Override
-//    public Color getIntensity(Point p) {
-//        double d = position.distance(p);
-//        double attenuation = kC + kL * d + kQ * d * d;
-//        return super.getIntensity(p).reduce(attenuation);
-//    }
+    /**
+     * Sets the narrowness of the beam.
+     *
+     * @param narrowBeam the narrowness of the beam
+     * @return this SpotLight object
+     */
+    public SpotLight setNarrowBeam(double narrowBeam) {
+        this.narrowBeam = narrowBeam;
+        return this;
+    }
+
 }

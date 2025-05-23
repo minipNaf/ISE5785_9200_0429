@@ -7,6 +7,11 @@ import java.util.List;
  * It provides a method to find intersections between a ray and the geometry.
  */
 public abstract class Intersectable {
+
+    /**
+     * default constructor for JavaDoc
+     */
+    Intersectable() {}
     /**
      * Finds the intersections between a given ray and the geometry.
      *
@@ -19,15 +24,42 @@ public abstract class Intersectable {
     }
 
     public static class Intersection {
+        /**
+         * geometry of intersection point
+         */
         public final Geometry geometry;
+        /**
+         * intersection point
+         */
         public final Point point;
 
+        /**
+         * material of intersection point
+         */
         public final Material material;
+        /**
+         * normal vector at the intersection point
+         */
         public Vector normal;
+        /**
+         * view vector at the intersection point
+         */
         public Vector v;
+        /**
+         * scalar product of the view vector and the normal vector
+         */
         public double vNormal;
+        /**
+         * light source at the intersection point
+         */
         public LightSource light;
+        /**
+         * vector from light source to the intersection point
+         */
         public Vector l;
+        /**
+         * scalar product of the light vector and the normal vector
+         */
         public double lNormal;
 
 

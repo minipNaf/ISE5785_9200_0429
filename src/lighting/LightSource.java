@@ -2,6 +2,10 @@ package lighting;
 
 import primitives.*;
 
+/**
+ * Interface representing a light source in a 3D scene.
+ * This interface defines methods to get the intensity and direction of the light source.
+ */
 public interface LightSource {
     /**
      * Returns the intensity of the light at a given point in space.

@@ -21,6 +21,9 @@ public class Scene {
     /** Geometries in the scene*/
     public Geometries geometries = new Geometries();
 
+    /** List of light sources in the scene*/
+    public List<LightSource> lights = new LinkedList<>();
+
     /**
      * Default constructor for the Scene class.
      * Initializes the scene with a default name.
@@ -62,4 +65,14 @@ public class Scene {
         return this;
     }
 
+    /**
+     * Sets the list of light sources in the scene.
+     *
+     * @param lights the list of light sources to set
+     * @return the current Scene object
+     */
+    public Scene setLights(List<LightSource> lights) {
+        this.lights = lights;
+        return this;
+    }
 }
