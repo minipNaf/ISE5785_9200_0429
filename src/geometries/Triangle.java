@@ -30,7 +30,7 @@ public class Triangle extends Polygon {
      * Because w + u + v = 1, we can express w as: w 1 - u - v.
      * Therefor we can express the intersection point as:
      * intersectionPoint = (1 - u - v) × vertex1 + u × vertex2 + v × vertex3.
-     *
+     * @param maxDistance - the maximum distance from the ray's head to consider for intersection
      * @param ray - the ray to check for intersection with the triangle
      * @return the intersection point if it exists, otherwise null
      */

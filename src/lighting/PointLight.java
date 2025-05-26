@@ -46,6 +46,11 @@ public class PointLight extends Light implements LightSource{
         return point.subtract(position).normalize();
     }
 
+    @Override
+    public double getDistance(Point point) {
+        return point.distance(position);
+    }
+
     /**
      * setter for kC
      * @param kC - first Attenuation coefficient

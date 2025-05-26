@@ -63,20 +63,37 @@ public class Sphere extends RadialGeometry{
         if(d >= radius) return null; // no intersection
         double th = Math.sqrt(radius * radius - d * d);
 
-        /*The compareSign method has a bug - it doesn't take into account the fixed accuracy in Util,
-        so I had to use the alignZero method to cover the case of zero
 
-         */
+        // distance between ray head and first intersection point
+        double t1 = ray.getPoint(tm - th).distance(ray.getHead());
+        // distance between ray head and second intersection point
+        double t2 = Util.alignZero(ray.getPoint(tm + th).distance(ray.getHead()));
+
+         /**The compareSign method has a bug - it doesn't take into account the fixed accuracy in Util,
+         so I had to use the alignZero method to cover the case of zero
+         **/
         if(!Util.compareSign(Util.alignZero(tm - th),1)) {
-            if(!Util.compareSign(Util.alignZero(tm + th),1)) return null; // no intersection
+            if(!Util.compareSign(Util.alignZero(tm + th),1) || Util.alignZero(t2 - maxDistance)>0)
+                return null; // no intersection
             return List.of(new Intersection(this, ray.getPoint(tm + th), getMaterial()));
         }
         if(!Util.compareSign(Util.alignZero(tm + th),1)) {
             if(!Util.compareSign(Util.alignZero(tm - th),1)) return null; // no intersection
             return List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()));
         }
-        return List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()),
-                new Intersection(this, ray.getPoint(tm + th), getMaterial()));
+        List <Intersection> intersections = null;
+        if(Util.alignZero(t1 - maxDistance) <= 0 && Util.alignZero(t2 - maxDistance) <= 0) {
+            intersections = List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()),
+                    new Intersection(this, ray.getPoint(tm + th), getMaterial()));
+        }
+        else if(Util.alignZero(t1 - maxDistance) <= 0) {
+            intersections = List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()));
+        }
+        else if(Util.alignZero(t2 - maxDistance) <= 0) {
+            intersections = List.of(new Intersection(this, ray.getPoint(tm + th), getMaterial()));
+        }
+
+        return intersections;
 
 
     }

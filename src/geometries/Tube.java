@@ -50,7 +50,7 @@ public class Tube extends RadialGeometry{
         return p.subtract(axis.getHead()).subtract(axis.getDirection().scale(t)).normalize();    }
 
     @Override
-    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
         Vector direction = ray.getDirection();
         Point head = ray.getHead();
         Vector axisDirection = axis.getDirection();
@@ -73,7 +73,7 @@ public class Tube extends RadialGeometry{
             center = axis.getPoint(ray.getHead().subtract(axis.getHead()).dotProduct(axisDirection));
         }
         Sphere sphere = new Sphere(radius, center);
-        List<Intersection> temp = sphere.calculateIntersectionsHelper(new Ray(vProg,head));
+        List<Intersection> temp = sphere.calculateIntersectionsHelper(new Ray(vProg,head), maxDistance);
         if(temp == null) return null;
         List<Intersection> intersections = new LinkedList<>(temp);
         for (int i = 0;i<intersections.size();i++) {

@@ -77,11 +77,11 @@ public class Cylinder extends Tube{
         Plane base2 = new Plane(axis.getHead().add(axis.getDirection().scale(height)), axis.getDirection());
         List<Intersection> intersections = new ArrayList<>();
         List<Intersection> temp; //to check if a list is null beforehand
-        temp = super.calculateIntersectionsHelper(ray);
+        temp = super.calculateIntersectionsHelper(ray, maxDistance);
         if(temp != null) intersections.addAll(temp);
-        temp = base1.calculateIntersectionsHelper(ray);
+        temp = base1.calculateIntersectionsHelper(ray, maxDistance);
         if(temp != null) intersections.addAll(temp);
-        temp = base2.calculateIntersectionsHelper(ray);
+        temp = base2.calculateIntersectionsHelper(ray, maxDistance);
         if(temp != null) intersections.addAll(temp);
         double t, s;
         Vector v;

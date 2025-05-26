@@ -75,7 +75,6 @@ class SphereTest {
         assertNull(sphere.findIntersections(new Ray(new Vector(0,0,1), new Point(1,0,2))),
                 "ERROR 1 4: there must be 0 points(null)");
 
-
         // =========== Boundary Values Tests =====================
         // **** Group 1: Ray's line crosses the sphere (but not the center)
 
@@ -143,7 +142,44 @@ class SphereTest {
                 sphere.findIntersections(new Ray(new Vector(0,1,0),
                         new Point(1,0,Math.sqrt(0.5)))),
                 "ERROR 5 2: incorrect intersection point");
+    }
 
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        // cases of two intersection points but the maxDistance leaves at most one intersection point in range
+        //test 01: Ray starts inside the sphere but the maxDistance leaves intersection point out of range (0 point)
+        assertNull(
+                sphere.findIntersections(new Ray(new Vector(0,0,1), new Point(1,Math.sqrt(0.5),0)), 0.1),
+                "ERROR: there must be 0 points(null)");
+        //test 02: Ray starts outside of sphere and goes through it, but the maxDistance leaves intersection points out of range (0 point)
+        assertNull(sphere.findIntersections((new Ray(new Vector(0,1,0), new Point(1,-8,Math.sqrt(0.5)))), 0.1),
+                "ERROR: there must be 0 points(null)");
+        //test 03: Ray starts outside of sphere and goes through it, but the maxDistance leaves only one intersection point in range (1 point)
+        assertEquals(List.of(new Point(1, -Math.sqrt(0.5), Math.sqrt(0.5))),
+                sphere.findIntersections(new Ray(new Vector(0,1,0), new Point(1,-8,Math.sqrt(0.5))), 8),
+                "ERROR: incorrect intersection point");
+        //test 04: Ray starts inside sphere and goes through it, and the maxDistance leaves intersection point in range (1 point)
+        assertEquals(List.of(new Point(2,0,0)),
+                sphere.findIntersections(new Ray(new Vector(0.5,0,0), new Point(0.5,0,0)), 2),
+                "ERROR: there must be 1 points");
+        //test 05: Ray starts outside of sphere and doesn't go through it, though it's negative direction goes through it (0 point)
+        assertNull(sphere.findIntersections(new Ray(new Vector(0,1,0), new Point(1,1.5,0)), 2),
+                "ERROR: there must be 0 points(null)");
+        //test 06: Eay starts outside of sphere and neither it nor its negative direction goes through it (0 point)
+        assertNull(sphere.findIntersections(new Ray(new Vector(0,1,0), new Point(1,2,0)), 2),
+                "ERROR: there must be 0 points(null)");
 
+      // =========== Boundary Values Tests =====================
+      //test 01: Ray starts at the periphery of the sphere and goes outside (0 point)
+      assertNull(sphere.findIntersections(new Ray(new Vector(0,0,1), new Point(1,1,0)), 2),
+                "ERROR: there must be 0 points(null)");
+      //test 02: Ray starts at the periphery of the sphere and goes inside but maxDistance leaves intersection point out of range (0 point)
+      assertNull(sphere.findIntersections(new Ray(new Vector(0,-1,0), new Point(1,1,0)), 1),
+                    "ERROR: there must be 0 points(null)");
+        //test 03: Ray starts at the periphery of the sphere and goes inside but maxDistance leaves intersection point in range (1 point)
+        assertEquals(List.of(new Point(1,-1,0)),
+                sphere.findIntersections(new Ray(new Vector(0,-1,0), new Point(1,1,0)), 2),
+                "ERROR: incorrect intersection point");
     }
 }

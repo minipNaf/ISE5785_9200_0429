@@ -12,6 +12,18 @@ public abstract class Intersectable {
      * default constructor for JavaDoc
      */
     Intersectable() {}
+
+    /**
+     * Finds the intersections between a given ray and the geometry.
+     * @param maxDistance - the maximum distance between the intersection point and the ray head.
+     * @param ray the ray to check for intersections
+     * @return a list of intersection points, or null if there are no intersections
+     */
+    public final List<Point> findIntersections(Ray ray, double maxDistance) {
+        var list = calculateIntersections(ray, maxDistance);
+        return list == null ? null : list.stream().map(intersection -> intersection.point).toList();
+    }
+
     /**
      * Finds the intersections between a given ray and the geometry.
      *
@@ -19,7 +31,7 @@ public abstract class Intersectable {
      * @return a list of intersection points, or null if there are no intersections
      */
     public final List<Point> findIntersections(Ray ray) {
-        var list = calculateIntersections(ray);
+        var list = calculateIntersections(ray, Double.POSITIVE_INFINITY);
         return list == null ? null : list.stream().map(intersection -> intersection.point).toList();
     }
 
@@ -89,7 +101,7 @@ public abstract class Intersectable {
 
     }
 
-    protected abstract List<Intersection> calculateIntersectionsHelper(Ray ray);
+    protected abstract List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance);
 
 
     public final List<Intersection> calculateIntersections(Ray ray) {

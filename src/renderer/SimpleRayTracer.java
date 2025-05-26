@@ -32,7 +32,7 @@ public class SimpleRayTracer extends RayTracerBase{
      */
     @Override
     public Color traceRay(Ray ray) {
-        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(ray);
+        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(ray, Double.POSITIVE_INFINITY);
         if (intersections == null)
             return scene.background;
 
@@ -131,7 +131,6 @@ public class SimpleRayTracer extends RayTracerBase{
      * @return the diffusive color at the intersection point
      */
     private Double3 calcDiffusive(Intersection intersection){
-
         return intersection.material.kd.scale(Math.abs(intersection.lNormal));
     }
 }

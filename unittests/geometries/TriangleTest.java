@@ -77,4 +77,20 @@ class TriangleTest {
         assertNull(triangle.findIntersections(new Ray(new Vector(-3,4,-3), p1)),
                 "ERROR: there must be 0 points(null)");
     }
+
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: check case of ray intersecting the triangle
+        assertEquals(List.of(new Point(0,0,2)),
+                triangle.findIntersections(new Ray(new Vector(-3,0,2), p1), 5),
+                "ERROR: wrong intersection point");
+        //test 02: check case of ray intersecting the triangle but the distance is too small (0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,0,2), p1), 1),
+                "ERROR: there must be 0 points(null)");
+        //============ Boundary Values Tests =====================
+        //test 01: check case of ray intersecting the triangle edge (0 points)
+        assertNull(triangle.findIntersections(new Ray(new Vector(-3,4,-3), p1), 1),
+                "ERROR: there must be 0 points(null)");
+    }
 }
