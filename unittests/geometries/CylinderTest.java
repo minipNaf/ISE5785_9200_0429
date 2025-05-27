@@ -144,4 +144,85 @@ class CylinderTest {
                 cylinder.findIntersections(new Ray(new Vector(0,0,1), new Point(0,0,2))),
                 "ERROR: wrong intersection points");
     }
+
+    @Test
+    void testFindIntersectionsWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: ray intersects the round surface and then the base(2 points)
+        assertEquals(List.of(new Point(2,0,4), new Point(3, 0,3)),
+                cylinder.findIntersections(new Ray(new Vector(1,0,-1), new Point(0,0,6)), 7),
+                "ERROR: wrong intersection points");
+        //test 02: ray intersects the round surface and then the base but maxDistance leaves second intersection point out of range(2 points)
+        assertEquals(List.of(new Point(2,0,4)),
+                cylinder.findIntersections(new Ray(new Vector(1,0,-1), new Point(0,0,6)), 3),
+                "ERROR: wrong intersection points");
+        //test 03: ray intersects the round surface and then the base but maxDistance leaves intersection points out of range(2 points)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,0,-1), new Point(0,0,6)), 2),
+                "ERROR: wrong intersection points");
+
+        //test 04: ray intersects the round surface twice(2 points)
+        assertEquals(List.of(new Point(-3, 0,3), new Point(3,0,3)),
+                cylinder.findIntersections(new Ray(new Vector(1,0,0), new Point(-4,0,3)), 10),
+                "ERROR: wrong intersection points");
+        //test 05: ray intersects the round surface twice but maxDistance leaves second point out of range(2 points)
+        assertEquals(List.of(new Point(-3, 0,3)),
+                cylinder.findIntersections(new Ray(new Vector(1,0,0), new Point(-4,0,3)),6),
+                "ERROR: wrong intersection points");
+        //test 06: ray intersects the round surface twice but maxDistance leaves second point out of range(2 points)
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,0,0), new Point(-4,0,3)),0.5),
+                "ERROR: wrong intersection points");
+        //test 07: ray intersects the bases twice(2 points)
+        assertEquals(List.of(new Point(0,1,4), new Point(1,0,2)),
+                cylinder.findIntersections(new Ray(new Vector(1,-1,-2), new Point(-1,2,6)), 10),
+                "ERROR: wrong intersection points");
+        //test 08: ray intersects the bases twice but maxDistance leaves second point out of range
+        assertEquals(List.of(new Point(0,1,4)),
+                cylinder.findIntersections(new Ray(new Vector(1,-1,-2), new Point(-1,2,6)), 3),
+                "ERROR: wrong intersection points");
+        //test 09: ray intersects the bases twice but maxDistance leaves points out of range
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,-1,-2), new Point(-1,2,6)), 2),
+                "ERROR: wrong intersection points");
+
+        //test 10: ray starts inside the cylinder and goes out through the base(1 point)
+        assertEquals(List.of(new Point(1,0,2)),
+                cylinder.findIntersections(new Ray(new Vector(1,-1,-1), new Point(0,1,3)), 5),
+                "ERROR: wrong intersection points");
+        //test 11: ray starts inside the cylinder and goes out through the base but maxDistance leaves intersection point out of range
+        assertNull(cylinder.findIntersections(new Ray(new Vector(1,-1,-1), new Point(0,1,3)), 1),
+                "ERROR: wrong intersection points");
+
+        // =========== Boundary Values Tests =====================
+        //test 01: ray intersects the cylinder at the center of the base(1 point)
+        assertEquals(List.of(new Point(0,0,4)),
+                cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,-1,3)), 1.5),
+                "ERROR: wrong intersection points");
+        //test 02: ray intersects the cylinder at the center of the base but maxDistance leaves point out of range
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,1,1), new Point(0,-1,3)), 1),
+                "ERROR: wrong intersection points");
+        //test 03: ray goes the same direction as the cylinder's axis and intersects the bases(2 points)
+        assertEquals(List.of(new Point(0,0,2), new Point(0,0,4)),
+                cylinder.findIntersections(new Ray(new Vector(0,0,1), new Point(0,0,-1)), 10),
+                "ERROR: wrong intersection points");
+        //test 04: ray goes the same direction as the cylinder's axis and intersects the bases but maxDistance leaves second point out of range
+        assertEquals(List.of(new Point(0,0,2)),
+                cylinder.findIntersections(new Ray(new Vector(0,0,1), new Point(0,0,-1)), 3),
+                "ERROR: wrong intersection points");
+
+        // rays that start on top base
+        //test 05: ray starts at top base and goes out through round surface(1 point)
+        assertEquals(List.of(new Point(0,3,3)),
+                cylinder.findIntersections(new Ray(new Vector(0,1,-1), new Point(0,2,4)), 1.5),
+                "ERROR: wrong intersection points");
+        //test 06: ray starts at top base and goes out through round surface but maxDistance leaves point out of range
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,1,-1), new Point(0,2,4)), 1),
+                "ERROR: wrong intersection points");
+        //test 07: ray starts at the middle of top base and goes out through the bottom base(1 point)
+        assertEquals(List.of(new Point(0,0,2)),
+                cylinder.findIntersections(new Ray(new Vector(0,0,-1), new Point(0,0,4)), 2),
+                "ERROR: wrong intersection points");
+        //test 08: ray starts at the middle of top base and goes out through the bottom base but point out of range
+        assertNull(cylinder.findIntersections(new Ray(new Vector(0,0,-1), new Point(0,0,4)), 1.99),
+                "ERROR: wrong intersection points");
+
+    }
 }

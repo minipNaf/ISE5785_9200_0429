@@ -122,4 +122,27 @@ class PolygonTests {
       assertNull(pentagon.findIntersections(new Ray(new Vector(-5,-2,-1), p1)),
               "ERROR: there must be 0 points(null)");
    }
+
+   @Test
+   void testFindIntersectionsWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: check case of ray intersecting the pentagon
+        assertEquals(List.of(new Point(0,0,1)),
+                pentagon.findIntersections(new Ray(new Vector(-1,0,1), new Point(1,0,0)), 5),
+                "ERROR: wrong intersection point");
+        //test 02: check case of ray intersecting the pentagon but intersection point is too far
+        assertNull(pentagon.findIntersections(new Ray(new Vector(-1,0,1), new Point(1,0,0)), 0.5),
+                "ERROR: there must be 0 points(null)");
+
+        // ============ Boundary Values Tests =====================
+        //test 01: check case of intersecting a pentagon's edge(0 points)
+        assertNull(pentagon.calculateIntersectionsHelper(new Ray(new Vector(-5,1,-1), p1), 5),
+                "ERROR: there must be 0 points(null)");
+        //test 02: check case of intersecting a pentagon's vertex(0 points)
+        assertNull(pentagon.calculateIntersectionsHelper(new Ray(new Vector(-5,2,0), p1), 5),
+                "ERROR: there must be 0 points(null)");
+        //test 03: check case of intersecting the continuation of a pentagon's edge(0 points)
+        assertNull(pentagon.calculateIntersectionsHelper(new Ray(new Vector(-5,-2,-1), p1), 5),
+                "ERROR: there must be 0 points(null)");
+   }
 }

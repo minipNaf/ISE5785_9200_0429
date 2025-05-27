@@ -66,6 +66,7 @@ class TriangleTest {
         //test 03: check case of intersection the plain of the triangle against vertex (0 points)
         assertNull(triangle.findIntersections(new Ray(new Vector(-3,2.86,-0.57), p1)),
                 "ERROR: there must be 0 points(null)");
+
         // ============ Boundary Values Tests =====================
         //test 01: check case of intersecting a triangle's edge(0 points)
         assertNull(triangle.findIntersections(new Ray(new Vector(-3,1,0), p1)),
@@ -88,6 +89,7 @@ class TriangleTest {
         //test 02: check case of ray intersecting the triangle but the distance is too small (0 points)
         assertNull(triangle.findIntersections(new Ray(new Vector(-3,0,2), p1), 1),
                 "ERROR: there must be 0 points(null)");
+
         //============ Boundary Values Tests =====================
         //test 01: check case of ray intersecting the triangle edge (0 points)
         assertNull(triangle.findIntersections(new Ray(new Vector(-3,4,-3), p1), 1),
