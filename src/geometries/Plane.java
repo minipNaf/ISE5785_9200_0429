@@ -50,8 +50,15 @@ public class Plane extends Geometry {
         return normal;
     }
 
+    /**
+     * Returns the point on the plane.
+     * This point is used to define the plane's position in 3D space.
+     * @param maxDistance - the maximum distance from the ray's head to consider for intersection
+     * @param ray - the ray to check for intersection with the plane
+     * @return the point on the plane
+     */
     @Override
-    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
         double denominator = normal.dotProduct(ray.getDirection());
         if(point.equals(ray.getHead())) {
             return null; // The ray starts on the plane
@@ -61,7 +68,9 @@ public class Plane extends Geometry {
             return null; // The ray is in the plane
         }
         double t = numerator/denominator;
-        if(!Util.compareSign(t,1)) { //t <= 0
+        if(!Util.compareSign(t,1) ||
+                Util.alignZero(ray.getPoint(t).distanceSquared(ray.getHead()) -
+                        maxDistance*maxDistance) > 0) {
             return null; // The ray points away from it
         }
 

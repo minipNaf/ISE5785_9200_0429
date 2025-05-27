@@ -13,6 +13,12 @@ public abstract class Geometry extends Intersectable {
     /**default constructor to satisfy the compiler*/
     Geometry() {}// Default constructor
 
+    /**
+     * The emission color of the geometry.
+     * This field represents the color emitted by the geometry when illuminated.
+     * It is used in rendering to simulate the appearance of light emitted from
+     * the surface of the geometry.
+     */
     protected Color emission = Color.BLACK; // Default emission color
 
     private Material material = new Material(); // Default material
@@ -27,6 +33,11 @@ public abstract class Geometry extends Intersectable {
      */
     public abstract Vector getNormal(Point p);
 
+    /**
+     * The method sets the emission color of the Geometry
+     * @param color - the emission color of the geometry
+     * @return - the geometry itself
+     */
     public Geometry setEmission(Color color) {
         emission = color;
         return this;

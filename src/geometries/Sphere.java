@@ -49,7 +49,7 @@ public class Sphere extends RadialGeometry{
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
         double tm,d;
         if(ray.getHead().equals(center)) {
             tm = 0;
@@ -77,8 +77,9 @@ public class Sphere extends RadialGeometry{
                 return null; // no intersection
             return List.of(new Intersection(this, ray.getPoint(tm + th), getMaterial()));
         }
-        if(!Util.compareSign(Util.alignZero(tm + th),1)) {
-            if(!Util.compareSign(Util.alignZero(tm - th),1)) return null; // no intersection
+        if(!Util.compareSign(Util.alignZero(tm + th),1) ) {
+            if(!Util.compareSign(Util.alignZero(tm - th),1) || Util.alignZero(t1 - maxDistance)>0)
+                return null; // no intersection
             return List.of(new Intersection(this, ray.getPoint(tm - th), getMaterial()));
         }
         List <Intersection> intersections = null;

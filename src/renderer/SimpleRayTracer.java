@@ -12,7 +12,7 @@ import java.util.List;
  * at the intersection point of a ray with the scene's geometries.
  */
 public class SimpleRayTracer extends RayTracerBase{
-
+    private static final double DELTA = 0.1;
     /**
      * Constructs a SimpleRayTracer object with the specified scene.
      * This constructor initializes the ray tracer with the given scene.
@@ -99,7 +99,7 @@ public class SimpleRayTracer extends RayTracerBase{
         Color color = gp.geometry.getEmission(); // emission color of geometry
 
         for (LightSource lightSource : scene.lights) {
-            if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0) { // sign(nl) == sign(nv)
+            if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0 && unshaded(gp)) { // sign(nl) == sign(nv)
                 Color iL = lightSource.getIntensity(gp.point); // intensity of color at point
                 // adding diffusive and specular effects
                 color = color.add(iL.scale(calcDiffusive(gp).add(calcSpecular(gp))));
@@ -107,6 +107,7 @@ public class SimpleRayTracer extends RayTracerBase{
         }
         return color;
     }
+
 
     /**
      * The function calculates specular effects at the intersection point.
@@ -132,5 +133,15 @@ public class SimpleRayTracer extends RayTracerBase{
      */
     private Double3 calcDiffusive(Intersection intersection){
         return intersection.material.kd.scale(Math.abs(intersection.lNormal));
+    }
+
+
+    private boolean unshaded(Intersection intersection){
+        Vector pointToLight = intersection.l.scale(-1); // from point to light source
+        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
+        Ray shadowRay = new Ray(pointToLight, intersection.point.add(delta));
+        double lightDistance = intersection.light.getDistance(intersection.point);
+        var intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
+        return intersections == null;
     }
 }

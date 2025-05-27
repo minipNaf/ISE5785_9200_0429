@@ -80,7 +80,7 @@ public class Polygon extends Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(point); }
 
    @Override
-   public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+   public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
       List<Point> intersections = plane.findIntersections(ray);
       if (intersections == null) {
          return null; // The ray is parallel to the plane
@@ -92,11 +92,14 @@ public class Polygon extends Geometry {
       for(int i = 1; i < vertices.size(); i++) {
          Vector normal = vertices.get(i).subtract(ray.getHead())
                  .crossProduct(vertices.get((i + 1) % vertices.size()).subtract(ray.getHead()));
-         if(alignZero(ray.getDirection().dotProduct(normal)*si) <= 0) {
+         if(alignZero(ray.getDirection().dotProduct(normal)*si) <= 0 ) {
             return null;
          }
       }
       Point point = intersections.getFirst();
+      if(alignZero(point.distanceSquared(ray.getHead()) - maxDistance * maxDistance) >= 0) {
+         return null; // The intersection point is too far
+      }
       return  List.of(new Intersection(this, point, getMaterial()));
    }
 }

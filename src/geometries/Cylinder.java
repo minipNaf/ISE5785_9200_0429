@@ -69,9 +69,16 @@ public class Cylinder extends Tube{
         }
     }
 
+    /**
+     * Calculates the intersections between a ray and the cylinder.
+     * This method checks for intersections with the cylinder's surface and its two bases.
+     * @param maxDistance - the maximum distance from the ray's head to consider for intersection
+     * @param ray the ray to check for intersections
+     * @return a list of intersection points, or null if there are no intersections
+     */
 
     @Override
-    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
         Point rayHead = ray.getHead();
         Plane base1 = new Plane(axis.getHead(), axis.getDirection());
         Plane base2 = new Plane(axis.getHead().add(axis.getDirection().scale(height)), axis.getDirection());
