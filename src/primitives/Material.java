@@ -27,6 +27,14 @@ public class Material
      * The shininess of the material.
      */
     public int nsh = 0;
+    /**
+     * The transparency of the material.
+     */
+    public Double3 kt = Double3.ZERO;
+    /**
+     * The reflection coefficient of the material.
+     */
+    public Double3 kr = Double3.ZERO;
 
     /**
      * Setter for ka with Double3 parameter
@@ -95,6 +103,47 @@ public class Material
      */
     public Material setShininess(int nsh) {
         this.nsh = nsh;
+        return this;
+    }
+
+    /**
+     * Setter for kt with Double3 parameter
+     * @param kt - specular coefficient
+     * @return - this Material object
+     */
+    public Material setkt(Double3 kt) {
+        this.kt = kt;
+        return this;
+    }
+
+    /**
+     * Setter for kt with double parameter
+     * @param kt - specular coefficient
+     * @return - this Material object
+     */
+    public Material setkt(double kt) {
+        this.kt = new Double3(kt);
+        return this;
+    }
+
+
+    /**
+     * Setter for kr with Double3 parameter
+     * @param kr - specular coefficient
+     * @return - this Material object
+     */
+    public Material setkr(Double3 kr) {
+        this.kr = kr;
+        return this;
+    }
+
+    /**
+     * Setter for kr with double parameter
+     * @param kr - specular coefficient
+     * @return - this Material object
+     */
+    public Material setkr(double kr) {
+        this.kr = new Double3(kr);
         return this;
     }
 }
