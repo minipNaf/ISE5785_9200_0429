@@ -225,4 +225,59 @@ class TubeTest {
         assertNull(tube.findIntersections(new Ray(new Vector(1,1,1), new Point(14,14,2))),
                 "ERROR: the are supposed to be no intersection points");
     }
+
+
+    @Test
+    void testFindIntersectionsWithDistance() {
+        //note: p in the head of the ray and q is its end with the distance limit
+        // Group 1: Ray starts above the center of the tube's axis
+        Vector v1 = new Vector(-1,-1,-0.1).normalize();
+        Point inter1 = new Point(xy,xy,5-0.1*(4-xy));
+        Point inter2 = new Point(-xy,-xy,5-0.1*(4+xy));
+        double maxDistance = p1.distance(p2)/2;
+        // Test 01: p and q before(0 intersections
+        assertNull(tube.findIntersections(new Ray(v1, inter1.add(v1.scale(-maxDistance*3))), maxDistance),
+                "ERROR: the intersection point is not correct");
+        // Test 02: p before and q inside(1 intersection)
+        assertEquals((List.of(inter1)),
+                tube.findIntersections(new Ray(v1, inter1.add(v1.scale(-maxDistance))), maxDistance*2),
+                "ERROR: the intersection point is not correct");
+        // Test 03: p and q inside(0 intersections)
+        assertNull(
+                tube.findIntersections(new Ray(v1, inter1), maxDistance),
+                "ERROR: the intersection point is not correct");
+        // Test 04: p inside and q outside(1 intersection)
+        assertEquals(List.of(inter2),
+                tube.findIntersections(new Ray(v1, inter2.add(v1.scale(-maxDistance))),maxDistance*2),
+                "ERROR: the intersection point is not correct");
+        // Test 05: p and q inside(0 intersections)
+        assertNull( tube.findIntersections(new Ray(v1, inter2), 3*maxDistance),
+                "ERROR: the intersection point is not correct");
+
+
+        // Group 2: Ray starts below the center of the tube's axis
+        // Test 01: p and q before(0 intersections)
+        assertNull(tube.findIntersections(new Ray(new Vector(2,0,3), new Point(-40,0,0)), 10),
+                "ERROR: the intersection point is not correct");
+        // Test 02: p before and q inside(1 intersection)
+        assertEquals(List.of(new Point(3,0,0)),
+                tube.findIntersections(new Ray(new Vector(-1,0,0), new Point(5,0,0)), 2),
+                "ERROR: the intersection point is not correct");
+        // Test 03: p and q inside(0 intersections)
+        assertNull(tube.findIntersections(new Ray(new Vector(-2,0,0), new Point(1,0,1)), 2),
+                "ERROR: the intersection point is not correct");
+        // Test 04: p inside and q outside(1 intersection)
+        assertEquals(List.of(new Point(-3,0,1)),
+                tube.findIntersections(new Ray(new Vector(-2,0,0), new Point(1,0,1)), 4),
+                "ERROR: the intersection point is not correct");
+        // Test 05: p and q inside(0 intersections)
+        assertNull(tube.findIntersections(new Ray(new Vector(-2,0,0), new Point(1,0,1)), 3.9),
+                "ERROR: the intersection point is not correct");
+
+
+
+
+    }
+
+
 }
