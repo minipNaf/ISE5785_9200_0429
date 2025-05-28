@@ -15,6 +15,12 @@ public class Ray {
     private final Vector direction;
 
     /**
+     * A small delta value used to avoid an intersection of ray with geometry.
+     * This value is used to offset the intersection point slightly in the direction of the normal vector.
+     */
+    private static final double DELTA = 0.1;
+
+    /**
      * the direction of the ray
      * @return direction vector of the ray
      */
@@ -46,6 +52,23 @@ public class Ray {
     public Ray(Vector direction, Point head) {
         this.direction = direction.normalize();
         this.head = head;
+    }
+
+    /**
+     * Constructs a new Ray with a specified direction vector, and starting point which is moved by delta
+     * @param direction - the direction vector of the ray, normalized during construction
+     * @param normal - the normal vector to the surface at the head point, used to adjust the head position
+     * @param head - the starting point (head) of the ray
+     */
+    public Ray(Vector direction, Vector normal, Point head) {
+        // If the direction is parallel to the normal, we need to adjust the head position
+        if (Util.isZero(direction.dotProduct(normal))) {
+            this.head = head;
+        } else {
+            double nv = normal.dotProduct(direction);
+            this.head = head.add(normal.scale(nv > 0 ? DELTA : -DELTA));
+        }
+        this.direction = direction.normalize();
     }
 
 

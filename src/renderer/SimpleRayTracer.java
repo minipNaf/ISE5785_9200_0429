@@ -12,11 +12,6 @@ import java.util.List;
  * at the intersection point of a ray with the scene's geometries.
  */
 public class SimpleRayTracer extends RayTracerBase{
-    /**
-     * A small delta value used to avoid shadow acne.
-     * This value is used to offset the intersection point slightly in the direction of the normal vector.
-     */
-    private static final double DELTA = 0.1;
 
     /**
      * Maximum level of color calculation for recursive effects.
@@ -75,7 +70,7 @@ public class SimpleRayTracer extends RayTracerBase{
     private Color calcColor(Intersection intersection, Ray ray, int level, Double3 k){
         if (!preprocessIntersection(intersection, ray.getDirection()))
             return Color.BLACK;
-        Color color = calcColorLocalEffects(intersection);
+        Color color = calcColorLocalEffects(intersection, k);
         return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
     }
 
@@ -119,15 +114,18 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param gp the intersection point
      * @return the calculated color at the intersection point
      */
-    private Color calcColorLocalEffects(Intersection gp)
+    private Color calcColorLocalEffects(Intersection gp, Double3 k)
     {
         Color color = gp.geometry.getEmission(); // emission color of geometry
 
         for (LightSource lightSource : scene.lights) {
-            if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0 && unshaded(gp)) { // sign(nl) == sign(nv)
-                Color iL = lightSource.getIntensity(gp.point); // intensity of color at point
-                // adding diffusive and specular effects
-                color = color.add(iL.scale(calcDiffusive(gp).add(calcSpecular(gp))));
+            if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0) { // sign(nl) == sign(nv)
+                Double3 ktr = transparency(gp);
+                if (!ktr.product(k).lowerThan(MIN_CALC_COLOR_K)) {
+                    Color iL = lightSource.getIntensity(gp.point).scale(ktr); // intensity of color at point
+                    // adding diffusive and specular effects
+                    color = color.add(iL.scale(calcDiffusive(gp).add(calcSpecular(gp))));
+                }
             }
         }
         return color;
@@ -161,27 +159,28 @@ public class SimpleRayTracer extends RayTracerBase{
     }
 
 
-    private boolean unshaded(Intersection intersection){
+    private Double3 transparency(Intersection intersection) {
         Vector pointToLight = intersection.l.scale(-1); // from point to light source
-        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
-        Ray shadowRay = new Ray(pointToLight, intersection.point.add(delta));
+        Ray shadowRay = new Ray(pointToLight, intersection.normal, intersection.point);
         double lightDistance = intersection.light.getDistance(intersection.point);
+        Double3 ktr = Double3.ONE;
         var intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
-        if (intersections == null) return true;
-        intersections.removeIf(i -> !i.geometry.getMaterial().kt.lowerThan(MIN_CALC_COLOR_K));
-        return intersections == null; // no intersections, so the point is unshaded
+        if (intersections != null) {
+            for (Intersection i : intersections) {
+                ktr = ktr.product(i.material.kt);
+            }
+        }
+        return ktr;
     }
 
     private Ray refractionRay(Ray ray, Intersection intersection) {
-        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
-        return new Ray(ray.getDirection(), intersection.point.add(delta));
+        return new Ray(ray.getDirection(), intersection.normal, intersection.point);
     }
 
     private Ray reflectionRay(Ray ray, Intersection intersection) {
         Vector v = ray.getDirection();
         Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
-        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
-        return new Ray(r, intersection.point.add(delta));
+        return new Ray(r, intersection.normal, intersection.point);
     }
 
     private Color calcGlobalEffect(Ray ray, int level, Double3 initialK, Double3 kx) {
