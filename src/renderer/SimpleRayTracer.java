@@ -159,6 +159,12 @@ public class SimpleRayTracer extends RayTracerBase{
     }
 
 
+    /**
+     * The function calculates how much of the light from the light source reaches the intersection.
+     * Each body shading over the intersection reduces the amount of light at intersection.
+     * @param intersection - intersection to check level of light
+     * @return ktr - final mekadem hanhata of transparency
+     */
     private Double3 transparency(Intersection intersection) {
         Vector pointToLight = intersection.l.scale(-1); // from point to light source
         Ray shadowRay = new Ray(pointToLight, intersection.normal, intersection.point);
@@ -172,6 +178,18 @@ public class SimpleRayTracer extends RayTracerBase{
         }
         return ktr;
     }
+
+//    private boolean unshaded(Intersection intersection){
+//        Vector pointToLight = intersection.l.scale(-1); // from point to light source
+//        private static final double DELTA = 0.1;
+//        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
+//        Ray shadowRay = new Ray(pointToLight, intersection.point.add(delta));
+//        double lightDistance = intersection.light.getDistance(intersection.point);
+//        var intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
+//        if (intersections == null) return true;
+//        intersections.removeIf(i -> !i.geometry.getMaterial().kt.lowerThan(MIN_CALC_COLOR_K));
+//        return intersections == null; // no intersections, so the point is unshaded
+//    }
 
     private Ray refractionRay(Ray ray, Intersection intersection) {
         return new Ray(ray.getDirection(), intersection.normal, intersection.point);

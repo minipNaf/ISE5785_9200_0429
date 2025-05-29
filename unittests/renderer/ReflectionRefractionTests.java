@@ -109,200 +109,249 @@ class ReflectionRefractionTests {
     }
 
 
-    @Test
-    void windmill() {
-        scene.geometries.add( //
-                new Polygon( new Point(0,-100,-100),
-                        new Point(0,100,-100),
-                        new Point(0,100,100),
-                        new Point(0,-100,100))
-                        .setEmission(new Color(255, 255, 255)) //
-                        .setMaterial(new Material().setkr(1)), //
-                new Cylinder( 15d, new Ray(new Vector(1,0,0),new Point(0, 0, 65)),70d)
-                        .setEmission(new Color(0, 102, 0)) //
-                        .setMaterial(new Material().setkt(0.7)), //
-                new Sphere(15d, new Point(85, 0, 65)) //
-                        .setEmission(new Color(102, 51, 0)) //
-                        .setMaterial(new Material().setkr(0.3)), //
-                new Triangle(new Point(85,0,65),
-                        new Point(85,-20,30), //
-                        new Point(85,20,30)) //
-                        .setEmission(new Color(229, 204, 255)) //
-                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)),
-                new Triangle(new Point(85,0,65),
-                        new Point(85,40,65), //
-                        new Point(85,20,100)) //
-                        .setEmission(new Color(229, 204, 255)) //
-                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)),
-                new Triangle(new Point(85,0,65),
-                        new Point(85,-40,65), //
-                        new Point(85,-20,100)) //
-                        .setEmission(new Color(229, 204, 255)) //
-                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)));
-        scene.setAmbientLight(new AmbientLight(new Color(255, 255, 51)));
-        scene.lights.add(new PointLight(new Color(1020, 400, 400), new Point(200,200 , 200)) //
-                .setkL(0.00001).setkQ(0.000005));
-
-        cameraBuilder
-                .setLocation(new Point(1000, 200, 150)) //
-                .setDirection(Point.ZERO, Vector.AXIS_Z) //
-                .setVpDistance(10000).setVpSize(2500, 2500) //
-                .setResolution(500, 500) //
-                .build() //
-                .renderImage() //
-                .writeToImage("windmill");
-    }
-
-
     /**
      * Test for creating a person figure with mirror scene including shadowing,
      * reflection and transparency with 15+ geometries
      * @author Generated Test
      */
+    /**
+     * Test recreating GeoGebra 3D scene with rectangular mirror and person figure
+     * Features: reflection, transparency, shadows with 15+ geometries
+     * @author Generated Test based on GeoGebra coordinates
+     */
     @Test
-    void personWithMirrorScene() {
-        // Person's head (sphere)
+    void windmill() {
+        scene.geometries.add( //
+                new Polygon( new Point(0,50,-100),
+                        new Point(0,-50,-100),
+                        new Point(0,-50,100),
+                        new Point(0,50,100)) //
+                        .setEmission(new Color(20, 20, 20)) //
+                        .setMaterial(new Material().setkr(1)),//
+                new Cylinder( 15d, new Ray(new Vector(1,0,0),new Point(0, 0, 65)),70d)
+                        .setEmission(new Color(0, 102, 0)) //
+                        .setMaterial(new Material()), //
+                new Sphere(15d, new Point(85, 0, 65)) //
+                        .setEmission(new Color(102, 51, 0)) //
+                        .setMaterial(new Material()), //
+                new Triangle(new Point(85,0,65),
+                        new Point(85,-20,30), //
+                        new Point(85,20,30)) //
+                        .setEmission(new Color(76, 153, 0)) //
+                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)),
+                new Triangle(new Point(85,0,65),
+                        new Point(85,40,65), //
+                        new Point(85,20,100)) //
+                        .setEmission(new Color(76, 153, 0)) //
+                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)),
+                new Triangle(new Point(85,0,65),
+                        new Point(85,-40,65), //
+                        new Point(85,-20,100)) //
+                        .setEmission(new Color(76, 153, 0)) //
+                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(100)));
+        scene.setAmbientLight(new AmbientLight(new Color(26, 26, 26)));
+        scene.lights.add(new PointLight(new Color(1020, 400, 400), new Point(200,200 , 200)) //
+                .setkL(0.00001).setkQ(0.000005));
+        Camera camera = cameraBuilder
+                .setLocation(new Point(1000, 200, 200)) //
+                .setDirection(new Point(85,0,65), Vector.AXIS_Z) //
+                .setVpDistance(10000).setVpSize(2500, 2500) //
+                .setResolution(500, 500)
+                .build();
+
+
+        camera.renderImage() //
+                .writeToImage("windmill");
+
+        camera.getBuilder(camera).rotate(45)
+                .build()
+                .renderImage() //
+                .writeToImage("windmillRotated45");
+
+        camera.getBuilder(camera).move(new Vector(800,0,800))
+                .build()
+                .renderImage() //
+                .writeToImage("windmillMovedDiagonally");
+    }
+
+    @Test
+    void geoGebraMirrorScene() {
+        // Large rectangular mirror
         scene.geometries.add(
-                new Sphere(25d, new Point(0, 100, -100))
-                        .setEmission(new Color(255, 220, 177)) // skin tone
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
+                new Polygon(new Point(-100, 0, -100), new Point(100, 0, -100), new Point(100, 0, 100), new Point(-100, 0, 100))
+                        .setEmission(new Color(20, 20, 20)) //
+                        .setMaterial(new Material().setkr(1))
         );
 
-        // Person's body (cylinder)
+        // a tube the person is holding
         scene.geometries.add(
-                new Cylinder(20d,  new Ray(new Vector(0, 1, 0), new Point(0, 40, -100)), 60d)
-                        .setEmission(new Color(100, 150, 200)) // blue shirt
-                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(30))
+                new Tube(10d, new Ray(new Vector(0,0,1), new Point(-60,-170,-100)))
+                        .setEmission(new Color(255, 102, 102))
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(100).setkt(0.3))
         );
 
-        // Person's left arm (tube/infinite cylinder)
+        // Person's body
         scene.geometries.add(
-                new Tube(8d, new Ray( new Vector(-1, -0.5, 0), new Point(-30, 70, -100)))
-                        .setEmission(new Color(255, 220, 177)) // skin tone
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
-        );
-
-        // Person's right arm (tube/infinite cylinder)
-        scene.geometries.add(
-                new Tube(8d, new Ray(new Vector(1, -0.5, 0), new Point(30, 70, -100)))
-                        .setEmission(new Color(255, 220, 177)) // skin tone
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
-        );
-
-        // Person's left leg (cylinder)
-        scene.geometries.add(
-                new Cylinder(10d, new Ray(new Vector(0, -1, 0), new Point(-15, -20, -100)), 40d)
-                        .setEmission(new Color(50, 50, 150)) // dark blue pants
-                        .setMaterial(new Material().setKd(0.8).setKs(0.2).setShininess(20))
-        );
-
-        // Person's right leg (cylinder)
-        scene.geometries.add(
-                new Cylinder(10d, new Ray(new Vector(0, -1, 0), new Point(15, -20, -100)), 40d)
-                        .setEmission(new Color(50, 50, 150)) // dark blue pants
-                        .setMaterial(new Material().setKd(0.8).setKs(0.2).setShininess(20))
-        );
-
-        // Mirror (large triangle)
-        scene.geometries.add(
-                new Triangle(new Point(-80, 150, -200), new Point(80, 150, -200), new Point(80, -80, -200))
-                        .setEmission(new Color(10, 10, 10))
-                        .setMaterial(new Material().setkr(0.9).setKd(0.1).setKs(0.9).setShininess(100).setkr(1))
-        );
-
-        // Mirror frame bottom (triangle)
-        scene.geometries.add(
-                new Triangle(new Point(-80, 150, -200), new Point(-80, -80, -200), new Point(80, -80, -200))
-                        .setEmission(new Color(10, 10, 10))
-                        .setMaterial(new Material().setkr(0.9).setKd(0.1).setKs(0.9).setShininess(100))
-        );
-
-        // Mirror frame (polygon - hexagon around mirror)
-        scene.geometries.add(
-                new Polygon(new Point(-85, 155, -199), new Point(85, 155, -199),
-                        new Point(90, 35, -199), new Point(85, -85, -199),
-                        new Point(-85, -85, -199), new Point(-90, 35, -199))
-                        .setEmission(new Color(139, 69, 19)) // brown frame
+                new Cylinder(50d, new Ray(new Vector(0, 0, 1), new Point(0, -100, -45)), 85d)
+                        .setEmission(new Color(255, 204, 0))
                         .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
         );
 
-        // Floor (large triangle)
+        // Person's head
         scene.geometries.add(
-                new Triangle(new Point(-200, -80, -300), new Point(200, -80, -300), new Point(200, -80, 50))
-                        .setEmission(new Color(160, 160, 160)) // gray floor
-                        .setMaterial(new Material().setKd(0.8).setKs(0.2).setShininess(10).setkr(0.1))
+                new Sphere(25d, new Point(0, -100, 60))
+                        .setEmission(new Color(102, 255, 102))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setkt(0.8))
         );
 
-        // Floor continuation (triangle)
+        // Left leg
         scene.geometries.add(
-                new Triangle(new Point(-200, -80, -300), new Point(200, -80, 50), new Point(-200, -80, 50))
-                        .setEmission(new Color(160, 160, 160)) // gray floor
-                        .setMaterial(new Material().setKd(0.8).setKs(0.2).setShininess(10).setkr(0.1))
+                new Cylinder(10d, new Ray(new Vector(0, 0, -1), new Point(-25, -100, -45)), 50d)
+                        .setEmission(new Color(255, 204, 0)) // White left leg
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
         );
 
-        // Transparent glass sphere (decorative element)
+        // Right leg
         scene.geometries.add(
-                new Sphere(15d, new Point(-60, -50, -80))
-                        .setEmission(new Color(200, 250, 255))
-                        .setMaterial(new Material().setKd(0.1).setKs(0.9).setShininess(100).setkt(0.8))
+                new Cylinder(10d, new Ray(new Vector(0, 0, -1), new Point(25, -100, -45)), 50d)
+                        .setEmission(new Color(255, 204, 0)) // White right leg
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
         );
 
-        // Small decorative sphere
+        // Left arm
         scene.geometries.add(
-                new Sphere(8d, new Point(70, -55, -90))
-                        .setEmission(new Color(255, 100, 100)) // red
+                new Cylinder(10d, new Ray(new Vector(-1, -7, -2), new Point(-50, -100, 0)), 60d)
+                        .setEmission(new Color(255, 204, 0)) //
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
+        );
+
+        // Right arm
+        scene.geometries.add(
+                new Cylinder(10d, new Ray(new Vector(1, -7, -2), new Point(50, -100, 0)), 60d)
+                        .setEmission(new Color(255, 204, 0)) //
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
+        );
+
+        // Eyes - white part
+        scene.geometries.add(
+                new Sphere(5d, new Point(-8.54, -120.71, 71.1))
+                        .setEmission(new Color(255, 255, 255)) // White eyes
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80).setkt(0.6))
+        );
+
+        scene.geometries.add(
+                new Sphere(5d, new Point(10.24, -120.33, 70.33))
+                        .setEmission(new Color(255, 255, 255)) // White eyes
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80).setkt(0.6))
+        );
+
+        // Eyes - pupils
+        scene.geometries.add(
+                new Sphere(2d, new Point(-10.15,-125.44,70.94))
+                        .setEmission(Color.BLACK)
+                        .setMaterial(new Material().setKd(0.6).setKs(0.9).setShininess(80))
+        );
+
+        scene.geometries.add(
+                new Sphere(2d, new Point(9.03, -125.17, 70))
+                        .setEmission(Color.BLACK)
+                        .setMaterial(new Material().setKd(0.6).setKs(0.9).setShininess(80))
+        );
+
+        Point p1 = new Point(1,-130,64);
+        Point p2 = new Point(1.47, -121.99, 71.81);
+        Point p3 = new Point(4.8, -124.13, 64.45);
+        Point p4 = new Point(-2.72, -124.53, 63.98);
+        // Nose
+        scene.geometries.add(
+                new Triangle(p1, p2, p3)
+                        .setEmission(new Color(0, 102, 255))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Triangle(p1, p2, p4)
+                        .setEmission(new Color(0, 102, 255))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Triangle(p2, p3, p4)
+                        .setEmission(new Color(0, 102, 255))
                         .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
         );
 
-        // Wall behind (triangle)
+        // Mouth
         scene.geometries.add(
-                new Triangle(new Point(-300, 200, -250), new Point(300, 200, -250), new Point(300, -100, -250))
-                        .setEmission(new Color(220, 220, 180)) // cream wall
-                        .setMaterial(new Material().setKd(0.8).setKs(0.1).setShininess(5))
+                new Sphere(3, new Point(-12.3, -121.09, 54.62))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
         );
-
-        // Wall behind continuation (triangle)
         scene.geometries.add(
-                new Triangle(new Point(-300, 200, -250), new Point(300, -100, -250), new Point(-300, -100, -250))
-                        .setEmission(new Color(220, 220, 180)) // cream wall
-                        .setMaterial(new Material().setKd(0.8).setKs(0.1).setShininess(5))
+                new Sphere(3, new Point(-10.73, -120.4, 50.31))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
         );
-
-        // Ceiling light fixture (semi-transparent sphere)
         scene.geometries.add(
-                new Sphere(20d, new Point(0, 180, -120))
-                        .setEmission(new Color(255, 255, 200))
-                        .setMaterial(new Material().setKd(0.2).setKs(0.8).setShininess(100).setkt(0.5))
+                new Sphere(3, new Point(-5.54, -122.14, 49.79))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Sphere(3, new Point(0.29, -122.09, 48.3))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Sphere(3, new Point(4.14, -122.48, 49.87))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Sphere(3, new Point(7.3, -122.3, 51.38))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
+        );
+        scene.geometries.add(
+                new Sphere(3, new Point(11.68, -121.56, 55.12))
+                        .setEmission(new Color(255, 0, 0)) // red mouth
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
         );
 
-        // Set ambient lighting
-        scene.setAmbientLight(new AmbientLight(new Color(40, 40, 40)));
-
-        // Main spotlight from above
-        scene.lights.add(
-                new SpotLight(new Color(80, 80, 70), new Point(0, 200, -50), new Vector(0, -1, -0.5))
-                        .setkL(0.0001).setkQ(0.000002)
+        // Ground/floor
+        scene.geometries.add(
+                new Polygon(new Point(-119.39, -337.76, -100), new Point(158.54, -340.42, -100),
+                        new Point(131.44, 58.81, -100), new Point(-129.1, 46, -100))
+                        .setEmission(new Color(20, 20, 20))
+                        .setMaterial(new Material().setKd(0.8).setKs(0.1).setShininess(10).setkr(0.2))
         );
 
-        // Side light for shadows and reflections
+        // Adjusting lights for better contrast
+        scene.setAmbientLight(new AmbientLight(new Color(20, 20, 20))); // Lower ambient light for clarity
+
         scene.lights.add(
-                new SpotLight(new Color(60, 40, 40), new Point(-100, 50, 0), new Vector(1, 0, -1))
-                        .setkL(0.0002).setkQ(0.000005)
+                new SpotLight(new Color(500, 500, 450), new Point(150, 50, 50), new Vector(-1, -0.5, -0.3))
+                        .setkL(0.0003).setkQ(0.00001) // Reduced brightness to avoid washing out details
         );
 
-        // Soft ambient directional light
         scene.lights.add(
-                new DirectionalLight(new Color(10, 10, 12), new Vector(0.5, -1, -1))
+                new SpotLight(new Color(400, 350, 300), new Point(-100, 20, 80), new Vector(1, -0.3, -0.8))
+                        .setkL(0.0004).setkQ(0.00002) // Softer reflections
+        );
+
+        scene.lights.add(
+                new DirectionalLight(new Color(80, 80, 90), new Vector(0, -1, -0.2)) // Gentle overhead lighting
         );
 
         cameraBuilder
-                .setLocation(new Point(0, 50, 300))
-                .setDirection(new Point(0, 50, -100), Vector.AXIS_Y)
-                .setVpDistance(400)
-                .setVpSize(300, 300)
+                .setLocation(new Point(0, -300, 200))
+                .setDirection(new Point(0, 0, -100), new Vector(0,3,-2))
+                .setVpDistance(300)
+                .setVpSize(400, 400)
                 .setResolution(800, 800)
                 .build()
                 .renderImage()
-                .writeToImage("personWithMirrorScene");
+                .writeToImage("geoGebraMirrorScene");
     }
 }
+
+
+

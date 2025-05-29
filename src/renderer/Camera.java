@@ -16,6 +16,7 @@ import java.util.MissingResourceException;
 // The camera is used to generate rays for rendering scenes in computer graphics.
 public class Camera implements Cloneable{
     private Point p0;
+    private Point pTarget = null; // Optional target point for the camera
     private Vector vTo;
     private Vector vUp;
     private Vector vRight;
@@ -103,7 +104,7 @@ public class Camera implements Cloneable{
          * @param to - the direction vector
          * @param up - the up vector
          * @return this Builder object
-        */
+         */
         public Builder setDirection(Vector to, Vector up) {
             if (!Util.isZero(to.dotProduct(up))) {
                 throw new IllegalArgumentException("vTo and vUp must be orthogonal");
@@ -124,6 +125,7 @@ public class Camera implements Cloneable{
             if (target1.equals(camera.p0))
                 throw new IllegalArgumentException("target point cannot be the same as camera location");
 
+            camera.pTarget = target1; // Store the target point
             camera.vTo = target1.subtract(camera.p0).normalize();
             camera.vRight = camera.vTo.crossProduct(up).normalize();
             camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize();
@@ -140,7 +142,7 @@ public class Camera implements Cloneable{
         public Builder setDirection(Point target1) {
             if (target1.equals(camera.p0))
                 throw new IllegalArgumentException("target point cannot be the same as camera location");
-
+            camera.pTarget = target1; // Store the target point
             camera.vTo = target1.subtract(camera.p0).normalize();
             camera.vUp = Vector.AXIS_Y; // Default up vector: used to find the right vector
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
@@ -179,6 +181,25 @@ public class Camera implements Cloneable{
             else{
                 camera.rayTracer = null;
             }
+            return this;
+        }
+
+        public Builder move(Vector vector) {
+            if (vector == null) {
+                throw new IllegalArgumentException("Vector cannot be null");
+            }
+            camera.p0 = camera.p0.add(vector);
+            camera.vTo = camera.pTarget.subtract(camera.p0).normalize();
+            camera.vUp = camera.vTo.crossProduct(camera.vUp.crossProduct(camera.vTo)).normalize();
+            return this;
+        }
+
+        public Builder rotate(double angle) {
+            // Rotate the camera's position and direction vectors around vTo
+            double radians = -Math.toRadians(angle);
+            Vector vRight = camera.vTo.crossProduct(camera.vUp).normalize();
+            camera.vUp = camera.vUp.scale(Math.cos(radians))
+                    .add(vRight.scale(Math.sin(radians)));
             return this;
         }
 
@@ -300,4 +321,13 @@ public class Camera implements Cloneable{
         imageWriter.writePixel(j, i, color);
     }
 
+    public Builder getBuilder(Camera old) {
+        return new Builder()
+                .setRayTracer(old.rayTracer.scene, RayTracerType.SIMPLE)
+                .setLocation(old.p0)
+                .setVpDistance(old.viewPlaneDistance)
+                .setVpSize((int) old.viewPlaneWidth, (int) old.viewPlaneHeight)
+                .setDirection(old.pTarget, old.vUp)
+                .setResolution(old.nX, old.nY);
+    }
 }
