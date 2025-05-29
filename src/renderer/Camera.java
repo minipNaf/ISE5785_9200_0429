@@ -184,6 +184,13 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        /**
+         * Move the camera by a specified vector.
+         * This method updates the camera's position and recalculates the vTo and vUp vectors.
+         * @param vector - the vector by which to move the camera
+         * @return this Builder object
+         * @throws IllegalArgumentException if the vector is null
+         */
         public Builder move(Vector vector) {
             if (vector == null) {
                 throw new IllegalArgumentException("Vector cannot be null");
@@ -193,6 +200,13 @@ public class Camera implements Cloneable{
             camera.vUp = camera.vTo.crossProduct(camera.vUp.crossProduct(camera.vTo)).normalize();
             return this;
         }
+
+        /**
+         * Rotate the camera around the vTo vector by a specified angle.
+         * This method updates the vUp vector based on the rotation angle.
+         * @param angle - the angle in degrees by which to rotate the camera
+         * @return this Builder object
+         */
 
         public Builder rotate(double angle) {
             // Rotate the camera's position and direction vectors around vTo
@@ -321,6 +335,12 @@ public class Camera implements Cloneable{
         imageWriter.writePixel(j, i, color);
     }
 
+    /**
+     * Returns a Builder object initialized with the properties of the given Camera object.
+     * This method is useful for creating a new Camera object based on an existing one.
+     * @param old - the Camera object to copy properties from
+     * @return a Builder object with the properties of the old Camera
+     */
     public Builder getBuilder(Camera old) {
         return new Builder()
                 .setRayTracer(old.rayTracer.scene, RayTracerType.SIMPLE)

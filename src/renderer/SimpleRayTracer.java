@@ -57,7 +57,7 @@ public class SimpleRayTracer extends RayTracerBase{
 
     /**
      * Calculates the color at a given point in the scene.
-     * This method currently returns the ambient light intensity of the scene.
+     * This method the color of a given point using the recursive calcColor
      *
      * @param intersection the intersection at which to calculate the color
      * @return the color at the specified point
@@ -67,6 +67,14 @@ public class SimpleRayTracer extends RayTracerBase{
                 add(scene.ambientLight.getIntensity().scale(intersection.material.ka));
     }
 
+    /**
+     * recursive calcColor. calculates the local effects color of intersection point and adds the global effects.
+     * @param intersection - intersection point on geometry
+     * @param ray - hitting ray
+     * @param level - level of recursive call
+     * @param k - current mekadem hanhata of global effect
+     * @return color of intersection point
+     */
     private Color calcColor(Intersection intersection, Ray ray, int level, Double3 k){
         if (!preprocessIntersection(intersection, ray.getDirection()))
             return Color.BLACK;
@@ -191,16 +199,36 @@ public class SimpleRayTracer extends RayTracerBase{
 //        return intersections == null; // no intersections, so the point is unshaded
 //    }
 
+    /**
+     * Calculate refraction ray, and to it the right delta
+     * @param ray - hitting ray
+     * @param intersection - intersection point on geometry
+     * @return refraction ray
+     */
     private Ray refractionRay(Ray ray, Intersection intersection) {
         return new Ray(ray.getDirection(), intersection.normal, intersection.point);
     }
 
+    /**
+     * Calculate reflection ray, and to it the right delta
+     * @param ray - hitting ray
+     * @param intersection - intersection point on geometry
+     * @return reflection ray
+     */
     private Ray reflectionRay(Ray ray, Intersection intersection) {
         Vector v = ray.getDirection();
         Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
         return new Ray(r, intersection.normal, intersection.point);
     }
 
+    /**
+     * Calculate global effect for either reflection or transperancy.
+     * @param ray - ray hitting intersection point
+     * @param level - depth of recursive calls
+     * @param initialK - initial mekadem hanhata of reflection or transperancy
+     * @param kx - mekadem hanhata of currnent material
+     * @return color of intersection point from global effect
+     */
     private Color calcGlobalEffect(Ray ray, int level, Double3 initialK, Double3 kx) {
         Double3 kkx = initialK.product(kx);
         if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
@@ -210,6 +238,14 @@ public class SimpleRayTracer extends RayTracerBase{
                 ? calcColor(intersection, ray, level - 1, kkx).scale(kx) : Color.BLACK;
     }
 
+    /**
+     * Calculates the color from global effects of intersection point
+     * @param intersection - intersection point on geometry
+     * @param ray - hitting ray
+     * @param level - level of recursive calls
+     * @param k - currnt mekadem hanhata of global effect
+     * @return  color from global effects of intersection point
+     */
     private Color calcGlobalEffects(Intersection intersection, Ray ray, int level, Double3 k) {
         return calcGlobalEffect(refractionRay(ray, intersection), level, k, intersection.material.kt)
             .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
