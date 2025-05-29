@@ -133,7 +133,7 @@ class ReflectionRefractionTests {
                         .setMaterial(new Material()), //
                 new Sphere(15d, new Point(85, 0, 65)) //
                         .setEmission(new Color(102, 51, 0)) //
-                        .setMaterial(new Material()), //
+                        .setMaterial(new Material().setkt(0.3)), //
                 new Triangle(new Point(85,0,65),
                         new Point(85,-20,30), //
                         new Point(85,20,30)) //
@@ -175,7 +175,7 @@ class ReflectionRefractionTests {
     }
 
     @Test
-    void geoGebraMirrorScene() {
+    void PersonMirrorScene() {
         // Large rectangular mirror
         scene.geometries.add(
                 new Polygon(new Point(-100, 0, -100), new Point(100, 0, -100), new Point(100, 0, 100), new Point(-100, 0, 100))
@@ -194,7 +194,7 @@ class ReflectionRefractionTests {
         scene.geometries.add(
                 new Cylinder(50d, new Ray(new Vector(0, 0, 1), new Point(0, -100, -45)), 85d)
                         .setEmission(new Color(255, 204, 0))
-                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(4))
         );
 
         // Person's head
@@ -208,28 +208,28 @@ class ReflectionRefractionTests {
         scene.geometries.add(
                 new Cylinder(10d, new Ray(new Vector(0, 0, -1), new Point(-25, -100, -45)), 50d)
                         .setEmission(new Color(255, 204, 0)) // White left leg
-                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(4))
         );
 
         // Right leg
         scene.geometries.add(
                 new Cylinder(10d, new Ray(new Vector(0, 0, -1), new Point(25, -100, -45)), 50d)
                         .setEmission(new Color(255, 204, 0)) // White right leg
-                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(40))
+                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(4))
         );
 
         // Left arm
         scene.geometries.add(
-                new Cylinder(10d, new Ray(new Vector(-1, -7, -2), new Point(-50, -100, 0)), 60d)
+                new Cylinder(10d, new Ray(new Vector(-1, -7, -2), new Point(-50, -100, 0)), 73.48d)
                         .setEmission(new Color(255, 204, 0)) //
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(5))
         );
 
         // Right arm
         scene.geometries.add(
-                new Cylinder(10d, new Ray(new Vector(1, -7, -2), new Point(50, -100, 0)), 60d)
+                new Cylinder(10d, new Ray(new Vector(1, -7, -2), new Point(50, -100, 0)), 73.48d)
                         .setEmission(new Color(255, 204, 0)) //
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(50))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(5))
         );
 
         // Eyes - white part
@@ -262,6 +262,7 @@ class ReflectionRefractionTests {
         Point p2 = new Point(1.47, -121.99, 71.81);
         Point p3 = new Point(4.8, -124.13, 64.45);
         Point p4 = new Point(-2.72, -124.53, 63.98);
+
         // Nose
         scene.geometries.add(
                 new Triangle(p1, p2, p3)
@@ -316,6 +317,35 @@ class ReflectionRefractionTests {
                         .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(80))
         );
 
+        // additional circles
+        // circle for left arm
+        scene.geometries.add(
+                new Circle(new Point(-60,-170,-20), 10d, new Vector(-1,-7,-2))
+                        .setEmission(new Color(204, 102, 0))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
+        );
+
+        // circle for right arm
+        scene.geometries.add(
+                new Circle(new Point(60,-170,-20), 10d, new Vector(1,-7,-2))
+                        .setEmission(new Color(204, 102, 0))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
+        );
+
+        // circle for body top
+        scene.geometries.add(
+                new Circle(new Point(0, -100, 40.1), 50d, new Vector(0, 0, 1))
+                        .setEmission(new Color(204, 102, 0))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
+        );
+
+        // circle for body bottom
+        scene.geometries.add(
+                new Circle(new Point(0, -100, -45.1), 50d, new Vector(0, 0, -1))
+                        .setEmission(new Color(204, 102, 0))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
+        );
+
         // Ground/floor
         scene.geometries.add(
                 new Polygon(new Point(-119.39, -337.76, -100), new Point(158.54, -340.42, -100),
@@ -349,7 +379,7 @@ class ReflectionRefractionTests {
                 .setResolution(800, 800)
                 .build()
                 .renderImage()
-                .writeToImage("geoGebraMirrorScene");
+                .writeToImage("PersonMirrorScene");
     }
 }
 

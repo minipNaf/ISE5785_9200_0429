@@ -3,7 +3,7 @@ package geometries;
 import primitives.*;
 
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -24,6 +24,16 @@ public class Cylinder extends Tube{
     protected final double height;
 
     /**
+     * The bottom base of the cylinder, represented as a circle.
+     */
+    private final Circle bottomBase;
+
+    /**
+     * The top base of the cylinder, represented as a circle.
+     */
+    private final Circle topBase;
+
+    /**
      * Constructs a Cylinder object with the specified radius, axis ray, and height.
      *
      * @param radius the radius of the cylinder's base; must be positive
@@ -36,6 +46,10 @@ public class Cylinder extends Tube{
         if (height <= 0)
             throw new ArithmeticException("height needs to be positive");
         this.height = height;
+        Point baseCenter = axis.getHead();
+        bottomBase = new Circle(baseCenter, radius, getNormal(baseCenter));
+        Point topCenter = baseCenter.add(axis.getDirection().scale(height));
+        topBase = new Circle(topCenter, radius, getNormal(topCenter));
     }
 
     /**
@@ -76,59 +90,45 @@ public class Cylinder extends Tube{
      * @param ray the ray to check for intersections
      * @return a list of intersection points, or null if there are no intersections
      */
-
     @Override
     public List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
-        Point rayHead = ray.getHead();
-        Plane base1 = new Plane(axis.getHead(), axis.getDirection());
-        Plane base2 = new Plane(axis.getHead().add(axis.getDirection().scale(height)), axis.getDirection());
-        List<Intersection> intersections = new ArrayList<>();
-        List<Intersection> temp; //to check if a list is null beforehand
-        temp = super.calculateIntersectionsHelper(ray, maxDistance);
-        if(temp != null) intersections.addAll(temp);
-        temp = base1.calculateIntersectionsHelper(ray, maxDistance);
-        if(temp != null) intersections.addAll(temp);
-        temp = base2.calculateIntersectionsHelper(ray, maxDistance);
-        if(temp != null) intersections.addAll(temp);
-        double t, s;
-        Vector v;
-        Point p;
-        int size = intersections.size();
-        //couldn't just use iterators for that, because removing from the list while going through it disrupts the iterator
-        for(int i = 0; i < size; i++) { 
-
-            // if t < 0, the point is below base1, if t > height, the point is above base2
-        // t represents the difference in height between base1 and the first intersection point
-            //s represents the distance from the cylinders axis to the intersection point
-            //if s is greater than radius, it means the point is not on the cylinder
-            Intersection intersection = intersections.get(i);
-            if(intersection.point.equals(axis.getHead())) {
-                t = 0;
-                s = 0;
-            }
-            else{
-                v = intersection.point.subtract(axis.getHead());
-                t = axis.getDirection().dotProduct(v);
-                s = Math.sqrt(alignZero(v.lengthSquared() - t * t));
+        Point baseCenter = axis.getHead();
+        List<Intersection> intersections = null;
+        var list = super.calculateIntersectionsHelper(ray, maxDistance);
+        if (list != null)
+            for (Intersection intersection : list) {
+                double distance = Util.alignZero(intersection.point.subtract(baseCenter).dotProduct(axis.getDirection()));
+                if (distance > 0 && Util.alignZero(distance - height) < 0) {
+                    if (intersections == null)
+                        intersections = new LinkedList<>();
+                    intersections.add(new Intersection(this, intersection.point, this.getMaterial()));
+                }
             }
 
-            if ((alignZero(t) < 0 || alignZero(t - height) > 0 || alignZero(s - radius) > 0)
-                || (alignZero(t - height) == 0 && alignZero(s - radius) == 0)
-                || alignZero(t) == 0 && alignZero(s - radius) == 0){
-                intersections.remove(intersection);
-                i--;
-                size--;
-            }
+        // Check intersection with the bottom base
+        intersections = getIntersections(ray, bottomBase, intersections, maxDistance);
 
-        }
-        if(intersections.isEmpty()) {
-            return null;
-        }
-        if(intersections.getFirst().equals(intersections.getLast())) return List.of(intersections.getFirst());
-        if(intersections.getFirst().point.distanceSquared(rayHead) > intersections.getLast().point.distanceSquared(rayHead)) {
-            Intersection temp1 = intersections.getFirst();
-            intersections.set(0, intersections.getLast());
-            intersections.set(1, temp1);
+        // Check intersection with top base
+        intersections = getIntersections(ray, topBase, intersections, maxDistance);
+
+        return intersections;
+    }
+
+    /**
+     * A helper method to calculate intersections between a ray and a circular base of the cylinder.
+     *
+     * @param ray            the ray to intersect
+     * @param circle         the circular base (either bottom or top)
+     * @param intersections  the existing list of intersections
+     * @param maxDistance the maximum allowed distance from the ray's origin to an intersection point
+     * @return an updated list of intersections including any new intersection with the given circle
+     */
+    private List<Intersection> getIntersections(Ray ray, Circle circle, List<Intersection> intersections, double maxDistance) {
+        var list = circle.calculateIntersections(ray, maxDistance);
+        if (list != null) {
+            if (intersections == null)
+                intersections = new LinkedList<>();
+            intersections.add(new Intersection(this, list.getFirst().point, this.getMaterial()));
         }
         return intersections;
     }
