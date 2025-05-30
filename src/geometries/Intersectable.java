@@ -94,7 +94,7 @@ public abstract class Intersectable {
 
         @Override
         public String toString() {
-            return STR."Intersection{geometry=\{geometry}, point=\{point}}";
+            return "Intersection:geometry=" + geometry + ", point=" + point;
         }
 
         @Override

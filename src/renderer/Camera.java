@@ -210,7 +210,7 @@ public class Camera implements Cloneable{
 
         public Builder rotate(double angle) {
             // Rotate the camera's position and direction vectors around vTo
-            double radians = -Math.toRadians(angle);
+            double radians = Math.toRadians(angle);
             Vector vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             camera.vUp = camera.vUp.scale(Math.cos(radians))
                     .add(vRight.scale(Math.sin(radians)));
