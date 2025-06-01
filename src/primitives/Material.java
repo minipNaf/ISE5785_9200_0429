@@ -31,10 +31,28 @@ public class Material
      * The transparency of the material.
      */
     public Double3 kt = Double3.ZERO;
+
+
+
+    /**
+     * The diffusion of the material, which affects the appearance of object through glass.
+     * The value represents the distance of the blackBoard of diffusion from the intersection point.
+     * A higher value results in sharper refractions.
+     */
+    public double diffusion = Double.POSITIVE_INFINITY;
     /**
      * The reflection coefficient of the material.
      */
     public Double3 kr = Double3.ZERO;
+
+
+
+    /**
+     * The glossure of the material, which affects the appearance of reflections.
+     * The value represents the distance of the blackBoard of glossure from the intersection point.
+     * A higher value results in sharper reflections.
+     */
+    public double glossure = Double.POSITIVE_INFINITY;
 
     /**
      * Setter for ka with Double3 parameter
@@ -144,6 +162,26 @@ public class Material
      */
     public Material setkr(double kr) {
         this.kr = new Double3(kr);
+        return this;
+    }
+
+    /**
+     * Setter for diffusion
+     * @param diffusion - diffusion value
+     * @return this Material object
+     */
+    public Material setDiffusion(int diffusion) {
+        this.diffusion = diffusion;
+        return this;
+    }
+
+    /**
+     * Setter for glossure
+     * @param glossure - glossure value
+     * @return this Material object
+     */
+    public Material setGlossure(int glossure) {
+        this.glossure = glossure;
         return this;
     }
 }

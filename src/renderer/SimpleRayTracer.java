@@ -205,37 +205,56 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param intersection - intersection point on geometry
      * @return refraction ray
      */
-    private Ray refractionRay(Ray ray, Intersection intersection) {
-        return new Ray(ray.getDirection(), intersection.normal, intersection.point);
+    private List<Ray> refractionRay(Ray ray, Intersection intersection) {
+        if (intersection.material.diffusion == Double.POSITIVE_INFINITY) {
+            return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
+        }
+        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.diffusion,
+                ray.getDirection().getNormal(), ray.getDirection());
+        return blackBoard.castRays();
     }
-
     /**
      * Calculate reflection ray, and to it the right delta
      * @param ray - hitting ray
      * @param intersection - intersection point on geometry
      * @return reflection ray
      */
-    private Ray reflectionRay(Ray ray, Intersection intersection) {
+    private List<Ray> reflectionRay(Ray ray, Intersection intersection) {
         Vector v = ray.getDirection();
         Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
-        return new Ray(r, intersection.normal, intersection.point);
+        if (intersection.material.glossure == Double.POSITIVE_INFINITY) {
+            return List.of(new Ray(r, intersection.normal, intersection.point));
+        }
+        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.glossure,
+                r.getNormal(), r);
+        return blackBoard.castRays();
     }
 
     /**
      * Calculate global effect for either reflection or transperancy.
-     * @param ray - ray hitting intersection point
+     * @param rays - ray hitting intersection point
      * @param level - depth of recursive calls
      * @param initialK - initial mekadem hanhata of reflection or transperancy
      * @param kx - mekadem hanhata of currnent material
      * @return color of intersection point from global effect
      */
-    private Color calcGlobalEffect(Ray ray, int level, Double3 initialK, Double3 kx) {
+    private Color calcGlobalEffect(List<Ray> rays, int level, Double3 initialK, Double3 kx) {
         Double3 kkx = initialK.product(kx);
-        if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
-        Intersection intersection = findClosestIntersection(ray);
-        if (intersection == null) return scene.background.scale(kx);
-        return preprocessIntersection(intersection, ray.getDirection())
-                ? calcColor(intersection, ray, level - 1, kkx).scale(kx) : Color.BLACK;
+        Intersection intersection;
+        if (kkx.lowerThan(MIN_CALC_COLOR_K)) {
+            return Color.BLACK;
+        }
+        Color global = new Color(); //Black final cannot be changed so
+
+        for (Ray ray : rays) {
+            intersection = findClosestIntersection(ray);
+            if (intersection == null) global = global.add(scene.background.scale(kx));
+            else if (preprocessIntersection(intersection, ray.getDirection())) {
+                global = global.add(calcColor(intersection, ray, level - 1, kkx)).scale(kx);
+            }
+        }
+
+        return global.scale(1D / rays.size());
     }
 
     /**
@@ -248,7 +267,7 @@ public class SimpleRayTracer extends RayTracerBase{
      */
     private Color calcGlobalEffects(Intersection intersection, Ray ray, int level, Double3 k) {
         return calcGlobalEffect(refractionRay(ray, intersection), level, k, intersection.material.kt)
-            .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
+                .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
     }
 
     /**
@@ -281,5 +300,6 @@ public class SimpleRayTracer extends RayTracerBase{
         // Return the closest point found
         return closestPoint;
     }
-
 }
+
+
