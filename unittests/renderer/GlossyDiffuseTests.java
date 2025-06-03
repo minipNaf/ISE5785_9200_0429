@@ -59,7 +59,7 @@ scene.geometries.add(
                         new Point(-40, 20, 100),
                         new Point(40, 20, 100))
                         .setEmission(new Color(20, 20, 20)) //
-                        .setMaterial(new Material().setkr(0.7)),
+                        .setMaterial(new Material().setkr(0.7).setGlossure(1)),
                 new Cylinder(2d, new Ray(new Vector(0, 0, 1), new Point(0, 0, -15)), 65d)
                         .setEmission(new Color(255, 255, 102)),
                 new Cylinder(23d, new Ray(new Vector(0, -1, 0), new Point(0, 3, 70)), 6d)

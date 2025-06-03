@@ -205,7 +205,7 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param intersection - intersection point on geometry
      * @return refraction ray
      */
-    private List<Ray> refractionRays(Ray ray, Intersection intersection) {
+    private List<Ray> refractionRay(Ray ray, Intersection intersection) {
         if (intersection.material.diffusion == Double.POSITIVE_INFINITY) {
             return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
         }
@@ -219,16 +219,21 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param intersection - intersection point on geometry
      * @return reflection ray
      */
-    private List<Ray> reflectionRays(Ray ray, Intersection intersection) {
+    private List<Ray> reflectionRay(Ray ray, Intersection intersection) {
         Vector v = ray.getDirection();
         Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
+
         if (intersection.material.glossure == Double.POSITIVE_INFINITY) {
             return List.of(new Ray(r, intersection.normal, intersection.point));
         }
-        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.glossure,
+
+        // For BlackBoard, pass the offset point
+        Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
+        BlackBoard blackBoard = new BlackBoard(offsetPoint, intersection.material.glossure,
                 r.getNormal(), r);
         return blackBoard.castRays();
     }
+
 
     /**
      * Calculate global effect for either reflection or transperancy.
@@ -244,7 +249,7 @@ public class SimpleRayTracer extends RayTracerBase{
         if (kkx.lowerThan(MIN_CALC_COLOR_K)) {
             return Color.BLACK;
         }
-        Color global = new Color();
+        Color global = new Color(); //Black final cannot be changed so
 
         for (Ray ray : rays) {
             intersection = findClosestIntersection(ray);
@@ -266,8 +271,8 @@ public class SimpleRayTracer extends RayTracerBase{
      * @return  color from global effects of intersection point
      */
     private Color calcGlobalEffects(Intersection intersection, Ray ray, int level, Double3 k) {
-        return calcGlobalEffect(refractionRays(ray, intersection), level, k, intersection.material.kt)
-                .add(calcGlobalEffect(reflectionRays(ray, intersection), level, k, intersection.material.kr));
+        return calcGlobalEffect(refractionRay(ray, intersection), level, k, intersection.material.kt)
+                .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
     }
 
     /**
