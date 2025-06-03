@@ -205,7 +205,7 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param intersection - intersection point on geometry
      * @return refraction ray
      */
-    private List<Ray> refractionRay(Ray ray, Intersection intersection) {
+    private List<Ray> refractionRays(Ray ray, Intersection intersection) {
         if (intersection.material.diffusion == Double.POSITIVE_INFINITY) {
             return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
         }
@@ -219,7 +219,7 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param intersection - intersection point on geometry
      * @return reflection ray
      */
-    private List<Ray> reflectionRay(Ray ray, Intersection intersection) {
+    private List<Ray> reflectionRays(Ray ray, Intersection intersection) {
         Vector v = ray.getDirection();
         Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
         if (intersection.material.glossure == Double.POSITIVE_INFINITY) {
@@ -244,13 +244,13 @@ public class SimpleRayTracer extends RayTracerBase{
         if (kkx.lowerThan(MIN_CALC_COLOR_K)) {
             return Color.BLACK;
         }
-        Color global = new Color(); //Black final cannot be changed so
+        Color global = new Color();
 
         for (Ray ray : rays) {
             intersection = findClosestIntersection(ray);
             if (intersection == null) global = global.add(scene.background.scale(kx));
             else if (preprocessIntersection(intersection, ray.getDirection())) {
-                global = global.add(calcColor(intersection, ray, level - 1, kkx)).scale(kx);
+                global = global.add(calcColor(intersection, ray, level - 1, kkx).scale(kx));
             }
         }
 
@@ -266,8 +266,8 @@ public class SimpleRayTracer extends RayTracerBase{
      * @return  color from global effects of intersection point
      */
     private Color calcGlobalEffects(Intersection intersection, Ray ray, int level, Double3 k) {
-        return calcGlobalEffect(refractionRay(ray, intersection), level, k, intersection.material.kt)
-                .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
+        return calcGlobalEffect(refractionRays(ray, intersection), level, k, intersection.material.kt)
+                .add(calcGlobalEffect(reflectionRays(ray, intersection), level, k, intersection.material.kr));
     }
 
     /**

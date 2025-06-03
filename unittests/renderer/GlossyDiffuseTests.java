@@ -2,15 +2,13 @@ package renderer;
 
 import geometries.Cylinder;
 import geometries.Polygon;
-import geometries.Sphere;
 import lighting.AmbientLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
 
-import static java.awt.Color.BLUE;
-import static java.awt.Color.RED;
+import static java.awt.Color.*;
 
 public class GlossyDiffuseTests {
     private final Scene scene         = new Scene("Test scene");
