@@ -170,7 +170,7 @@ public class Material
      * @param diffusion - diffusion value
      * @return this Material object
      */
-    public Material setDiffusion(int diffusion) {
+    public Material setDiffusion(double diffusion) {
         this.diffusion = diffusion;
         return this;
     }
@@ -180,7 +180,7 @@ public class Material
      * @param glossure - glossure value
      * @return this Material object
      */
-    public Material setGlossure(int glossure) {
+    public Material setGlossure(double glossure) {
         this.glossure = glossure;
         return this;
     }

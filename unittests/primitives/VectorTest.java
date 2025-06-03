@@ -179,7 +179,6 @@ class VectorTest {
      * test the subtract operation
      * test for: {@link primitives.Vector#substract(Vector)} ()}
      */
-
     void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
         //test 01: check case for subtracting two vectors
@@ -190,5 +189,12 @@ class VectorTest {
         //test 01: check case for subtracting a vector from itself
         assertThrows(IllegalAccessException.class,()->vec.subtract(vec),
                 "ERROR: (point - itself) does not throw an exception");
+    }
+
+    void testGetNormal() {
+        // ============ Equivalence Partitions Tests ==============
+        //test 01: check case for getting the normal vector
+        assertEquals(new Vector(0,-3,2),vec.getNormal(),
+                "ERROR: getNormal() does not work correctly");
     }
 }

@@ -146,5 +146,12 @@ public class Vector extends Point {
         return xyz.d1()*u.xyz.d1()+ xyz.d2()*u.xyz.d2()+ xyz.d3()*u.xyz.d3();
     }
 
+    /**
+     * Computes a normal vector to the vector calling this method.
+     * @return normal vector to the vector calling this method.
+     */
+    public Vector getNormal(){
+        return new Vector(0, -xyz.d3(), xyz.d2());
+    }
 }
 
