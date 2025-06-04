@@ -24,7 +24,7 @@ public class CameraIntersectionsIntegrationTests {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 // Construct a ray for each pixel in the view plane
-                Ray ray = camera.constructRay(3, 3, j, i);
+                Ray ray = camera.constructRay(3, 3, j, i).getFirst();
                 // Check if the ray intersects with any geometry
                 try{
                     intersectionsCount += geometry.findIntersections(ray).size();

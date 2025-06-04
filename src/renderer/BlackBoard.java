@@ -32,13 +32,13 @@ public class BlackBoard {
         double cellSize = size / numSamples;
         double Xj, Yi;
         double jitteration;
-        Random rand = new Random();
         for (int i = 0; i < numSamples; i++) {
             for(int j = 0; j < numSamples; j++) {
                 jitteration = Double.POSITIVE_INFINITY;
                 Xj = (j - (numSamples-1) / 2d) * (cellSize);
+                Random rand = new Random();
                 while(Math.abs(jitteration) > cellSize/2){
-                    jitteration = rand.nextDouble();
+                    jitteration = rand.nextGaussian() * cellSize / 4;
                 }
                 Xj += jitteration;
 
@@ -46,7 +46,7 @@ public class BlackBoard {
 
                 jitteration = Double.POSITIVE_INFINITY;
                 while(Math.abs(jitteration) > cellSize/2){
-                    jitteration = rand.nextDouble();
+                    jitteration = rand.nextGaussian() * cellSize / 4;
                 }
                 Yi += jitteration;
                 pIJ = location;
@@ -67,7 +67,8 @@ public class BlackBoard {
         this.circular = circular;
         return this;
     }
-    public void setSize(double size) { //only for testing purposes, 0.5 is enough for most cases
+    public BlackBoard setSize(double size) {
         this.size = size;
+        return this;
     }
 }
