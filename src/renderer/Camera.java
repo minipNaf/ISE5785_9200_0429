@@ -2,7 +2,9 @@ package renderer;
 
 import primitives.*;
 import scene.Scene;
-
+import java.util.stream.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 
 //import static primitives.Util.isZero;
@@ -325,7 +327,7 @@ public class Camera implements Cloneable{
      * @param i - pixel index in the y direction
      * @return a Ray object representing the ray from the camera to the specified pixel
      */
-    public Ray constructRay(int nX, int nY, int j, int i) {
+    public List<Ray> constructRay(int nX, int nY, int j, int i) {
         double Xj = (j - (nX-1) / 2d) * (viewPlaneWidth / nX);
         double Yi = -(i - (nY-1) / 2d) * (viewPlaneHeight / nY);
 
@@ -336,7 +338,13 @@ public class Camera implements Cloneable{
         // we are calculating the ray through the pixel in three stages so we won't have a problem of zero vector.
         if (Xj != 0) pIJ = pIJ.add(vRight.scale(Xj));
         if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
-        return new Ray(pIJ.subtract(p0).normalize(), p0);
+        Ray pixelRay = new Ray(pIJ.subtract(p0).normalize(), p0);
+        if (!antiAliasing) {
+            return List.of(pixelRay);
+        }
+        Vector pixelDirection = pixelRay.getDirection();
+        BlackBoard blackBoard = new BlackBoard(p0, pIJ.distance(p0), vUp, pixelDirection).setSize(viewPlaneWidth/nX);
+        return blackBoard.castRays();
     }
     /**
      *the function casts rays through every pixel on the view plane
@@ -386,9 +394,13 @@ public class Camera implements Cloneable{
      * @param i - pixel index in the y direction
      */
     private void castRay(int j, int i){
-        Ray ray = constructRay(nX, nY, j, i);
-        Color color = rayTracer.traceRay(ray);
-        imageWriter.writePixel(j, i, color);
+        List<Ray> pixelRays = constructRay(nX, nY, j, i);
+        Color color = Color.BLACK; // Default color if no rays are traced
+        for (Ray pixelRay : pixelRays) {
+            color = color.add(rayTracer.traceRay(pixelRay));
+        }
+        imageWriter.writePixel(j, i, color.scale(1d /pixelRays.size()));
+        pixelManager.pixelDone();
     }
 
     /**
