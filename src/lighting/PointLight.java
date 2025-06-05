@@ -25,6 +25,11 @@ public class PointLight extends Light implements LightSource{
     private double kQ = 0d;
 
     /**
+     * The radius of the point light, used for soft shadows.
+     */
+    private double radius = 0d;
+
+    /**
      * Constructs a PointLight object with the specified position and intensity.
      *
      * @param intensity the color intensity of the light
@@ -78,6 +83,16 @@ public class PointLight extends Light implements LightSource{
      */
     public PointLight setkQ(double kQ) {
         this.kQ = kQ;
+        return this;
+    }
+
+    @Override
+    public double getRadius() {
+        return radius;
+    }
+
+    public PointLight setRadius(double radius) {
+        this.radius = radius;
         return this;
     }
 }

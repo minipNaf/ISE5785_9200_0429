@@ -39,14 +39,13 @@ scene.geometries.add(
         );
 
 
-
         cameraBuilder
-                .setLocation(new Point(100, 1000, 50)) //
-                .setDirection(Point.ZERO, Vector.AXIS_Z) //
-                .setVpDistance(500).setVpSize(150, 150) //
-                .setResolution(500, 500) //
-                .build() //
-                .renderImage() //
+                .setLocation(new Point(100, 1000, 50)) // Set camera location
+                .setDirection(Point.ZERO, Vector.AXIS_Z)
+                .setVpDistance(500).setVpSize(150, 150)
+                .setResolution(500, 500)
+                .build()
+                .renderImage()
                 .writeToImage("lollipop with diffused glass test");
     }
     @Test
@@ -73,6 +72,7 @@ scene.geometries.add(
                 .setDirection(Point.ZERO, Vector.AXIS_Z) //
                 .setVpDistance(500).setVpSize(150, 150) //
                 .setResolution(500, 500) //
+                .setDebugPrint(50)
                 .build() //
                 .renderImage() //
                 .writeToImage("lollipop with glossy surface test");

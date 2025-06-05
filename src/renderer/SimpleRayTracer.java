@@ -1,9 +1,13 @@
 package renderer;
 
+import lighting.DirectionalLight;
 import lighting.LightSource;
+import lighting.PointLight;
 import primitives.*;
 import scene.Scene;
 import geometries.Intersectable. Intersection;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -174,17 +178,31 @@ public class SimpleRayTracer extends RayTracerBase{
      * @return ktr - final mekadem hanhata of transparency
      */
     private Double3 transparency(Intersection intersection) {
-        Vector pointToLight = intersection.l.scale(-1); // from point to light source
-        Ray shadowRay = new Ray(pointToLight, intersection.normal, intersection.point);
+        Vector pointToLight = intersection.l.scale(-1);
         double lightDistance = intersection.light.getDistance(intersection.point);
-        Double3 ktr = Double3.ONE;
-        var intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
-        if (intersections != null) {
-            for (Intersection i : intersections) {
-                ktr = ktr.product(i.material.kt);
-            }
+        List<Ray> shadowRays = new ArrayList<>();
+        if (intersection.light.getRadius() == 0)
+            shadowRays = List.of(new Ray(pointToLight, intersection.normal, intersection.point));
+        else {
+            BlackBoard blackBoard = new BlackBoard(intersection.point, 10, pointToLight.getNormal(), pointToLight);
+            blackBoard.setSize(10* intersection.light.getRadius()*2/lightDistance).setCircular(true);
+            shadowRays = blackBoard.castRays();
         }
-        return ktr;
+
+        Double3 ktr;
+        Double3 averageKtr = Double3.ZERO;
+        List<Intersection> intersections = new ArrayList<>();
+        for (Ray shadowRay : shadowRays) {
+            intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
+            ktr = Double3.ONE;
+            if (intersections != null) {
+                for (Intersection i : intersections) {
+                    ktr = ktr.product(i.material.kt);
+                }
+            }
+            averageKtr = averageKtr.add(ktr);
+        }
+        return averageKtr.scale(1D / shadowRays.size());
     }
 
 //    private boolean unshaded(Intersection intersection){

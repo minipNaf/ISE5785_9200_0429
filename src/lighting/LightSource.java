@@ -7,6 +7,13 @@ import primitives.*;
  * This interface defines methods to get the intensity and direction of the light source.
  */
 public interface LightSource {
+
+    /**
+     * radius of LightSource
+     *
+     */
+    double radius = 0d;
+
     /**
      * Returns the intensity of the light at a given point in space.
      *
@@ -29,5 +36,11 @@ public interface LightSource {
      * @return distance from light source
      */
     double getDistance(Point point);
+
+    /**
+     * Returns the radius of the point light.
+     * @return the radius of the point light
+     */
+    public double getRadius();
 
 }

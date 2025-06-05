@@ -31,5 +31,4 @@ public class Light {
         return intensity;
     }
 
-
 }

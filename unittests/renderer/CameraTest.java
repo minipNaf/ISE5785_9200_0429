@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import renderer.Camera;
 
+import java.util.List;
+
 /**
  * Testing Camera Class
  * @author Dan
@@ -31,32 +33,32 @@ class CameraTest {
 
         // ============ Equivalence Partitions Tests ==============
         // EP01: 4X4 Inside (1,1)
-        assertEquals(new Ray(new Vector(1, -1, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(1, -1, -10), Point.ZERO)),
                 camera1.constructRay(4, 4, 1, 1), BAD_RAY);
 
         // =============== Boundary Values Tests ==================
         // BV01: 4X4 Corner (0,0)
-        assertEquals(new Ray(new Vector(3, -3, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(3, -3, -10), Point.ZERO)),
                 camera1.constructRay(4, 4, 0, 0), BAD_RAY);
 
         // BV02: 4X4 Side (0,1)
-        assertEquals(new Ray(new Vector(1, -3, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(1, -3, -10), Point.ZERO)),
                 camera1.constructRay(4, 4, 1, 0), BAD_RAY);
 
         // BV03: 3X3 Center (1,1)
-        assertEquals(new Ray(new Vector(0, 0, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(0, 0, -10), Point.ZERO)),
                 camera2.constructRay(3, 3, 1, 1), BAD_RAY);
 
         // BV04: 3X3 Center of Upper Side (0,1)
-        assertEquals(new Ray(new Vector(0, -2, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(0, -2, -10), Point.ZERO)),
                 camera2.constructRay(3, 3, 1, 0), BAD_RAY);
 
         // BV05: 3X3 Center of Left Side (1,0)
-        assertEquals(new Ray(new Vector(2, 0, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(2, 0, -10), Point.ZERO)),
                 camera2.constructRay(3, 3, 0, 1), BAD_RAY);
 
         // BV06: 3X3 Corner (0,0)
-        assertEquals(new Ray(new Vector(2, -2, -10), Point.ZERO),
+        assertEquals(List.of(new Ray(new Vector(2, -2, -10), Point.ZERO)),
                 camera2.constructRay(3, 3, 0, 0), BAD_RAY);
 
     }
@@ -73,7 +75,7 @@ class CameraTest {
         Vector right1     = Vector.AXIS_Z;
         Vector up1        = new Vector(1, 1, 0).normalize();
         Vector direction1 = center1.add(up1.normalize()).subtract(right1).subtract(Point.ZERO);
-        assertEquals(new Ray(direction1, Point.ZERO), camera1.constructRay(2, 2, 0, 0));
+        assertEquals(new Ray(direction1, Point.ZERO), camera1.constructRay(2, 2, 0, 0).get(0));
 
         // EP02: set to a target point with up vector
         Point  target2    = new Point(0, 5, 0);
@@ -82,7 +84,7 @@ class CameraTest {
         Vector right2     = Vector.AXIS_X;
         Vector up2        = Vector.AXIS_Z;
         Vector direction2 = center2.add(up2).subtract(right2).subtract(Point.ZERO);
-        assertEquals(new Ray(direction2, Point.ZERO), camera2.constructRay(2, 2, 0, 0));
+        assertEquals(new Ray(direction2, Point.ZERO), camera2.constructRay(2, 2, 0, 0).get(0));
 
         // =============== Boundary Values Tests ==================
         // BV01: set to a target on Y-axis without up

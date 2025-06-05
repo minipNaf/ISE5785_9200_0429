@@ -40,4 +40,10 @@ public class DirectionalLight extends Light implements LightSource{
     public double getDistance(Point point) {
         return Double.POSITIVE_INFINITY; // Directional light is considered to be infinitely far away
     }
+
+    @Override
+    public double getRadius() {
+        return 0; // Directional light does not have a radius
+    }
+
 }
