@@ -184,8 +184,8 @@ public class SimpleRayTracer extends RayTracerBase{
         if (intersection.light.getRadius() == 0)
             shadowRays = List.of(new Ray(pointToLight, intersection.normal, intersection.point));
         else {
-            BlackBoard blackBoard = new BlackBoard(intersection.point, 10, pointToLight.getNormal(), pointToLight);
-            blackBoard.setSize(10* intersection.light.getRadius()*2/lightDistance).setCircular(true);
+            BlackBoard blackBoard = new BlackBoard(intersection.point, lightDistance, pointToLight.getNormal(), pointToLight);
+            blackBoard.setSize(intersection.light.getRadius()).setCircular(true);
             shadowRays = blackBoard.castRays();
         }
 
@@ -198,11 +198,12 @@ public class SimpleRayTracer extends RayTracerBase{
             if (intersections != null) {
                 for (Intersection i : intersections) {
                     ktr = ktr.product(i.material.kt);
+
                 }
             }
             averageKtr = averageKtr.add(ktr);
         }
-        return averageKtr.scale(1D / shadowRays.size());
+        return averageKtr.reduce(shadowRays.size());
     }
 
 //    private boolean unshaded(Intersection intersection){

@@ -69,7 +69,7 @@ public class Sphere extends RadialGeometry{
         // distance between ray head and second intersection point
         double t2 = Util.alignZero(ray.getPoint(tm + th).distance(ray.getHead()));
 
-         /**The compareSign method has a bug - it doesn't take into account the fixed accuracy in Util,
+        /**The compareSign method has a bug - it doesn't take into account the fixed accuracy in Util,
          so I had to use the alignZero method to cover the case of zero
          **/
         if(!Util.compareSign(Util.alignZero(tm - th),1)) {
@@ -95,7 +95,5 @@ public class Sphere extends RadialGeometry{
         }
 
         return intersections;
-
-
     }
 }

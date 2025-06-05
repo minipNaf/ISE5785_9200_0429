@@ -76,11 +76,18 @@ public class Tube extends RadialGeometry{
         List<Intersection> temp = sphere.calculateIntersectionsHelper(new Ray(vProg,head), maxDistance);
         if(temp == null) return null;
         List<Intersection> intersections = new LinkedList<>(temp);
+        double intersectionDelta = 0d;
         for (int i = 0;i<intersections.size();i++) {
             if(Util.alignZero(intersections.get(i).point.distanceSquared(head)/vProg.lengthSquared()
                     - maxDistance*maxDistance)<=0) {
-                intersections.set(i, new Intersection(this, ray.getPoint(intersections.get(i).point.subtract(head).length() /
-                         vProg.length()), this.getMaterial())); //Tales's law
+                if(intersections.get(i).point.equals(head)) {
+                    intersectionDelta = 0d;
+                }
+                else{
+                    intersectionDelta = intersections.get(i).point.subtract(head).length() /
+                            vProg.length();
+                }
+                intersections.set(i, new Intersection(this, ray.getPoint(intersectionDelta), this.getMaterial())); //Tales's law
             }
 
         }

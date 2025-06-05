@@ -35,9 +35,9 @@ public class SoftShadowsTest {
         // Add a light source with soft shadows
         scene.lights.add(
                 new SpotLight(new Color(255, 255, 0), new Point(-40, 60, 20), new Vector(4, -6, -1))
-                        .setRadius(10));
+                        .setRadius(1));
         cameraBuilder
-                .setLocation(new Point(40, 60, 50)) //
+                .setLocation(new Point(40, -60, 20)) //
                 .setDirection(Point.ZERO, Vector.AXIS_Z) //
                 .setVpDistance(10).setVpSize(3, 3) //
                 .setResolution(500, 500) //

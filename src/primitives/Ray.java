@@ -80,8 +80,12 @@ public class Ray {
      * @return the point on the ray at distance t from the head
      */
     public Point getPoint(double t) {
-        if (Util.isZero(t)) return head;
-        return head.add(direction.scale(t));
+        try {
+            return head.add(direction.scale(t));
+        }
+        catch (IllegalArgumentException e) {
+            return head;
+        }
     }
 
     @Override
