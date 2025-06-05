@@ -62,12 +62,12 @@ public class Ray {
      */
     public Ray(Vector direction, Vector normal, Point head) {
         // If the direction is parallel to the normal, we need to adjust the head position
-        if (Util.isZero(direction.dotProduct(normal))) {
-            this.head = head;
-        } else {
+//        if (Util.isZero(direction.dotProduct(normal))) {
+//            this.head = head;
+//        } else {
             double nv = normal.dotProduct(direction);
             this.head = head.add(normal.scale(nv > 0 ? DELTA : -DELTA));
-        }
+        //}
         this.direction = direction.normalize();
     }
 

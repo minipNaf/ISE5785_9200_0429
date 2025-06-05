@@ -183,13 +183,6 @@ class ReflectionRefractionTests {
                         .setMaterial(new Material().setkr(1))
         );
 
-        // a tube the person is holding
-        scene.geometries.add(
-                new Tube(10d, new Ray(new Vector(0,0,1), new Point(-60,-170,-100)))
-                        .setEmission(new Color(255, 102, 102))
-                        .setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(100).setkt(0.3))
-        );
-
         // Person's body
         scene.geometries.add(
                 new Cylinder(50d, new Ray(new Vector(0, 0, 1), new Point(0, -100, -45)), 85d)
@@ -201,7 +194,7 @@ class ReflectionRefractionTests {
         scene.geometries.add(
                 new Sphere(25d, new Point(0, -100, 60))
                         .setEmission(new Color(102, 255, 102))
-                        .setMaterial(new Material().setKd(0.6).setKs(0.4).setkt(0.8))
+                        .setMaterial(new Material().setKd(0.6).setKs(0.4))
         );
 
         // Left leg
@@ -345,6 +338,50 @@ class ReflectionRefractionTests {
                         .setEmission(new Color(204, 102, 0))
                         .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
         );
+        // spheres for hands and cylinders for fingers
+        scene.geometries.add(
+            new Sphere(9, new Point(-60,-175,-23))
+                .setEmission(new Color(204, 102, 0))
+                .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Sphere(9, new Point(60,-175,-23))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            // right-hand fingers
+            new Cylinder(2, new Point(-51.47,-177.87, -23.06), new Point(-43,-177.87,-23.06))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(-55.29, -182.6, -24.04), new Point(-54,-192,-24.04))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(-60.24, -183.35, -24.61), new Point(-61,-194,-24.61))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(-64.69, -182.61, -24.04), new Point(-68,-191,-24.04))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(-67.98, -179.14, -22.59), new Point(-74,-185,-22.59))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            // left-hand fingers
+            new Cylinder(2, new Point(51.47,-177.87, -23.06), new Point(43,-177.87,-23.06))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(55.29, -182.6, -24.04), new Point(54,-192,-24.04))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(60.24, -183.35, -24.61), new Point(61,-194,-24.61))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(64.69, -182.61, -24.04), new Point(68,-191,-24.04))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8)),
+            new Cylinder(2, new Point(67.98, -179.14, -22.59), new Point(74,-185,-22.59))
+                    .setEmission(new Color(204, 102, 0))
+                    .setMaterial(new Material().setKd(0.6).setKs(0.4).setShininess(8))
+        );
+        // hair
+        scene.geometries.add(new Sphere(25, new Point(0,-97,63))
+                .setEmission(new Color(102, 51, 0)));
 
         // Ground/floor
         scene.geometries.add(
@@ -377,6 +414,7 @@ class ReflectionRefractionTests {
                 .setVpDistance(300)
                 .setVpSize(400, 400)
                 .setResolution(800, 800)
+                .setMultithreading(-1)
                 .build()
                 .renderImage()
                 .writeToImage("PersonMirrorScene");

@@ -29,8 +29,9 @@ public class SoftShadowsTest {
                 new Plane(new Point(0, 0, 1), new Vector(0, 0, 1))
                         .setEmission(new Color(255, 255, 255)),
 
-                new Cylinder(3, new Ray(new Vector(0, 0, 1), new Point(0, 0, 0)), 10)
-                        .setEmission(new Color(100, 100, 100))
+                new Cylinder(3, new Ray(new Vector(0, 0, 1), new Point(0, 0, 0)), 50)
+                        .setEmission(new Color(100, 100, 50))
+                        .setMaterial(new Material().setKs(1).setKd(1).setShininess(100))
         );
         // Add a light source with soft shadows
         scene.lights.add(

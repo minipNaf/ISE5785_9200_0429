@@ -27,7 +27,7 @@ public class BlackBoard {
     }
 
     //Dry is a bit broken here
-    public List<Ray> castRays() {
+    public List<Ray> castRays(Vector normal) {
         List<Ray> rays = new ArrayList<>();
         Point pIJ;
         double cellSize = size / numSamples;
@@ -56,7 +56,7 @@ public class BlackBoard {
                 if (Xj != 0) pIJ = pIJ.add(vRight.scale(Xj));
                 if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
                 if(!circular || pIJ.distanceSquared(location) < size * size / 4) {
-                    rays.add(new Ray(pIJ.subtract(head), head));
+                    rays.add(new Ray(pIJ.subtract(head), normal, head));
                 }
             }
         }

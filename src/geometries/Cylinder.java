@@ -53,6 +53,24 @@ public class Cylinder extends Tube{
     }
 
     /**
+     * Constructs a Cylinder object with the specified radius, axis head, and axis tail.
+     * The height is calculated as the distance between the axis head and tail points.
+     *
+     * @param radius the radius of the cylinder's base; must be positive
+     * @param axisHead the starting point of the cylinder's axis
+     * @param axisTail the ending point of the cylinder's axis
+     * @throws ArithmeticException if the axis head and tail are the same point
+     */
+    public Cylinder(double radius, Point axisHead, Point axisTail) {
+        super(radius, new Ray(axisTail.subtract(axisHead), axisHead));
+        if (axisHead.equals(axisTail))
+            throw new ArithmeticException("Axis head and tail cannot be the same point");
+        height = axisHead.distance(axisTail);
+        bottomBase = new Circle(axisHead, radius, getNormal(axisTail));
+        topBase = new Circle(axisTail, radius, getNormal(axisTail));
+    }
+
+    /**
      * Returns the normal vector at a given point on the cylinder's surface.
      * The normal vector is orthogonal to the surface at the specified point.
      *

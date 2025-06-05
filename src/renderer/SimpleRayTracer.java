@@ -184,9 +184,10 @@ public class SimpleRayTracer extends RayTracerBase{
         if (intersection.light.getRadius() == 0)
             shadowRays = List.of(new Ray(pointToLight, intersection.normal, intersection.point));
         else {
+            //Point offsetPoint = intersection.point.add(intersection.normal.scale(0.1));
             BlackBoard blackBoard = new BlackBoard(intersection.point, lightDistance, pointToLight.getNormal(), pointToLight);
-            blackBoard.setSize(intersection.light.getRadius()).setCircular(true);
-            shadowRays = blackBoard.castRays();
+            blackBoard.setSize(intersection.light.getRadius()*2).setCircular(true);
+            shadowRays = blackBoard.castRays(intersection.normal);
         }
 
         Double3 ktr;
@@ -230,7 +231,7 @@ public class SimpleRayTracer extends RayTracerBase{
         }
         BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.diffusion,
                 ray.getDirection().getNormal(), ray.getDirection());
-        return blackBoard.castRays();
+        return blackBoard.castRays(intersection.normal);
     }
     /**
      * Calculate reflection ray, and to it the right delta
@@ -250,7 +251,7 @@ public class SimpleRayTracer extends RayTracerBase{
         Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
         BlackBoard blackBoard = new BlackBoard(offsetPoint, intersection.material.glossure,
                 r.getNormal(), r);
-        return blackBoard.castRays();
+        return blackBoard.castRays(intersection.normal);
     }
 
 
