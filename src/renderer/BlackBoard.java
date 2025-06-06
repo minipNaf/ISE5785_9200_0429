@@ -16,7 +16,7 @@ public class BlackBoard {
     private Vector vRight;
     private Point location;
     private Point head;
-
+    private Vector normal = null; // if null, rays will not have a normal vector
     private boolean circular = false;
 
     public BlackBoard(Point head, double distance, Vector vUp, Vector vector) {
@@ -57,10 +57,10 @@ public class BlackBoard {
                 if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
                 if(!circular || pIJ.distanceSquared(location) < size * size / 4) {
                     if(normal==null){
-                        rays.add(new Ray(pIJ.subtract(location),location));
+                        rays.add(new Ray(pIJ.subtract(head),head));
                     }
                     else {
-                        rays.add(new Ray(pIJ.subtract(location),normal,location));
+                        rays.add(new Ray(pIJ.subtract(head),normal,head));
                     }
 
                 }
@@ -76,6 +76,11 @@ public class BlackBoard {
     }
     public BlackBoard setSize(double size) {
         this.size = size;
+        return this;
+    }
+
+    public BlackBoard setNormal(Vector normal) {
+        this.normal = normal;
         return this;
     }
 }

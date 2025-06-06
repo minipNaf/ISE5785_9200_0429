@@ -1,51 +1,55 @@
 package renderer;
 
-import geometries.Cylinder;
 import geometries.Plane;
+import geometries.Sphere;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
-import primitives.Color;
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 import scene.Scene;
 
-import java.awt.*;
+import static java.awt.Color.*;
 
 public class SoftShadowsTest {
-    /**
-     * Scene for the tests
-     */
-    private final Scene scene = new Scene("Test scene");
-    /**
-     * Camera builder for the tests with triangles
-     */
-    private final Camera.Builder cameraBuilder = Camera.getBuilder()     //
+
+    private final Scene scene = new Scene("Soft Shadows Test");
+
+    private final Camera.Builder cameraBuilder = Camera.getBuilder()
             .setRayTracer(scene, RayTracerType.SIMPLE);
 
     @Test
-    void testSoftShadows() {// Add geometries to the scene
+    void testSoftShadows() {
+        // Ground plane (to catch shadows)
         scene.geometries.add(
-                new Plane(new Point(0, 0, 1), new Vector(0, 0, 1))
-                        .setEmission(new Color(255, 255, 255)),
-
-                new Cylinder(3, new Ray(new Vector(0, 0, 1), new Point(0, 0, 0)), 50)
-                        .setEmission(new Color(100, 100, 50))
-                        .setMaterial(new Material().setKs(1).setKd(1).setShininess(100))
+                new Plane(new Point(0, -50, 0), new Vector(0, 1, 0))
+                        .setEmission(new Color(200, 200, 200))
+                        .setMaterial(new Material().setKd(0.7).setKs(0.2).setShininess(10))
         );
-        // Add a light source with soft shadows
-        scene.lights.add(
-                new SpotLight(new Color(255, 255, 0), new Point(-40, 60, 20), new Vector(4, -6, -1))
-                        .setRadius(1));
-        cameraBuilder
-                .setLocation(new Point(40, -60, 20)) //
-                .setDirection(Point.ZERO, Vector.AXIS_Z) //
-                .setVpDistance(10).setVpSize(3, 3) //
-                .setResolution(500, 500) //
-                .setMultithreading(-1)
-                .build() //
-                .renderImage() //
-                .writeToImage("SoftShadowsTest");
 
+        // Main object: a floating sphere
+        scene.geometries.add(
+                new Sphere(50, new Point(0, 0, 0))
+                        .setEmission(new Color(BLUE))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(100))
+        );
+
+        // Soft spot light
+        scene.lights.add(
+                new SpotLight(new Color(1000, 600, 600), new Point(100, 100, 150), new Vector(-1, -1, -2))
+                        .setkL(1E-4)
+                        .setkQ(1E-5)
+                        .setRadius(15) // Bigger radius = softer shadow
+        );
+
+        // Camera setup
+        cameraBuilder
+                .setLocation(new Point(0, 200, 1000))
+                .setDirection(new Vector(0, 0, -1))
+                .setVpSize(200, 200)
+                .setVpDistance(500)
+                .setResolution(600, 600)
+                .setMultithreading(-1)
+                .build()
+                .renderImage()
+                .writeToImage("SoftShadowsTest");
     }
 }
