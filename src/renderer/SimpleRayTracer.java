@@ -180,19 +180,19 @@ public class SimpleRayTracer extends RayTracerBase{
     private Double3 transparency(Intersection intersection) {
         Vector pointToLight = intersection.l.scale(-1);
         double lightDistance = intersection.light.getDistance(intersection.point);
-        List<Ray> shadowRays = new ArrayList<>();
+        List<Ray> shadowRays;
         if (intersection.light.getRadius() == 0)
             shadowRays = List.of(new Ray(pointToLight, intersection.normal, intersection.point));
         else {
             //Point offsetPoint = intersection.point.add(intersection.normal.scale(0.1));
             BlackBoard blackBoard = new BlackBoard(intersection.point, lightDistance, pointToLight.getNormal(), pointToLight);
-            blackBoard.setSize(intersection.light.getRadius()*2).setCircular(true);
-            shadowRays = blackBoard.castRays(intersection.normal);
+            blackBoard.setSize(intersection.light.getRadius()*2).setNormal(intersection.normal).setCircular(true);
+            shadowRays = blackBoard.castRays();
         }
 
         Double3 ktr;
         Double3 averageKtr = Double3.ZERO;
-        List<Intersection> intersections = new ArrayList<>();
+        List<Intersection> intersections;
         for (Ray shadowRay : shadowRays) {
             intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
             ktr = Double3.ONE;
@@ -230,8 +230,8 @@ public class SimpleRayTracer extends RayTracerBase{
             return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
         }
         BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.diffusion,
-                ray.getDirection().getNormal(), ray.getDirection());
-        return blackBoard.castRays(intersection.normal);
+                ray.getDirection().getNormal(), ray.getDirection()).setNormal(intersection.normal);
+        return blackBoard.castRays();
     }
     /**
      * Calculate reflection ray, and to it the right delta
@@ -248,10 +248,10 @@ public class SimpleRayTracer extends RayTracerBase{
         }
 
         // For BlackBoard, pass the offset point
-        Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
-        BlackBoard blackBoard = new BlackBoard(offsetPoint, intersection.material.glossure,
-                r.getNormal(), r);
-        return blackBoard.castRays(intersection.normal);
+        //Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
+        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.glossure,
+                r.getNormal(), r).setNormal(intersection.normal);
+        return blackBoard.castRays();
     }
 
 
@@ -310,7 +310,7 @@ public class SimpleRayTracer extends RayTracerBase{
             return null; // No intersection found
         }
 
-        Intersection closestPoint = intersections.get(0);
+        Intersection closestPoint = intersections.getFirst();
         double minDistance = ray.getHead().distanceSquared(closestPoint.point);
 
         for (int i = 1; i < intersections.size(); i++) {

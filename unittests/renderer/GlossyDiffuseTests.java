@@ -44,6 +44,7 @@ scene.geometries.add(
                 .setDirection(Point.ZERO, Vector.AXIS_Z)
                 .setVpDistance(500).setVpSize(150, 150)
                 .setResolution(500, 500)
+                .setMultithreading(-1)
                 .build()
                 .renderImage()
                 .writeToImage("lollipop with diffused glass test");
@@ -72,6 +73,7 @@ scene.geometries.add(
                 .setDirection(Point.ZERO, Vector.AXIS_Z) //
                 .setVpDistance(500).setVpSize(150, 150) //
                 .setResolution(500, 500) //
+                .setMultithreading(-1)
                 .setDebugPrint(50)
                 .build() //
                 .renderImage() //
