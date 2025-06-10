@@ -2,6 +2,8 @@ package renderer;
 
 import primitives.*;
 import scene.Scene;
+
+import java.util.ArrayList;
 import java.util.stream.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,10 +27,10 @@ public class Camera implements Cloneable{
     private double viewPlaneDistance = 0.0;
     private double viewPlaneWidth = 0.0;
     private double viewPlaneHeight = 0.0;
-    private boolean antiAliasing = false; // Factor for anti-aliasing, default is infinity (no anti-aliasing)
-
+    private boolean antiAliasing = false; // Factor for anti-aliasing, default is infinity (no anti-aliasing) p
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
+    private double dOFdistance = 0; // Distance from the camera to the aperture window
     private int nX = 1;
     private int nY = 1;
     /** Amount of threads to use fore rendering image by the camera */
@@ -265,6 +267,22 @@ public class Camera implements Cloneable{
                 camera.threadsCount = threads;
             return this;
         }
+
+        /**
+         * Set the distance from the focal plane to the aperture window.
+         * This method is used for depth of field effects in rendering.
+         * @param distance - the distance from the focal plane to the aperture window
+         * @return this Builder object
+         * @throws IllegalArgumentException if the distance is not positive
+         */
+        public Builder setApertureWindow(double distance) { //The distance from the focal plain to the apertue window
+            if(distance<=0) {
+                throw new IllegalArgumentException("Distance must be positive");
+            }
+            camera.dOFdistance = distance;
+            return this;
+        }
+
         /**
          * Set debug printing interval. If it's zero - there won't be printing at all
          * @param interval printing interval in %
@@ -330,7 +348,7 @@ public class Camera implements Cloneable{
     public List<Ray> constructRay(int nX, int nY, int j, int i) {
         double Xj = (j - (nX-1) / 2d) * (viewPlaneWidth / nX);
         double Yi = -(i - (nY-1) / 2d) * (viewPlaneHeight / nY);
-
+        List<Ray> rays = new ArrayList<>();
         // calculate the point in the center of the view plane
         Point pCenter = p0.add(vTo.scale(viewPlaneDistance));
         Point pIJ = pCenter;
@@ -340,11 +358,26 @@ public class Camera implements Cloneable{
         if (Yi != 0) pIJ = pIJ.add(vUp.scale(Yi));
         Ray pixelRay = new Ray(pIJ.subtract(p0).normalize(), p0);
         if (!antiAliasing) {
-            return List.of(pixelRay);
+            rays = List.of(pixelRay);
         }
-        Vector pixelDirection = pixelRay.getDirection();
-        BlackBoard blackBoard = new BlackBoard(p0, pIJ.distance(p0), vUp, pixelDirection).setSize(viewPlaneWidth/nX);
-        return blackBoard.castRays();
+        else{
+            Vector pixelDirection = pixelRay.getDirection();
+            BlackBoard blackBoard = new BlackBoard(p0, pIJ.distance(p0), vUp, pixelDirection).setSize(viewPlaneWidth/nX);
+            rays = blackBoard.castRays();
+        }
+        // if there is depth of field, we need to adjust the rays to pass through the aperture window
+        if(dOFdistance != 0) {
+            BlackBoard apertureWindow = new BlackBoard(p0.add(vTo.scale(dOFdistance)),
+                    dOFdistance, vUp.scale(-1), vTo.scale(-1))
+                    .setCircular(true).setDoF(true).setSize(dOFdistance/2);
+            List<Ray> apertureRays = new ArrayList<>();
+            // for each ray, we cast a ray through the aperture window
+            for (Ray ray : rays){
+                    apertureRays.addAll(apertureWindow.setSingle(ray.getPoint(dOFdistance / vTo.dotProduct(ray.getDirection()))).castRays());
+            }
+            return apertureRays;
+        }
+        return rays;
     }
     /**
      *the function casts rays through every pixel on the view plane

@@ -46,8 +46,22 @@ public class BlackBoard {
      * If true, rays will only be cast within a circular area defined by the size.
      */
     private boolean circular = false;
+    /**
+     * A flag indicating whether to use depth of field.
+     * If true, rays will be cast with depth of field effect, meaning they start from blackboard and not from single.
+     */
+    private boolean dof = false; // if true, rays will be cast with depth of field
 
-    public BlackBoard(Point head, double distance, Vector vUp, Vector vector) {
+    /**
+     * Constructs a BlackBoard object with the specified parameters.
+     * The blackboard is defined by a head point, distance from the head, up vector, and a direction vector.
+     *
+     * @param single    This point is the focal point or origin of blackboard.
+     * @param distance  The distance from the head to the blackboard.
+     * @param vUp       The up vector of the blackboard, used to determine its orientation.
+     * @param vector    The direction vector used to calculate the right vector of the blackboard.
+     */
+    public BlackBoard(Point single, double distance, Vector vUp, Vector vector) {
         this.vUp = vUp.normalize();
         vRight = vUp.crossProduct(vector).normalize();
         this.single = single;
@@ -65,6 +79,7 @@ public class BlackBoard {
      * @return a list of Ray objects representing the rays cast from the blackboard or to the blackboard.
      */
     public List<Ray> castRays() {
+
         List<Ray> rays = new ArrayList<>();
         Point pIJ;
 
@@ -90,6 +105,7 @@ public class BlackBoard {
                     jitteration = rand.nextGaussian() * cellSize / 4;
                 }
                 Yi += jitteration;
+
                 pIJ = location;
 
                 // we are calculating the ray through the pixel in three stages so we won't have a problem of zero vector.
@@ -138,4 +154,26 @@ public class BlackBoard {
         this.normal = normal;
         return this;
     }
+    /**
+     * setter function for the depth of field flag.
+     * @param dof - if true, rays will be cast with depth of field effect.
+     * @return this - for chaining method calls.
+     */
+    public BlackBoard setDoF(boolean dof) {
+        this.dof = dof;
+        return this;
+    }
+
+    /**
+     * setter function for the single point from which rays will be cast or rays will be cast to.
+     * @param single - the single point from which rays will be cast or rays will be cast to.
+     * @return this - for chaining method calls.
+     */
+    public BlackBoard setSingle(Point single){
+        this.single = single;
+        return this;
+    }
+
+
+
 }

@@ -199,10 +199,10 @@ public class SimpleRayTracer extends RayTracerBase{
             if (intersections != null) {
                 for (Intersection i : intersections) {
                     ktr = ktr.product(i.material.kt);
-
                 }
             }
             averageKtr = averageKtr.add(ktr);
+
         }
         return averageKtr.reduce(shadowRays.size());
     }
@@ -326,5 +326,3 @@ public class SimpleRayTracer extends RayTracerBase{
         return closestPoint;
     }
 }
-
-

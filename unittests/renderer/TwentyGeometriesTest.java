@@ -1,147 +1,328 @@
 //package renderer;
 //
-//import org.junit.jupiter.api.Test;
-//import scene.Scene;
-//
-//import geometries.*;
-//import lighting.*;
+//import lighting.DirectionalLight;
+//import lighting.LightSource;
+//import lighting.PointLight;
 //import primitives.*;
+//import scene.Scene;
+//import geometries.Intersectable. Intersection;
 //
-//public class TwentyGeometriesTest {
-//    /** Scene for the tests */
-//    private final Scene scene = new Scene("Twenty Geometries Scene");
-//    /** Camera builder for the tests */
-//    private final Camera.Builder cameraBuilder = Camera.getBuilder()
-//            .setRayTracer(scene, RayTracerType.SIMPLE);
+//import java.util.ArrayList;
+//import java.util.List;
 //
-//    @Test
-//    void testTwentyGeometriesScene() {
-//        scene.geometries.add(
-//                // 1. Floor plane - reflective checkerboard
-//                new Plane(new Point(0, 0, -100), new Vector(0, 0, 1))
-//                        .setEmission(new Color(40, 40, 40))
-//                        .setMaterial(new Material().setkr(0.8).setKd(0.3).setKs(0.6).setShininess(100)),
+///**
+// * Simple ray tracer implementation that extends the RayTracerBase class.
+// * This class provides a basic ray tracing algorithm that calculates the color
+// * at the intersection point of a ray with the scene's geometries.
+// */
+//public class SimpleRayTracer extends RayTracerBase{
 //
-//                // 2. Back wall plane - matte gray
-//                new Plane(new Point(0, -200, 0), new Vector(0, 1, 0))
-//                        .setEmission(new Color(60, 60, 60))
-//                        .setMaterial(new Material().setkr(0.4).setKd(0.7).setKs(0.2).setShininess(50)),
+//    /**
+//     * Maximum level of color calculation for recursive effects.
+//     * This value limits the depth of recursion when calculating color effects such as reflections and refractions.
+//     */
+//    private static final int MAX_CALC_COLOR_LEVEL = 10;
+//    /**
+//     * Minimum value for color calculation to avoid division by zero.
+//     * This value is used to ensure that the color calculations do not result in zero or negative values.
+//     */
+//    private static final double MIN_CALC_COLOR_K = 0.001;
+//    /**
+//     * Initial value for the color calculation factor.
+//     * This value is used as a starting point for color calculations in the ray tracing algorithm.
+//     */
+//    private static final Double3 INITIAL_K = Double3.ONE;
 //
-//                // 3. Central large sphere - glossy red with high reflection
-//                new Sphere( 35d, new Point(0, 0, -20))
-//                        .setEmission(new Color(200, 50, 50))
-//                        .setMaterial(new Material().setkr(0.9).setKs(0.8).setShininess(120).setGlossure(2.0)),
-//
-//                // 4. Left sphere - refractive yellow/gold
-//                new Sphere( 25d, new Point(-80, -40, 0))
-//                        .setEmission(new Color(255, 215, 0))
-//                        .setMaterial(new Material().setkt(0.8).setKs(0.6).setShininess(100)),
-//
-//                // 5. Right sphere - glossy blue
-//                new Sphere( 28d, new Point(80, 30, -10))
-//                        .setEmission(new Color(50, 150, 255))
-//                        .setMaterial(new Material().setkr(0.7).setKs(0.7).setShininess(90)),
-//
-//                // 6. Small floating sphere - purple metallic
-//                new Sphere( 18d, new Point(-30, 60, 40))
-//                        .setEmission(new Color(150, 50, 200))
-//                        .setMaterial(new Material().setkr(0.85).setKs(0.9).setShininess(150)),
-//
-//                // 7. Tall cylinder - refractive teal
-//                new Cylinder(20d, new Ray(new Vector(0, 0, 1), new Point(-120, -80, -80)), 120d)
-//                        .setEmission(new Color(0, 180, 180))
-//                        .setMaterial(new Material().setkt(0.7).setKs(0.5).setShininess(80)),
-//
-//                // 8. Wide cylinder - diffuse orange
-//                new Cylinder(25d, new Ray(new Vector(1, 0, 0), new Point(60, -120, -30)), 100d)
-//                        .setEmission(new Color(255, 140, 0))
-//                        .setMaterial(new Material().setKd(0.8).setKs(0.3).setShininess(40).setDiffusion(6.0)),
-//
-//                // 9. Angled cylinder - glossy green
-//                new Cylinder(15d, new Ray(new Vector(1, 1, 0), new Point(120, 80, 20)), 80d)
-//                        .setEmission(new Color(0, 200, 100))
-//                        .setMaterial(new Material().setkr(0.6).setKs(0.8).setShininess(110)),
-//
-//                // 10. Main triangle - large reflective blue
-//                new Triangle(new Point(-60, -60, 20), new Point(60, -60, 20), new Point(0, 40, 80))
-//                        .setEmission(new Color(0, 100, 255))
-//                        .setMaterial(new Material().setkr(0.75).setKd(0.4).setKs(0.6).setShininess(95)),
-//
-//                // 11. Left triangle - matte red
-//                new Triangle(new Point(-150, -100, -20), new Point(-100, -50, -20), new Point(-125, -75, 40))
-//                        .setEmission(new Color(255, 80, 80))
-//                        .setMaterial(new Material().setKd(0.9).setKs(0.2).setShininess(30).setDiffusion(5.0)),
-//
-//                // 12. Right triangle - glossy yellow
-//                new Triangle(new Point(100, 50, -30), new Point(150, 100, -30), new Point(125, 75, 30))
-//                        .setEmission(new Color(255, 255, 0))
-//                        .setMaterial(new Material().setkr(0.5).setKs(0.7).setShininess(85)),
-//
-//                // 13. Refractive circle - like glass window
-//                new Circle(new Point(-50, -150, 50), 40d, new Vector(0, 1, 0))
-//                        .setEmission(new Color(200, 255, 255))
-//                        .setMaterial(new Material().setkt(0.9).setKs(0.4).setShininess(120)),
-//
-//                // 14. Glossy circle - metallic copper
-//                new Circle(new Point(100, -100, 30), 35d, new Vector(1, 0, 0))
-//                        .setEmission(new Color(184, 115, 51))
-//                        .setMaterial(new Material().setkr(0.8).setKs(0.9).setShininess(140)),
-//
-//                // 15. Diffuse circle - matte pink
-//                new Circle(new Point(40, 120, 10), 30d, new Vector(0, 0, 1))
-//                        .setEmission(new Color(255, 192, 203))
-//                        .setMaterial(new Material().setKd(0.8).setKs(0.3).setShininess(25).setDiffusion(7.0)),
-//
-//                // 16. Tube - long refractive purple
-//                new Tube(12d, new Ray(new Vector(0, 1, 0), new Point(-80, -50, 60)))
-//                        .setEmission(new Color(138, 43, 226))
-//                        .setMaterial(new Material().setkt(0.6).setkr(0.3).setKs(0.6).setShininess(75)),
-//
-//                // 17. Tube - horizontal glossy cyan
-//                new Tube(18d, new Ray(new Vector(1, 0, 0), new Point(-40, 80, -40)))
-//                        .setEmission(new Color(0, 255, 255))
-//                        .setMaterial(new Material().setkr(0.7).setKs(0.8).setShininess(105)),
-//
-//                // 18. Complex polygon - hexagonal base, reflective silver
-//                new Polygon(
-//                        new Point(-30, -30, -60), new Point(30, -30, -60),
-//                        new Point(50, 0, -60), new Point(30, 30, -60),
-//                        new Point(-30, 30, -60), new Point(-50, 0, -60))
-//                        .setEmission(new Color(192, 192, 192))
-//                        .setMaterial(new Material().setkr(0.9).setKs(0.8).setShininess(160)),
-//
-//                // 19. Square polygon - glossy emerald
-//                new Polygon(
-//                        new Point(60, 60, 60), new Point(120, 60, 60),
-//                        new Point(120, 120, 60), new Point(60, 120, 60))
-//                        .setEmission(new Color(0, 200, 0))
-//                        .setMaterial(new Material().setkr(0.6).setKs(0.7).setShininess(100)),
-//
-//                // 20. Final triangle - refractive crystal
-//                new Triangle(new Point(0, 0, 100), new Point(-40, -40, 60), new Point(40, -40, 60))
-//                        .setEmission(new Color(220, 220, 255))
-//                        .setMaterial(new Material().setkt(0.85).setKs(0.9).setShininess(200))
-//        );
-//
-//        // Add lighting for better effects
-//        scene.lights.add(
-//                new DirectionalLight(new Color(400, 400, 400), new Vector(1, -1, -1))
-//        );
-//        scene.lights.add(
-//                new PointLight(new Color(300, 300, 300), new Point(-100, 100, 100))
-//        );
-//        scene.lights.add(
-//                new SpotLight(new Color(500, 400, 300), new Point(150, 150, 100), new Vector(-1, -1, -1))
-//        );
-//
-//        cameraBuilder
-//                .setLocation(new Point(0, 200, 50)) // Camera positioned to view the scene
-//                .setDirection(new Point(0, 0, 0), Vector.AXIS_Z) // Looking towards origin
-//                .setVpDistance(150).setVpSize(300, 300) // View plane settings
-//                .setResolution(800, 800) // High resolution for quality
-//                .setMultithreading(-1)
-//                .build()
-//                .renderImage()
-//                .writeToImage("twenty_geometries_scene");
+//    /**
+//     * Constructs a SimpleRayTracer object with the specified scene.
+//     * This constructor initializes the ray tracer with the given scene.
+//     *
+//     * @param scene the scene to be rendered
+//     */
+//    public SimpleRayTracer(Scene scene) {
+//        super(scene);
 //    }
+//
+//    /**
+//     * Traces a ray through the scene and returns the color at the intersection point.
+//     * If there are no intersections, it returns the background color of the scene.
+//     *
+//     * @param ray the ray to trace
+//     * @return the color at the intersection point (or the background color if no intersection)
+//     */
+//    @Override
+//    public Color traceRay(Ray ray) {
+//        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(ray, Double.POSITIVE_INFINITY);
+//        if (intersections == null)
+//            return scene.background;
+//
+//        return calcColor(findClosestIntersection(ray), ray);
+//    }
+//
+//    /**
+//     * Calculates the color at a given point in the scene.
+//     * This method the color of a given point using the recursive calcColor
+//     *
+//     * @param intersection the intersection at which to calculate the color
+//     * @return the color at the specified point
+//     */
+//    private Color calcColor(Intersection intersection, Ray ray) {
+//        return calcColor(intersection, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K).
+//                add(scene.ambientLight.getIntensity().scale(intersection.material.ka));
+//    }
+//
+//    /**
+//     * recursive calcColor. calculates the local effects color of intersection point and adds the global effects.
+//     * @param intersection - intersection point on geometry
+//     * @param ray - hitting ray
+//     * @param level - level of recursive call
+//     * @param k - current mekadem hanhata of global effect
+//     * @return color of intersection point
+//     */
+//    private Color calcColor(Intersection intersection, Ray ray, int level, Double3 k){
+//        if (!preprocessIntersection(intersection, ray.getDirection()))
+//            return Color.BLACK;
+//        Color color = calcColorLocalEffects(intersection, k);
+//        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
+//    }
+//
+//    /**
+//     * Preprocesses the intersection by calculating the normal vector and the view vector.
+//     * This method also checks if the intersection is valid (not zero).
+//     *
+//     * @param intersection the intersection to preprocess
+//     * @param v the view vector
+//     * @return true if the intersection is valid, false otherwise
+//     */
+//    private boolean preprocessIntersection(Intersection intersection, Vector v) {
+//        intersection.v = v;
+//        intersection.normal = intersection.geometry.getNormal(intersection.point);
+//        intersection.vNormal = Util.alignZero(intersection.v.dotProduct(intersection.normal));
+//
+//        return intersection.vNormal != 0;
+//    }
+//
+//    /**
+//     * Sets the light source for the intersection and calculates the light vector.
+//     * This method also checks if the light source is valid (not zero).
+//     *
+//     * @param intersection the intersection to set the light source for
+//     * @param light the light source to set
+//     * @return true if the light source is valid, false otherwise
+//     */
+//    private boolean setLightSource(Intersection intersection, LightSource light) {
+//        intersection.light = light;
+//        intersection.l = light.getL(intersection.point);
+//        intersection.lNormal = Util.alignZero(intersection.l.dotProduct(intersection.normal));
+//
+//        return intersection.vNormal * intersection.vNormal <= 0;
+//    }
+//
+//    /**
+//     * Calculates the color at the intersection point based on local effects.
+//     * This method considers the emission color of the geometry and the intensity
+//     * of the light sources in the scene.
+//     *
+//     * @param gp the intersection point
+//     * @return the calculated color at the intersection point
+//     */
+//    private Color calcColorLocalEffects(Intersection gp, Double3 k)
+//    {
+//        Color color = gp.geometry.getEmission(); // emission color of geometry
+//
+//        for (LightSource lightSource : scene.lights) {
+//            if (!setLightSource(gp, lightSource) && gp.lNormal * gp.vNormal > 0) { // sign(nl) == sign(nv)
+//                Double3 ktr = transparency(gp);
+//                if (!ktr.product(k).lowerThan(MIN_CALC_COLOR_K)) {
+//                    Color iL = lightSource.getIntensity(gp.point).scale(ktr); // intensity of color at point
+//                    // adding diffusive and specular effects
+//                    color = color.add(iL.scale(calcDiffusive(gp).add(calcSpecular(gp))));
+//                }
+//            }
+//        }
+//        return color;
+//    }
+//
+//
+//    /**
+//     * The function calculates specular effects at the intersection point.
+//     * @param intersection - the intersection point
+//     * @return the specular color at the intersection point
+//     */
+//    private Double3 calcSpecular(Intersection intersection){
+//        // r = l - (n * lNormal * 2)
+//        Vector r = intersection.l.subtract(intersection.normal.scale(2 * intersection.lNormal));
+//        double rv = Util.alignZero(r.dotProduct(intersection.v));
+//        // check if the angle between the view vector and the reflection vector is acute
+//        if (rv < 0d) {
+//            return intersection.material.ks.scale(Math.pow(-rv, intersection.material.nsh));
+//        }
+//        // if the angle is obtuse, return zero
+//        return Double3.ZERO;
+//    }
+//
+//    /**
+//     * The function calculates diffusive effects at the intersection point.
+//     * @param intersection - the intersection point
+//     * @return the diffusive color at the intersection point
+//     */
+//    private Double3 calcDiffusive(Intersection intersection){
+//        return intersection.material.kd.scale(Math.abs(intersection.lNormal));
+//    }
+//
+//
+//    /**
+//     * The function calculates how much of the light from the light source reaches the intersection.
+//     * Each body shading over the intersection reduces the amount of light at intersection.
+//     * @param intersection - intersection to check level of light
+//     * @return ktr - final mekadem hanhata of transparency
+//     */
+//    private Double3 transparency(Intersection intersection) {
+//        Vector pointToLight = intersection.l.scale(-1);
+//        double lightDistance = intersection.light.getDistance(intersection.point);
+//        List<Ray> shadowRays;
+//        if (intersection.light.getRadius() == 0)
+//            shadowRays = List.of(new Ray(pointToLight, intersection.normal, intersection.point));
+//        else {
+//            //Point offsetPoint = intersection.point.add(intersection.normal.scale(0.1));
+//            BlackBoard blackBoard = new BlackBoard(intersection.point, lightDistance, pointToLight.getNormal(), pointToLight);
+//            blackBoard.setSize(intersection.light.getRadius()*2).setNormal(intersection.normal).setCircular(true);
+//            shadowRays = blackBoard.castRays();
+//        }
+//
+//        Double3 ktr;
+//        Double3 averageKtr = Double3.ZERO;
+//        List<Intersection> intersections;
+//        for (Ray shadowRay : shadowRays) {
+//            intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
+//            ktr = Double3.ONE;
+//            if (intersections != null) {
+//                for (Intersection i : intersections) {
+//                    ktr = ktr.product(i.material.kt);
+//                }
+//            }
+//            averageKtr = averageKtr.add(ktr);
+//
+//        }
+//        return averageKtr.reduce(shadowRays.size());
+//    }
+//
+////    private boolean unshaded(Intersection intersection){
+////        Vector pointToLight = intersection.l.scale(-1); // from point to light source
+////        private static final double DELTA = 0.1;
+////        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
+////        Ray shadowRay = new Ray(pointToLight, intersection.point.add(delta));
+////        double lightDistance = intersection.light.getDistance(intersection.point);
+////        var intersections = scene.geometries.calculateIntersectionsHelper(shadowRay, lightDistance);
+////        if (intersections == null) return true;
+////        intersections.removeIf(i -> !i.geometry.getMaterial().kt.lowerThan(MIN_CALC_COLOR_K));
+////        return intersections == null; // no intersections, so the point is unshaded
+////    }
+//
+//    /**
+//     * Calculate refraction ray, and to it the right delta
+//     * @param ray - hitting ray
+//     * @param intersection - intersection point on geometry
+//     * @return refraction ray
+//     */
+//    private List<Ray> refractionRay(Ray ray, Intersection intersection) {
+//        if (intersection.material.diffusion == Double.POSITIVE_INFINITY) {
+//            return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
+//        }
+//        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.diffusion,
+//                ray.getDirection().getNormal(), ray.getDirection()).setNormal(intersection.normal);
+//        return blackBoard.castRays();
+//    }
+//    /**
+//     * Calculate reflection ray, and to it the right delta
+//     * @param ray - hitting ray
+//     * @param intersection - intersection point on geometry
+//     * @return reflection ray
+//     */
+//    private List<Ray> reflectionRay(Ray ray, Intersection intersection) {
+//        Vector v = ray.getDirection();
+//        Vector r = v.subtract(intersection.normal.scale(2*v.dotProduct(intersection.normal)));
+//
+//        if (intersection.material.glossure == Double.POSITIVE_INFINITY) {
+//            return List.of(new Ray(r, intersection.normal, intersection.point));
+//        }
+//
+//        // For BlackBoard, pass the offset point
+//        //Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
+//        BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.glossure,
+//                r.getNormal(), r).setNormal(intersection.normal);
+//        return blackBoard.castRays();
+//    }
+//
+//
+//    /**
+//     * Calculate global effect for either reflection or transperancy.
+//     * @param rays - ray hitting intersection point
+//     * @param level - depth of recursive calls
+//     * @param initialK - initial mekadem hanhata of reflection or transperancy
+//     * @param kx - mekadem hanhata of currnent material
+//     * @return color of intersection point from global effect
+//     */
+//    private Color calcGlobalEffect(List<Ray> rays, int level, Double3 initialK, Double3 kx) {
+//        Double3 kkx = initialK.product(kx);
+//        Intersection intersection;
+//        if (kkx.lowerThan(MIN_CALC_COLOR_K)) {
+//            return Color.BLACK;
+//        }
+//        Color global = new Color(); //Black final cannot be changed so
+//
+//        for (Ray ray : rays) {
+//            intersection = findClosestIntersection(ray);
+//            if (intersection == null) global = global.add(scene.background.scale(kx));
+//            else if (preprocessIntersection(intersection, ray.getDirection())) {
+//                global = global.add(calcColor(intersection, ray, level - 1, kkx).scale(kx));
+//            }
+//        }
+//
+//        return global.scale(1D / rays.size());
+//    }
+//
+//    /**
+//     * Calculates the color from global effects of intersection point
+//     * @param intersection - intersection point on geometry
+//     * @param ray - hitting ray
+//     * @param level - level of recursive calls
+//     * @param k - currnt mekadem hanhata of global effect
+//     * @return  color from global effects of intersection point
+//     */
+//    private Color calcGlobalEffects(Intersection intersection, Ray ray, int level, Double3 k) {
+//        return calcGlobalEffect(refractionRay(ray, intersection), level, k, intersection.material.kt)
+//                .add(calcGlobalEffect(reflectionRay(ray, intersection), level, k, intersection.material.kr));
+//    }
+//
+//    /**
+//     * Calculates a list of intersections of a ray with geometries.
+//     * Then finds the closest point from a list of points to the ray's head.
+//     * The method iterates through the list of points and calculates the squared distance
+//     * from the ray's head to each point, keeping track of the closest point found so far.
+//     *
+//     * @param ray - the ray to check for intersections
+//     * @return the closest point to the ray's head, or null if the list is null
+//     */
+//    private Intersection findClosestIntersection(Ray ray) {
+//        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(ray, Double.POSITIVE_INFINITY);
+//        if (intersections == null) {
+//            return null; // No intersection found
+//        }
+//
+//        Intersection closestPoint = intersections.getFirst();
+//        double minDistance = ray.getHead().distanceSquared(closestPoint.point);
+//
+//        for (int i = 1; i < intersections.size(); i++) {
+//            Intersection currentPoint = intersections.get(i);
+//            double currentDistance = ray.getHead().distanceSquared(currentPoint.point);
+//            // Update the closest point and minDistance if the current distance is smaller
+//            if (currentDistance < minDistance) {
+//                minDistance = currentDistance;
+//                closestPoint = currentPoint;
+//            }
+//        }
+//        // Return the closest point found
+//        return closestPoint;
+//    }
 //}
