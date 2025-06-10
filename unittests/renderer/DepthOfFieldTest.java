@@ -1,5 +1,4 @@
 package renderer;
-import static java.awt.Color.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,15 @@ import lighting.*;
 import primitives.*;
 import scene.Scene;
 
+/**
+ * Tests for depth of field rendering
+ * This test creates a scene with three spheres at different distances from the camera,
+ * and uses depth of field to focus on the middle sphere.
+ */
 public class DepthOfFieldTest {
+    /** Default constructor to satisfy JavaDoc generator */
+    DepthOfFieldTest() { /* to satisfy JavaDoc generator */ }
+
     /** Scene for the tests */
     private final Scene          scene         = new Scene("Test scene");
     /** Camera builder for the tests with triangles */

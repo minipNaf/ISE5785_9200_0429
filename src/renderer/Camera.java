@@ -30,7 +30,7 @@ public class Camera implements Cloneable{
     private boolean antiAliasing = false; // Factor for anti-aliasing, default is infinity (no anti-aliasing) p
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
-    private double dOFdistance = 0; // Distance from the camera to the aperture window
+    private double dOFdistance = 0; // Distance aperture window to focal plane
     private int nX = 1;
     private int nY = 1;
     /** Amount of threads to use fore rendering image by the camera */
@@ -241,6 +241,13 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        /**
+         * Set anti-aliasing for the camera.
+         * If anti-aliasing is enabled, the camera will generate multiple rays per pixel
+         * to reduce aliasing artifacts in the rendered image.
+         * @param antiAliasing - true to enable anti-aliasing, false to disable it
+         * @return this Builder object
+         */
         public Builder setAntiAliasing(boolean antiAliasing) {
             camera.antiAliasing = antiAliasing;
             return this;
@@ -348,7 +355,7 @@ public class Camera implements Cloneable{
     public List<Ray> constructRay(int nX, int nY, int j, int i) {
         double Xj = (j - (nX-1) / 2d) * (viewPlaneWidth / nX);
         double Yi = -(i - (nY-1) / 2d) * (viewPlaneHeight / nY);
-        List<Ray> rays = new ArrayList<>();
+        List<Ray> rays;
         // calculate the point in the center of the view plane
         Point pCenter = p0.add(vTo.scale(viewPlaneDistance));
         Point pIJ = pCenter;
@@ -371,7 +378,7 @@ public class Camera implements Cloneable{
                     dOFdistance, vUp.scale(-1), vTo.scale(-1))
                     .setCircular(true).setDoF(true).setSize(dOFdistance/2);
             List<Ray> apertureRays = new ArrayList<>();
-            // for each ray, we cast a ray through the aperture window
+            // for each ray, we cast rays through the aperture window
             for (Ray ray : rays){
                     apertureRays.addAll(apertureWindow.setSingle(ray.getPoint(dOFdistance / vTo.dotProduct(ray.getDirection()))).castRays());
             }
@@ -429,6 +436,7 @@ public class Camera implements Cloneable{
     private void castRay(int j, int i){
         List<Ray> pixelRays = constructRay(nX, nY, j, i);
         Color color = Color.BLACK; // Default color if no rays are traced
+        // there are many rays if anti-aliasing is enabled or depth of field is enabled
         for (Ray pixelRay : pixelRays) {
             color = color.add(rayTracer.traceRay(pixelRay));
         }

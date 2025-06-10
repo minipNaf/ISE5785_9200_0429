@@ -1,14 +1,14 @@
 package renderer;
 
-import lighting.*;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import geometries.Sphere;
 import scene.Scene;
-import org.junit.jupiter.api.Test;
 
 
-
+/**
+ * Testing anti-aliasing in rendering
+ */
 public class AntiAliasingTests {
     /** Default constructor to satisfy JavaDoc generator */
     AntiAliasingTests() { /* to satisfy JavaDoc generator */ }
@@ -19,6 +19,9 @@ public class AntiAliasingTests {
     private final Camera.Builder cameraBuilder = Camera.getBuilder()     //
             .setRayTracer(scene, RayTracerType.SIMPLE);
 
+    /**
+     * Test for rendering a black circle with anti-aliasing
+     */
     @Test
     public void blackCircle(){
         scene.geometries.add(new Sphere(100, new Point(1, 0, 0))

@@ -5,12 +5,18 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The BlackBoard class represents a virtual blackboard in 3D space.
+ * It is used to cast rays for rendering purposes, such as glossy and diffuse surfaces, anti-aliasing,
+ * soft shadows, and depth of field.
+ * The blackboard is defined by a single point, an up vector, a direction vector, and a size.
+ */
 public class BlackBoard {
     /**
      * The number of samples per pixel.
-     * Default value is 9, which means 9x9=81 grid of samples.
+     * Default value is 17, which means 17x17=289 grid of samples.
      */
-    private final int numSamples = 9;
+    private final int numSamples = 17;
     /**
      * The size of the blackboard in world units.
      * Default value is 0.5.
@@ -173,7 +179,4 @@ public class BlackBoard {
         this.single = single;
         return this;
     }
-
-
-
 }

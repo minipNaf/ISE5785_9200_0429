@@ -91,6 +91,11 @@ public class PointLight extends Light implements LightSource{
         return radius;
     }
 
+    /**
+     * setter for radius
+     * @param radius - radius of the point light
+     * @return PointLight object
+     */
     public PointLight setRadius(double radius) {
         this.radius = radius;
         return this;

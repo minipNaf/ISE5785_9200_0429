@@ -3,14 +3,19 @@ package renderer;
 import geometries.Cylinder;
 import geometries.Polygon;
 import lighting.AmbientLight;
-import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
 
 import static java.awt.Color.*;
 
+/**
+ * Tests for glossy and diffuse surfaces
+ */
 public class GlossyDiffuseTests {
+    /** Default constructor to satisfy JavaDoc generator */
+    GlossyDiffuseTests() { /* to satisfy JavaDoc generator */ }
+
     private final Scene scene         = new Scene("Test scene");
     /** Camera builder for the tests with triangles */
     private final Camera.Builder cameraBuilder = Camera.getBuilder()     //

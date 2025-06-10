@@ -9,8 +9,14 @@ import scene.Scene;
 
 import static java.awt.Color.*;
 
+/**
+ * Testing soft shadows in a scene with a sphere and a ground plane.
+ * The shadows are created by a soft spotlight, which produces softer edges.
+ */
 public class SoftShadowsTest {
 
+    /** Default constructor to satisfy JavaDoc generator */
+    SoftShadowsTest() { /* to satisfy JavaDoc generator */ }
     private final Scene scene = new Scene("Soft Shadows Test");
 
     private final Camera.Builder cameraBuilder = Camera.getBuilder()

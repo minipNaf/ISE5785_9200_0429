@@ -1,13 +1,10 @@
 package renderer;
 
-import lighting.DirectionalLight;
 import lighting.LightSource;
-import lighting.PointLight;
 import primitives.*;
 import scene.Scene;
 import geometries.Intersectable. Intersection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -229,6 +226,7 @@ public class SimpleRayTracer extends RayTracerBase{
         if (intersection.material.diffusion == Double.POSITIVE_INFINITY) {
             return List.of(new Ray(ray.getDirection(), intersection.normal, intersection.point));
         }
+        // if there is diffusion, we need to calculate the refraction rays
         BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.diffusion,
                 ray.getDirection().getNormal(), ray.getDirection()).setNormal(intersection.normal);
         return blackBoard.castRays();
@@ -247,8 +245,7 @@ public class SimpleRayTracer extends RayTracerBase{
             return List.of(new Ray(r, intersection.normal, intersection.point));
         }
 
-        // For BlackBoard, pass the offset point
-        //Point offsetPoint = intersection.point.add(intersection.normal.scale(-0.1));
+        // if there is glossure, we need to calculate the reflection rays
         BlackBoard blackBoard = new BlackBoard(intersection.point, intersection.material.glossure,
                 r.getNormal(), r).setNormal(intersection.normal);
         return blackBoard.castRays();
