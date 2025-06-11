@@ -21,6 +21,7 @@ public class DepthOfFieldTest {
     /** Camera builder for the tests with triangles */
     private final Camera.Builder cameraBuilder = Camera.getBuilder()     //
             .setRayTracer(scene, RayTracerType.SIMPLE);
+
     @Test
     void DepthOfFieldTest() {
         // Add three spheres at different distances from the camera
@@ -61,4 +62,53 @@ public class DepthOfFieldTest {
                 .writeToImage("DepthOfFieldTest");
     }
 
+
+@Test
+void DOFcomplex() {
+
+    for (int i = 0; i < 7; i++) {
+        scene.geometries.add(
+                new Sphere(15, new Point((i - 3) * 30, 0, 150 + i * 30))
+                        .setEmission(new Color(30 * i, 255 - 30 * i, 50 + 20 * i))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.3).setShininess(30))
+        );
+    }
+
+    // Add 3 small triangles behind the spheres
+    scene.geometries.add(
+            new Triangle(new Point(-60, 30, 300), new Point(-30, 0, 300), new Point(-90, 0, 300))
+                    .setEmission(new Color(150, 150, 255))
+                    .setMaterial(new Material().setKd(0.5).setKs(0.3).setShininess(30))
+    );
+    scene.geometries.add(
+            new Triangle(new Point(30, 30, 330), new Point(60, 0, 330), new Point(0, 0, 330))
+                    .setEmission(new Color(255, 200, 100))
+                    .setMaterial(new Material().setKd(0.5).setKs(0.3).setShininess(30))
+    );
+    scene.geometries.add(
+            new Triangle(new Point(0, 40, 360), new Point(30, 10, 360), new Point(-30, 10, 360))
+                    .setEmission(new Color(100, 255, 100))
+                    .setMaterial(new Material().setKd(0.5).setKs(0.3).setShininess(30))
+    );
+
+    // Add 3 varied light sources
+    scene.lights.add(new DirectionalLight(new Color(200, 180, 150), new Vector(-1, -1, -1)));
+    scene.lights.add(new SpotLight(new Color(500, 300, 300), new Point(0, -100, 100), new Vector(0, 1, 1))
+            .setkL(0.0005).setkQ(0.00005));
+    scene.lights.add(new PointLight(new Color(200, 400, 200), new Point(100, 50, 200))
+            .setkL(0.0005).setkQ(0.0001));
+
+    // Focus is on the center sphere (Z ~ 140)
+    cameraBuilder
+            .setLocation(new Point(0, -200, 150))
+            .setDirection(new Point(0, 0, 240), new Vector(0, 1, 1)) // Looking at center sphere
+            .setVpDistance(200)
+            .setVpSize(150, 150)
+            .setResolution(500, 500)
+            .setMultithreading(-1)                // Use streams for parallel rendering
+            .setApertureWindow(240)              // Focus on the center (Z=140)
+            .build()
+            .renderImage()
+            .writeToImage("DOFcomplex");
+    }
 }

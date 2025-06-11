@@ -47,7 +47,7 @@ class BlackBoardTest {
                 .setLocation(position) //
                 .setDirection(position.add(Vector.AXIS_X.scale(100)), Vector.AXIS_Y) //
                 .setVpDistance(100).setVpSize(450, 450) //
-                .setResolution(450, 450) //
+                .setResolution(850, 850) //
                 .build() //
                 .renderImage() //
                 .printGrid(50, new Color(GREEN))//
